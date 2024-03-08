@@ -1,0 +1,12 @@
+node_modules/
+documentation/.devcontainer
+documentation/.vscode
+.env
+.DS_Store
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.fdb_latexmk
+*.fls
