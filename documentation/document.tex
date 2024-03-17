@@ -1,0 +1,58 @@
+%use scrbook and set dotted line
+\documentclass[12pt,toc=chapterentrywithdots,openany]{scrbook}
+%stores all imports
+\input{packages.tex}
+
+%set the caption to the left side
+\captionsetup{justification=raggedright,singlelinecheck=false}
+% Verhindert, dass nur eine Zeile auf der nächsten Seite steht
+\setlength{\marginparwidth}{2cm}
+\usepackage[all]{nowidow}
+
+%options for figures
+\input{listoffigures.tex}
+%options for tables
+\input{listoftables.tex}
+
+
+\usepackage{acronym}
+
+\usepackage{lmodern}
+
+%renewcommand to apply the font
+\renewcommand\familydefault{\sfdefault}
+\setuptoc{toc}{totoc}
+%start the document
+\begin{document}
+
+
+%titlepage
+\input{titlepage.tex}
+%inhaltsverzeichnis
+\input{inhaltsverzeichnis.tex}
+
+
+%Inhaltsverzeichnis
+\tableofcontents
+
+%abbildungen & tabellen
+\listoffigures
+\addcontentsline{toc}{chapter}{\protect\listfigurename}
+
+\listoftables
+\addcontentsline{toc}{chapter}{\protect\listtablename}
+\newpage
+\input{acronyms.tex}
+
+
+\newpage
+
+\input{pagestyle.tex}
+%start
+\input{01_einleitung/einleitung.tex}
+\input{02_hauptteil/hauptteil.tex}
+\input{03_schluss/schluss.tex}
+%end
+
+%end of document
+\end{document}
