@@ -25,7 +25,7 @@ class ProfileScreen extends StatelessWidget {
             ProfileItem(title: 'Name', subtitle: 'Tigers', icon: Icons.person),
             ProfileItem(title: 'Phone', subtitle: '0123456789', icon: Icons.phone),
             ProfileItem(title: 'Address', subtitle: 'TigersHausen 12, 80993 München', icon: Icons.location_on),
-            ProfileItem(title: 'Email', subtitle: 'TigerDevTeam@gmail.com', icon: Icons.email),
+            ProfileItem(title: 'Email', subtitle: 'TigerDevTeam@gmail.de', icon: Icons.email),
             const SizedBox(height: 20),
             Center(
               child: ElevatedButton(

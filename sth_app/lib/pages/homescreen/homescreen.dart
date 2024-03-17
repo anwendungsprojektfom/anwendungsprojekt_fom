@@ -31,10 +31,10 @@ class HomeScreen extends StatelessWidget {
         selectedIconTheme: const IconThemeData(color: Colors.blue),
         unselectedIconTheme: const IconThemeData(color: Colors.grey),
         onTap: (int index) {
-          if (index == 2) { // Überprüfen Sie, ob der "Profile" Tab ausgewählt wurde (Index 2)
+          if (index == 2) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ProfileScreen()), // Navigieren Sie zur ProfileScreen
+              MaterialPageRoute(builder: (context) => const ProfileScreen()),
             );
           }
         },
