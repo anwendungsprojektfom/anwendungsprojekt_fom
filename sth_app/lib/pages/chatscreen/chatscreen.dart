@@ -7,21 +7,19 @@ class chatScreen extends StatefulWidget {
   _chatScreenState createState() => _chatScreenState();
 }
 
-
-class _chatScreenState extends State<chatScreen>{
-
+class _chatScreenState extends State<chatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('STH App'),
-        actions: <Widget> [
+        actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.chat_bubble_outline), 
-            onPressed: (){
+            icon: const Icon(Icons.chat_bubble_outline),
+            onPressed: () {
               Navigator.pushNamed(context, '/chatScreen');
-              },
-            )
+            },
+          )
         ],
       ),
       body: const Center(

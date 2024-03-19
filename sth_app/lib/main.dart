@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:sth_app/pages/chatscreen/chatscreen.dart';
+import 'package:sth_app/pages/homescreen/homescreen.dart';
 
 void main() {
-  runApp(const STH_App());
+  runApp(const SthApp());
 }
 
-class STH_App extends StatelessWidget {
-  const STH_App({super.key});
-
+class SthApp extends StatelessWidget {
+  const SthApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'STH App', 
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/chatScreen', routes: {
+    return MaterialApp(title: 'STH App', debugShowCheckedModeBanner: false, initialRoute: '/homescreen', routes: {
+      '/homescreen': (context) => const HomeScreen(),
       '/chatScreen': (context) => const chatScreen(),
-      }
-    );
+    });
   }
 }
