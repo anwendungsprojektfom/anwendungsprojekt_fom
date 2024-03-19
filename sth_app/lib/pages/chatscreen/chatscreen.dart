@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
-class chatScreen extends StatefulWidget {
-  const chatScreen({Key? key}) : super(key: key);
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({Key? key}) : super(key: key);
 
   @override
-  _chatScreenState createState() => _chatScreenState();
+  _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _chatScreenState extends State<chatScreen> {
+class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('STH App'),
+        title: const Text('Chatscreen'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.chat_bubble_outline),
             onPressed: () {
-              Navigator.pushNamed(context, '/chatScreen');
+              Navigator.pushNamed(context, '/chatscreen');
             },
           )
         ],

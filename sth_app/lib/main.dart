@@ -12,7 +12,7 @@ class SthApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(title: 'STH App', debugShowCheckedModeBanner: false, initialRoute: '/homescreen', routes: {
       '/homescreen': (context) => const HomeScreen(),
-      '/chatScreen': (context) => const chatScreen(),
+      '/chatscreen': (context) => const ChatScreen(),
     });
   }
 }
