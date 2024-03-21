@@ -9,32 +9,27 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Profile'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: const Padding(
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Center(
               child: CircleAvatar(
                 radius: 70,
-                backgroundImage: AssetImage('assets/profilescreenImages/user.JPG'),
+                backgroundColor: Color.fromARGB(255, 255, 255, 255),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             ProfileItem(title: 'Name', subtitle: 'Tigers', icon: Icons.person),
             ProfileItem(title: 'Phone', subtitle: '0123456789', icon: Icons.phone),
             ProfileItem(title: 'Address', subtitle: 'TigersHausen 12, 80993 München', icon: Icons.location_on),
             ProfileItem(title: 'Email', subtitle: 'TigerDevTeam@gmail.de', icon: Icons.email),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  // hier müssen wir die Edit-Funktion weiter ausbauen
-                },
-                child: const Text('Edit Profile'),
-              ),
-            ),
+                //hier Button rein
+                ),
           ],
         ),
       ),
@@ -59,7 +54,7 @@ class ProfileItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 255, 255, 255),
+        color: const Color.fromARGB(255, 255, 255, 255),
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
