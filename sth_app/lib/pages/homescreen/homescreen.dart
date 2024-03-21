@@ -7,7 +7,15 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Screen'),
+        title: const Text('Homescreen'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.chat_bubble_outline),
+            onPressed: () {
+              Navigator.pushNamed(context, '/chatscreen');
+            },
+          )
+        ],
       ),
       body: const Center(
         child: Text('This is our homescreen'),
