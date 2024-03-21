@@ -35,6 +35,14 @@ class HomeScreen extends StatelessWidget {
             label: 'Profile',
           ),
         ],
+        onTap: (int index) {
+          if (index == 2) {
+            Navigator.pushNamed(
+              context,
+              '/profilescreen',
+            );
+          }
+        },
         selectedIconTheme: const IconThemeData(color: Colors.blue),
         unselectedIconTheme: const IconThemeData(color: Colors.grey),
       ),
