@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:sth_app/technical/technical.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
-      body: const Padding(
+    return const Scaffold(
+      appBar: CustomAppBar(title: 'Profile'),
+      body: Padding(
         padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,6 +31,9 @@ class ProfileScreen extends StatelessWidget {
                 ),
           ],
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 2,
       ),
     );
   }
