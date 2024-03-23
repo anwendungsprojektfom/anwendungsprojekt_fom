@@ -1,50 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:sth_app/technical/technical.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Homescreen'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.chat_bubble_outline),
-            onPressed: () {
-              Navigator.pushNamed(context, '/chatscreen');
-            },
-          )
-        ],
-      ),
-      body: const Center(
+    return const Scaffold(
+      appBar: CustomAppBar(title: 'HomeScreen', onBack: null),
+      body: Center(
         child: Text('This is our homescreen'),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        onTap: (int index) {
-          if (index == 2) {
-            Navigator.pushNamed(
-              context,
-              '/profilescreen',
-            );
-          }
-        },
-        selectedIconTheme: const IconThemeData(color: Colors.blue),
-        unselectedIconTheme: const IconThemeData(color: Colors.grey),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 0,
       ),
     );
   }

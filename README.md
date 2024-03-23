@@ -16,3 +16,17 @@
    c) Documentation: ´documentation-create-documentation-for-feature´
 3) ´git push --set-upstream origin your-branch-name´
 
+
+## How to update branch with current master if branch has conflicts in PR
+1) ´git checkout master´ and ´git pull´ for getting latest changes from master
+2) ´git checkout your-branch-with-conflicts´ 
+3) ´git fetch origin master´ and ´git merge origin/master´ and input ´:qa´ and tap Enter
+4) ´git push´
+
+## Before merging or pushing changes, please run formatter and analyzer
+1) Formatter command: ´dart format -l 120 .´
+2) Analyzer command to see analyzer issues: ´dart analyze´
+3) Fix analyzer issues: ´dart fix --apply´
+
+
+
