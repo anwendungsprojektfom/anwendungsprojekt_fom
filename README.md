@@ -23,10 +23,17 @@
 3) ´git fetch origin master´ and ´git merge origin/master´ and input ´:qa´ and tap Enter
 4) ´git push´
 
+
 ## Before merging or pushing changes, please run formatter and analyzer
 1) Formatter command: ´dart format -l 120 .´
 2) Analyzer command to see analyzer issues: ´dart analyze´
 3) Fix analyzer issues: ´dart fix --apply´
+
+
+## Building iOS
+1) Run ´flutter pub get´ in your terminal on root 
+2) Run ´pod install --repo-update´ in your terminal on ios folder
+3) Build iOS or Run Debugging
 
 
 
