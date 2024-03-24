@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:sth_app/pages/chatscreen/chatscreen.dart';
 import 'package:sth_app/pages/homescreen/homescreen.dart';
 import 'package:sth_app/pages/profilescreen/profilescreen.dart';
 import 'package:sth_app/pages/searchscreen/searchscreen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const SthApp());
 }
 
