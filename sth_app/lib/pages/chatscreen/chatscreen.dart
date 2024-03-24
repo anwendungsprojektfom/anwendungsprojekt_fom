@@ -9,6 +9,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final TextEditingController _searchChatController = TextEditingController();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,26 +19,25 @@ class _ChatScreenState extends State<ChatScreen> {
         onBack: true,
         showChatIcon: false,
       ),
-      body: const Center(
-        child: Text("Chat Screen"),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchChatController,
+              decoration: const InputDecoration(
+                hintText: 'Search...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+          const Expanded(
+            child: Center(
+              child: Text('This is our chatscreen.'),
+            ),
           ),
         ],
-        selectedIconTheme: const IconThemeData(color: Colors.blue),
-        unselectedIconTheme: const IconThemeData(color: Colors.grey),
       ),
     );
   }
