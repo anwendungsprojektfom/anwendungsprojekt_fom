@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const ProfileScreen());
-}
+import 'package:sth_app/technical/technical.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -41,12 +38,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _emailController.text = _originalEmail;
   }
 
-  // Add Widg
+  // Add Widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      body: SingleChildScrollView( // Scroll widgetPage
+      appBar: const CustomAppBar(title: 'Profile'),
+      body: SingleChildScrollView(
+        // Scroll widgetPage
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -90,7 +88,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 20),
               Center(
-                child: ElevatedButton( // Edit button handler
+                child: ElevatedButton(
+                  // Edit button handler
                   onPressed: () {
                     setState(() {
                       _isEditing = !_isEditing;
@@ -108,23 +107,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       bottomNavigationBar: _isEditing
-          ? null // Once we are in Edit Mode: Hide BottomNavigationBarItems
-          : BottomNavigationBar(
+          ? null
+          : const CustomBottomNavigationBar(
+              // Once we are in Edit Mode: Hide BottomNavigationBarItems
               currentIndex: 2,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.search),
-                  label: 'Search',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Profile',
-                ),
-              ],
             ),
     );
   }
@@ -154,7 +140,7 @@ class ProfileItem extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.isEditing, 
+    required this.isEditing,
     required this.controller,
     Key? key,
   }) : super(key: key);
