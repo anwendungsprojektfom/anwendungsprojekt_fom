@@ -12,15 +12,11 @@ class SthApp extends StatelessWidget {
   const SthApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'STH App',
-        debugShowCheckedModeBanner: false,
-        initialRoute: '/loadingscreen',
-        routes: {
-          '/loadingscreen': (context) => const LoadingScreen(),
-          '/homescreen': (context) => const HomeScreen(),
-          '/chatscreen': (context) => const ChatScreen(),
-          '/profilescreen': (context) => const ProfileScreen(),
-        });
+    return MaterialApp(title: 'STH App', debugShowCheckedModeBanner: false, initialRoute: '/loadingscreen', routes: {
+      '/loadingscreen': (context) => const LoadingScreen(),
+      '/homescreen': (context) => const HomeScreen(),
+      '/chatscreen': (context) => const ChatScreen(),
+      '/profilescreen': (context) => const ProfileScreen(),
+    });
   }
 }

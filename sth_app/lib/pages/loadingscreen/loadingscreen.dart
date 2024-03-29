@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:sth_app/pages/homescreen/homescreen.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({Key? key}) : super(key: key);
@@ -13,25 +12,22 @@ class _LoadingScreen extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, '/homescreen');
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
+            Image(image: AssetImage('assets/images/logoSTH.png')),
             SizedBox(height: 20),
-            Text(
-              'Loading...',
-              style: TextStyle(fontSize: 20),
-            ),
+            CircularProgressIndicator(),
           ],
         ),
       ),
