@@ -4,10 +4,14 @@ import 'package:sth_app/pages/chatscreen/chatscreen.dart';
 import 'package:sth_app/pages/homescreen/homescreen.dart';
 import 'package:sth_app/pages/profilescreen/profilescreen.dart';
 import 'package:sth_app/pages/searchscreen/searchscreen.dart';
+import 'package:sth_app/firebase_options.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+    Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const SthApp());
 }
 
