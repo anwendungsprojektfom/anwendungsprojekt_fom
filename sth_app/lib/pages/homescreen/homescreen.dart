@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:sth_app/technical/technical.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -9,8 +10,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final Logger _logger = Logger();
   @override
   Widget build(BuildContext context) {
+    _logger.d('Building HomeScreen...');
     return const Scaffold(
       appBar: CustomAppBar(title: 'HomeScreen', onBack: null),
       body: Center(
