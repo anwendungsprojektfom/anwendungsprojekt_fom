@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sth_app/pages/chatscreen/channelscreen.dart';
 import 'package:sth_app/pages/chatscreen/chatscreen.dart';
 import 'package:sth_app/pages/homescreen/homescreen.dart';
 import 'package:sth_app/pages/profilescreen/profilescreen.dart';
@@ -45,14 +46,14 @@ class SthApp extends StatelessWidget {
           ),
       home: StreamChannel(
         channel: channel,
-        child: const ChatScreen()
+        child: ChannelListPage(client: client,),
         ),
       title: 'STH App', 
       debugShowCheckedModeBanner: false, 
       initialRoute: '/homescreen', 
       routes: {
       '/homescreen': (context) => const HomeScreen(),
-      '/chatscreen': (context) => const ChatScreen(),
+      '/chatscreen': (context) => ChannelListPage(client: client),
       '/profilescreen': (context) => const ProfileScreen(),
       '/searchscreen': (context) => const SearchScreen(),
     });

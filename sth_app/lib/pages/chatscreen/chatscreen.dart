@@ -14,7 +14,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-        appBar: CustomAppBar(title: 'ChatScreen', onBack: true, showChatIcon: false,),
+        appBar: StreamChannelHeader(),
         body: Column(
           children: [
             Expanded(
