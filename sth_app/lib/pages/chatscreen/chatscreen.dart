@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sth_app/technical/technical.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -11,16 +12,10 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chatscreen'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.chat_bubble_outline),
-            onPressed: () {
-              Navigator.pushNamed(context, '/chatscreen');
-            },
-          )
-        ],
+      appBar: const CustomAppBar(
+        title: 'Chatscreen',
+        onBack: true,
+        showChatIcon: false,
       ),
       body: const Center(
         child: Text("Chat Screen"),
