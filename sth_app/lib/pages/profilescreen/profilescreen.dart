@@ -79,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Profile',
           style: TextStyle(color: Colors.white),
         ),
@@ -100,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   radius: 70,
                   backgroundColor: Colors.grey[400],
                   backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                  child: _avatarImage == null ? Icon(Icons.add_photo_alternate, size: 70) : null,
+                  child: _avatarImage == null ? const Icon(Icons.add_photo_alternate, size: 70) : null,
                 ),
               ),
               const SizedBox(height: 20),
@@ -145,14 +145,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Center(
                 // Button for editing the profile
                 child: ElevatedButton(
-                  onPressed: _nameError || _phoneError || _addressError || _emailError ? null : () {
-                    setState(() {
-                      _isEditing = !_isEditing;
-                      if (!_isEditing) {
-                        _saveProfile();
-                      }
-                    });
-                  },
+                  onPressed: _nameError || _phoneError || _addressError || _emailError
+                      ? null
+                      : () {
+                          setState(() {
+                            _isEditing = !_isEditing;
+                            if (!_isEditing) {
+                              _saveProfile();
+                            }
+                          });
+                        },
                   child: Text(_isEditing ? 'Save' : 'Edit'), // Change button text based on editing mode
                 ),
               ),
@@ -161,7 +163,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _isEditing ? null : const CustomBottomNavigationBar(currentIndex: 2), // Navigation element displayed only when not in editing mode
+      bottomNavigationBar: _isEditing
+          ? null
+          : const CustomBottomNavigationBar(
+              currentIndex: 2), // Navigation element displayed only when not in editing mode
     );
   }
 
@@ -202,7 +207,6 @@ class ProfileItem extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-
   // Widget design and ui with ui content
   @override
   Widget build(BuildContext context) {
@@ -238,14 +242,14 @@ class ProfileItem extends StatelessWidget {
         children: [
           ListTile(
             leading: Icon(icon, color: Colors.black),
-            title: Text(title, style: TextStyle(color: Colors.black)),
+            title: Text(title, style: const TextStyle(color: Colors.black)),
             subtitle: isEditing
                 ? TextFormField(
                     controller: controller,
                     onChanged: onChanged,
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   )
-                : Text(subtitle, style: TextStyle(color: Colors.black)),
+                : Text(subtitle, style: const TextStyle(color: Colors.black)),
           ),
           if (showError)
             Container(
@@ -256,20 +260,20 @@ class ProfileItem extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Text(''),
-                      content: Text(errorText, style: TextStyle(color: Colors.black)),
+                      title: const Text(''),
+                      content: Text(errorText, style: const TextStyle(color: Colors.black)),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('OK', style: TextStyle(color: Colors.black)),
+                          child: const Text('OK', style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     ),
                   );
                 },
-                child: Icon(Icons.info, color: Color.fromARGB(255, 207, 90, 83)),
+                child: const Icon(Icons.info, color: Color.fromARGB(255, 207, 90, 83)),
               ),
             ),
         ],
