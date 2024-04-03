@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
 
@@ -16,6 +19,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late SharedPreferences _prefs;
   late String _name, _phone, _address, _email;
   late TextEditingController _nameController, _phoneController, _addressController, _emailController;
+  late File? _avatarImage;
+  final picker = ImagePicker();
   bool _nameError = false, _phoneError = false, _addressError = false, _emailError = false;
   bool _validateName(String name) => RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(name);
   bool _validatePhone(String phone) => RegExp(r'^[0-9]+$').hasMatch(phone);
@@ -34,6 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
     _emailController = TextEditingController();
+    _avatarImage = null;
     _loadProfileData();
   }
 
@@ -52,23 +58,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  //Functioon to load profile avatar
+  Future<void> _pickImage() async {
+    try {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _avatarImage = File(pickedFile.path);
+        });
+      } else {
+        print('User cancelled the image selection process.');
+      }
+    } catch (e) {
+      print('Error accessing the gallery: $e');
+    }
+  }
+
   // Widget creation
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Profile'),
+      appBar: AppBar(
+        title: Text(
+          'Profile',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.grey[800],
+      ),
       body: SingleChildScrollView(
         // Scrollable widget to scroll the content
-        child: Padding(
+        child: Container(
+          color: Colors.grey[300],
           padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-              const Center(
+              GestureDetector(
+                onTap: () => _pickImage(),
                 child: CircleAvatar(
                   radius: 70,
-                  backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                  backgroundColor: Colors.grey[400],
+                  backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
+                  child: _avatarImage == null ? Icon(Icons.add_photo_alternate, size: 70) : null,
                 ),
               ),
               const SizedBox(height: 20),
@@ -111,8 +143,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 20),
               Center(
+                // Button for editing the profile
                 child: ElevatedButton(
-                  // Button for editing the profile
                   onPressed: _nameError || _phoneError || _addressError || _emailError ? null : () {
                     setState(() {
                       _isEditing = !_isEditing;
@@ -129,15 +161,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _isEditing
-          ? null
-          : const CustomBottomNavigationBar(
-              currentIndex: 2, // Navigation element displayed only when not in editing mode
-            ),
+      bottomNavigationBar: _isEditing ? null : const CustomBottomNavigationBar(currentIndex: 2), // Navigation element displayed only when not in editing mode
     );
   }
 
-  // Function to save profile data in SharedPreferences
+  // Function to save profile data in SharedPreference
   Future<void> _saveProfile() async {
     await _prefs.setString('name', _nameController.text);
     await _prefs.setString('phone', _phoneController.text);
@@ -153,7 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// Widget for a single profile field
+// Initialize items
 class ProfileItem extends StatelessWidget {
   final String title, subtitle;
   final IconData icon;
@@ -173,6 +201,7 @@ class ProfileItem extends StatelessWidget {
     required this.showError,
     Key? key,
   }) : super(key: key);
+
 
   // Widget design and ui with ui content
   @override
@@ -194,12 +223,12 @@ class ProfileItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 255, 255, 255),
-        borderRadius: BorderRadius.circular(10),
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
             offset: const Offset(0, 5),
-            color: const Color.fromARGB(255, 218, 54, 5).withOpacity(0.2),
+            color: Colors.black.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 10,
           ),
@@ -208,50 +237,39 @@ class ProfileItem extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            leading: Icon(icon),
-            title: Text(title),
+            leading: Icon(icon, color: Colors.black),
+            title: Text(title, style: TextStyle(color: Colors.black)),
             subtitle: isEditing
                 ? TextFormField(
                     controller: controller,
                     onChanged: onChanged,
+                    style: TextStyle(color: Colors.black),
                   )
-                : Text(subtitle),
+                : Text(subtitle, style: TextStyle(color: Colors.black)),
           ),
           if (showError)
-            Padding(
-              padding: const EdgeInsets.only(left: 56),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(''),
-                          content: Text(errorText),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        const Icon(Icons.info, color: Color.fromARGB(255, 255, 0, 0)),
-                        const SizedBox(width: 5),
-                        Text(
-                          'Invalid input. Please check.',
-                          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+            Container(
+              alignment: Alignment.topRight,
+              padding: const EdgeInsets.all(8),
+              child: GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(''),
+                      content: Text(errorText, style: TextStyle(color: Colors.black)),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('OK', style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  );
+                },
+                child: Icon(Icons.info, color: Color.fromARGB(255, 207, 90, 83)),
               ),
             ),
         ],
