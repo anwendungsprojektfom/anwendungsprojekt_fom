@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
 
+// Widget for the profile screen, displaying editable profile data
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -8,43 +10,63 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
+// State class for the profile screen
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool _isEditing = false;
+  bool _isEditing = false; // State variable for the editing mode
+  late SharedPreferences _prefs; // SharedPreferences instance for accessing local storage
 
-  // The value is initialized later: namely before it is actually used
-  late String _originalName;
-  late String _originalPhone;
-  late String _originalAddress;
-  late String _originalEmail;
+  late String _name;
+  late String _phone;
+  late String _address;
+  late String _email; 
 
-  // final: Value is passed only once (Edit Button) and initialized.
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  // Controllers for the input fields
+  late TextEditingController _nameController;
+  late TextEditingController _phoneController;
+  late TextEditingController _addressController;
+  late TextEditingController _emailController;
 
+  // The initState method is called when the widget state is first created
   @override
   void initState() {
     super.initState();
-    _originalName = 'Tigers';
-    _originalPhone = '0123456789';
-    _originalAddress = 'TigersHausen 12, 80993 München';
-    _originalEmail = 'TigerDevTeam@gmail.de';
-
-    // Copy existing records of ProfileItems (so they can be updated later
-    _nameController.text = _originalName;
-    _phoneController.text = _originalPhone;
-    _addressController.text = _originalAddress;
-    _emailController.text = _originalEmail;
+    // Variable initialization
+    _name = '';
+    _phone = '';
+    _address = '';
+    _email = '';
+    // Initialization of controllers for the input fields
+    _nameController = TextEditingController();
+    _phoneController = TextEditingController();
+    _addressController = TextEditingController();
+    _emailController = TextEditingController();
+    // Load profile data
+    _loadProfileData();
   }
 
-  // Add Widget
+  // Function to load profile data from SharedPreferences
+  Future<void> _loadProfileData() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = _prefs.getString('name') ?? 'Tigers';
+      _phone = _prefs.getString('phone') ?? '0123456789';
+      _address = _prefs.getString('address') ?? 'TigersHausen 12, 80993 München';
+      _email = _prefs.getString('email') ?? 'TigerDevTeam@gmail.de';
+
+      _nameController.text = _name;
+      _phoneController.text = _phone;
+      _addressController.text = _address;
+      _emailController.text = _email;
+    });
+  }
+
+  // Widget creation
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Profile'),
       body: SingleChildScrollView(
-        // Scroll widgetPage
+        // Scrollable widget to scroll the content
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -58,30 +80,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+              // Profile fields
               ProfileItem(
                 title: 'Name',
-                subtitle: _originalName,
+                subtitle: _name,
                 icon: Icons.person,
                 isEditing: _isEditing,
                 controller: _nameController,
               ),
               ProfileItem(
                 title: 'Phone',
-                subtitle: _originalPhone,
+                subtitle: _phone,
                 icon: Icons.phone,
                 isEditing: _isEditing,
                 controller: _phoneController,
               ),
               ProfileItem(
                 title: 'Address',
-                subtitle: _originalAddress,
+                subtitle: _address,
                 icon: Icons.location_on,
                 isEditing: _isEditing,
                 controller: _addressController,
               ),
               ProfileItem(
                 title: 'Email',
-                subtitle: _originalEmail,
+                subtitle: _email,
                 icon: Icons.email,
                 isEditing: _isEditing,
                 controller: _emailController,
@@ -89,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
-                  // Edit button handler
+                  // Button for editing the profile
                   onPressed: () {
                     setState(() {
                       _isEditing = !_isEditing;
@@ -98,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       }
                     });
                   },
-                  child: Text(_isEditing ? 'Save' : 'Edit'),
+                  child: Text(_isEditing ? 'Save' : 'Edit'), // Change button text based on editing mode
                 ),
               ),
               const SizedBox(height: 20),
@@ -109,33 +132,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
       bottomNavigationBar: _isEditing
           ? null
           : const CustomBottomNavigationBar(
-              // Once we are in Edit Mode: Hide BottomNavigationBarItems
               currentIndex: 2,
-            ),
+            ), // Navigation element displayed only when not in editing mode
     );
   }
 
-  // Save new records into ProfileItems, specifically within the main ProfileScreenWidget
-  void _saveProfile() {
-    _originalName = _nameController.text;
-    _originalPhone = _phoneController.text;
-    _originalAddress = _addressController.text;
-    _originalEmail = _emailController.text;
+  // Function to save profile data in SharedPreferences
+  Future<void> _saveProfile() async {
+    await _prefs.setString('name', _nameController.text);
+    await _prefs.setString('phone', _phoneController.text);
+    await _prefs.setString('address', _addressController.text);
+    await _prefs.setString('email', _emailController.text);
 
     setState(() {
+      _name = _nameController.text;
+      _phone = _phoneController.text;
+      _address = _addressController.text;
+      _email = _emailController.text;
       _isEditing = false;
     });
   }
 }
 
-// Initialize items
+// Widget for a single profile field
 class ProfileItem extends StatelessWidget {
-  final String title;
+  final String title; 
   final String subtitle;
   final IconData icon;
   final bool isEditing;
   final TextEditingController controller;
 
+  // Constructor for ProfileItem
   const ProfileItem({
     required this.title,
     required this.subtitle,
@@ -145,7 +172,7 @@ class ProfileItem extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  //Design
+  // Widget design
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -168,7 +195,7 @@ class ProfileItem extends StatelessWidget {
         subtitle: isEditing
             ? TextFormField(
                 controller: controller,
-              )
+              ) // Display input field in editing mode
             : Text(subtitle),
       ),
     );
