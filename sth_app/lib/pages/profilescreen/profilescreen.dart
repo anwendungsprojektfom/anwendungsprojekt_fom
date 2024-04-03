@@ -12,35 +12,28 @@ class ProfileScreen extends StatefulWidget {
 
 // State class for the profile screen
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool _isEditing = false; // State variable for the editing mode
-  late SharedPreferences _prefs; // SharedPreferences instance for accessing local storage
-
-  late String _name;
-  late String _phone;
-  late String _address;
-  late String _email; 
-
-  // Controllers for the input fields
-  late TextEditingController _nameController;
-  late TextEditingController _phoneController;
-  late TextEditingController _addressController;
-  late TextEditingController _emailController;
+  bool _isEditing = false;
+  late SharedPreferences _prefs;
+  late String _name, _phone, _address, _email;
+  late TextEditingController _nameController, _phoneController, _addressController, _emailController;
+  bool _nameError = false, _phoneError = false, _addressError = false, _emailError = false;
+  bool _validateName(String name) => RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(name);
+  bool _validatePhone(String phone) => RegExp(r'^[0-9]+$').hasMatch(phone);
+  bool _validateAddress(String address) => RegExp(r'^[a-zA-Z0-9,.\säöüÄÖÜß]+$').hasMatch(address);
+  bool _validateEmail(String email) => RegExp(r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,4}$').hasMatch(email);
 
   // The initState method is called when the widget state is first created
   @override
   void initState() {
     super.initState();
-    // Variable initialization
     _name = '';
     _phone = '';
     _address = '';
     _email = '';
-    // Initialization of controllers for the input fields
     _nameController = TextEditingController();
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
     _emailController = TextEditingController();
-    // Load profile data
     _loadProfileData();
   }
 
@@ -52,7 +45,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _phone = _prefs.getString('phone') ?? '0123456789';
       _address = _prefs.getString('address') ?? 'TigersHausen 12, 80993 München';
       _email = _prefs.getString('email') ?? 'TigerDevTeam@gmail.de';
-
       _nameController.text = _name;
       _phoneController.text = _phone;
       _addressController.text = _address;
@@ -87,6 +79,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 icon: Icons.person,
                 isEditing: _isEditing,
                 controller: _nameController,
+                onChanged: (value) => setState(() => _nameError = !_validateName(value)),
+                showError: _nameError,
               ),
               ProfileItem(
                 title: 'Phone',
@@ -94,6 +88,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 icon: Icons.phone,
                 isEditing: _isEditing,
                 controller: _phoneController,
+                onChanged: (value) => setState(() => _phoneError = !_validatePhone(value)),
+                showError: _phoneError,
               ),
               ProfileItem(
                 title: 'Address',
@@ -101,6 +97,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 icon: Icons.location_on,
                 isEditing: _isEditing,
                 controller: _addressController,
+                onChanged: (value) => setState(() => _addressError = !_validateAddress(value)),
+                showError: _addressError,
               ),
               ProfileItem(
                 title: 'Email',
@@ -108,12 +106,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 icon: Icons.email,
                 isEditing: _isEditing,
                 controller: _emailController,
+                onChanged: (value) => setState(() => _emailError = !_validateEmail(value)),
+                showError: _emailError,
               ),
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
                   // Button for editing the profile
-                  onPressed: () {
+                  onPressed: _nameError || _phoneError || _addressError || _emailError ? null : () {
                     setState(() {
                       _isEditing = !_isEditing;
                       if (!_isEditing) {
@@ -132,8 +132,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       bottomNavigationBar: _isEditing
           ? null
           : const CustomBottomNavigationBar(
-              currentIndex: 2,
-            ), // Navigation element displayed only when not in editing mode
+              currentIndex: 2, // Navigation element displayed only when not in editing mode
+            ),
     );
   }
 
@@ -143,7 +143,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await _prefs.setString('phone', _phoneController.text);
     await _prefs.setString('address', _addressController.text);
     await _prefs.setString('email', _emailController.text);
-
     setState(() {
       _name = _nameController.text;
       _phone = _phoneController.text;
@@ -156,11 +155,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 // Widget for a single profile field
 class ProfileItem extends StatelessWidget {
-  final String title; 
-  final String subtitle;
+  final String title, subtitle;
   final IconData icon;
   final bool isEditing;
   final TextEditingController controller;
+  final ValueChanged<String>? onChanged;
+  final bool showError;
 
   // Constructor for ProfileItem
   const ProfileItem({
@@ -169,12 +169,28 @@ class ProfileItem extends StatelessWidget {
     required this.icon,
     required this.isEditing,
     required this.controller,
+    this.onChanged,
+    required this.showError,
     Key? key,
   }) : super(key: key);
 
-  // Widget design
+  // Widget design and ui with ui content
   @override
   Widget build(BuildContext context) {
+    String errorText = '';
+
+    if (showError) {
+      if (title == 'Name') {
+        errorText = 'Invalid characters. Only letters, numbers, and spaces are allowed.';
+      } else if (title == 'Phone') {
+        errorText = 'Invalid input. Only numbers are allowed.';
+      } else if (title == 'Address') {
+        errorText = 'Invalid characters. Only letters, numbers, commas, periods, spaces, and umlauts are allowed.';
+      } else if (title == 'Email') {
+        errorText = 'Invalid email format. Please enter a valid email address.';
+      }
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -189,14 +205,56 @@ class ProfileItem extends StatelessWidget {
           ),
         ],
       ),
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        subtitle: isEditing
-            ? TextFormField(
-                controller: controller,
-              ) // Display input field in editing mode
-            : Text(subtitle),
+      child: Column(
+        children: [
+          ListTile(
+            leading: Icon(icon),
+            title: Text(title),
+            subtitle: isEditing
+                ? TextFormField(
+                    controller: controller,
+                    onChanged: onChanged,
+                  )
+                : Text(subtitle),
+          ),
+          if (showError)
+            Padding(
+              padding: const EdgeInsets.only(left: 56),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(''),
+                          content: Text(errorText),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.info, color: Color.fromARGB(255, 255, 0, 0)),
+                        const SizedBox(width: 5),
+                        Text(
+                          'Invalid input. Please check.',
+                          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
