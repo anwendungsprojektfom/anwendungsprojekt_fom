@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
+import 'package:avatar_glow/avatar_glow.dart';
 
 // Widget for the profile screen, displaying editable profile data
 class ProfileScreen extends StatefulWidget {
@@ -43,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadProfileData();
   }
 
-  // Function to load profile data from SharedPreferences
+  // Function to load the current profileStatus of entties
   Future<void> _loadProfileData() async {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -55,16 +56,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _phoneController.text = _phone;
       _addressController.text = _address;
       _emailController.text = _email;
+      _loadAvatarImage().then((File? image) {
+        setState(() {
+          _avatarImage = image;
+        });
+      });
     });
   }
 
-  //Functioon to load profile avatar
+  // Function to save the profile image in local storage
+  Future<void> _saveAvatarImage(File imageFile) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('avatar_image_path', imageFile.path);
+  }
+
+  // Function to load the profile image from local storage
+  Future<File?> _loadAvatarImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? imagePath = prefs.getString('avatar_image_path');
+    if (imagePath != null && imagePath.isNotEmpty) {
+      return File(imagePath);
+    }
+    return null;
+  }
+
+  // Function to pick images
   Future<void> _pickImage() async {
     try {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
+        final File imageFile = File(pickedFile.path);
+        _saveAvatarImage(imageFile); // Save profile image in local storage
         setState(() {
-          _avatarImage = File(pickedFile.path);
+          _avatarImage = imageFile;
         });
       } else {
         print('User cancelled the image selection process.');
@@ -96,11 +120,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 20),
               GestureDetector(
                 onTap: () => _pickImage(),
-                child: CircleAvatar(
-                  radius: 70,
-                  backgroundColor: Colors.grey[400],
-                  backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                  child: _avatarImage == null ? const Icon(Icons.add_photo_alternate, size: 70) : null,
+                child: AvatarGlow(
+                  // Verwende AvatarGlow Widget
+                  glowColor: Colors.grey[700]!,
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundColor: Colors.grey[400],
+                    backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
+                    child: _avatarImage == null ? const Icon(Icons.add_photo_alternate, size: 70) : null,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
