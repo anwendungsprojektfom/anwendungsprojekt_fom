@@ -30,7 +30,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   if (widget.onBack != null) {
-                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/homescreen');
                   } else {
                     null;
                   }
@@ -41,7 +41,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 IconButton(
                   icon: const Icon(Icons.chat_bubble_outline),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/chatscreen');
+                    Navigator.pop(context, '/chatscreen');
                   },
                 )
               ]
