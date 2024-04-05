@@ -53,9 +53,7 @@ class SthApp extends StatelessWidget {
             ),
         home: StreamChannel(
           channel: channel,
-          child: ChannelListPage(
-            client: client,
-          ),
+          child: ChannelListPage(client: client),
         ),
         title: 'STH App',
         debugShowCheckedModeBanner: false,
@@ -63,7 +61,7 @@ class SthApp extends StatelessWidget {
         routes: {
           '/loadingscreen': (context) => const LoadingScreen(),
           '/homescreen': (context) => const HomeScreen(),
-          '/chatscreen': (context) => const ChatScreen(),
+          '/chatscreen': (context) => ChannelListPage(client: client),
           '/profilescreen': (context) => const ProfileScreen(),
           '/searchscreen': (context) => const SearchScreen(),
         });
