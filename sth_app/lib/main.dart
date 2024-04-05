@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:sth_app/firebase_options.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
-import 'package:sth_app/pages/chatscreen/chatscreen.dart';
 import 'package:sth_app/pages/chatscreen/channelscreen.dart';
 import 'package:sth_app/pages/homescreen/homescreen.dart';
 import 'package:sth_app/pages/loadingscreen/loadingscreen.dart';
