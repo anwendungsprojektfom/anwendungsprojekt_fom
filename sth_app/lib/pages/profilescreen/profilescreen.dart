@@ -113,14 +113,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Center(
                 child: ElevatedButton(
                   // Button for editing the profile
-                  onPressed: _nameError || _phoneError || _addressError || _emailError ? null : () {
-                    setState(() {
-                      _isEditing = !_isEditing;
-                      if (!_isEditing) {
-                        _saveProfile();
-                      }
-                    });
-                  },
+                  onPressed: _nameError || _phoneError || _addressError || _emailError
+                      ? null
+                      : () {
+                          setState(() {
+                            _isEditing = !_isEditing;
+                            if (!_isEditing) {
+                              _saveProfile();
+                            }
+                          });
+                        },
                   child: Text(_isEditing ? 'Save' : 'Edit'), // Change button text based on editing mode
                 ),
               ),
@@ -227,23 +229,23 @@ class ProfileItem extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text(''),
+                          title: const Text(''),
                           content: Text(errorText),
                           actions: <Widget>[
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text('OK'),
+                              child: const Text('OK'),
                             ),
                           ],
                         ),
                       );
                     },
-                    child: Row(
+                    child: const Row(
                       children: [
-                        const Icon(Icons.info, color: Color.fromARGB(255, 255, 0, 0)),
-                        const SizedBox(width: 5),
+                        Icon(Icons.info, color: Color.fromARGB(255, 255, 0, 0)),
+                        SizedBox(width: 5),
                         Text(
                           'Invalid input. Please check.',
                           style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
