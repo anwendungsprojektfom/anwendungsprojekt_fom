@@ -14,7 +14,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Search'),
+      appBar: const CustomAppBar(title: 'Search', onBack: true, navigation: '/homescreen',),
       body: Column(
         children: [
           Padding(
