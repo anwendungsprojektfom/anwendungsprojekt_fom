@@ -102,13 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Profile',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.grey[800],
-      ),
+      appBar: const CustomAppBar(title: 'Profilescreen', onBack: true,),
       body: SingleChildScrollView(
         // Scrollable widget to scroll the content
         child: Container(
