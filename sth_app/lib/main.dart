@@ -59,7 +59,7 @@ class SthApp extends StatelessWidget {
       routes: {
       '/loadingscreen': (context) => const LoadingScreen(),
       '/homescreen': (context) => const HomeScreen(),
-      '/chatscreen': (context) => ChannelListPage(client: client),
+      '/channelscreen': (context) => ChannelListPage(client: client),
       '/profilescreen': (context) => const ProfileScreen(),
       '/searchscreen': (context) => const SearchScreen(),
     });
