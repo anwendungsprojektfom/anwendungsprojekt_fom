@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sth_app/pages/chatscreen/channelscreen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:sth_app/pages/chatscreen/chatscreen.dart';
 import 'package:sth_app/pages/homescreen/homescreen.dart';
+import 'package:sth_app/pages/loadingscreen/loadingscreen.dart';
 import 'package:sth_app/pages/profilescreen/profilescreen.dart';
 import 'package:sth_app/pages/searchscreen/searchscreen.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'package:sth_app/firebase_options.dart';
+
 
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   final client = StreamChatClient(
     'ujgtsxqgs2kv',
     logLevel: Level.INFO,
@@ -50,8 +58,9 @@ class SthApp extends StatelessWidget {
         ),
       title: 'STH App', 
       debugShowCheckedModeBanner: false, 
-      initialRoute: '/homescreen', 
+      initialRoute: '/loadingscreen', 
       routes: {
+      '/loadingscreen': (context) => const LoadingScreen(),
       '/homescreen': (context) => const HomeScreen(),
       '/chatscreen': (context) => ChannelListPage(client: client),
       '/profilescreen': (context) => const ProfileScreen(),
