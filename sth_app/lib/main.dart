@@ -17,7 +17,6 @@ void main() async{
   );
   final client = StreamChatClient(
     'ujgtsxqgs2kv',
-    logLevel: Level.INFO,
   );
   
   await client.connectUser(User(id: 'test2'),
@@ -46,8 +45,6 @@ class SthApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
       builder: (context, widget) => StreamChat(
           client: client, 
           child: widget,
