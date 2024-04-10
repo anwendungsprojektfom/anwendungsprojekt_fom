@@ -39,7 +39,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 IconButton(
                   icon: const Icon(Icons.chat_bubble_outline),
                   onPressed: () {
-                    Navigator.pop(context, '/chatscreen');
+                    Navigator.popAndPushNamed(context, '/chatscreen');
                   },
                 )
               ]
