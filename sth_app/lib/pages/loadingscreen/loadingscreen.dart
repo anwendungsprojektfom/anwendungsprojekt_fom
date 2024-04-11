@@ -25,7 +25,7 @@ class _LoadingScreen extends State<LoadingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(image: AssetImage('assets/images/logoSTH.png')),
+            Image(image: AssetImage('assets/images/finalLogoSTH.png')),
             SizedBox(height: 20),
             CircularProgressIndicator(),
           ],
