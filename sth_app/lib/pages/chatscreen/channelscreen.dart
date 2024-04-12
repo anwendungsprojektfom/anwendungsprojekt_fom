@@ -29,7 +29,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: const StreamChannelListHeader(),
+        appBar: const CustomAppBar(title: 'Chats', onBack: true, showChatIcon: false, navigation: '/homescreen',),
         body: RefreshIndicator(
           onRefresh: _controller.refresh,
           child: StreamChannelListView(

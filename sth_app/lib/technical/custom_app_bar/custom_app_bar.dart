@@ -4,12 +4,14 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final bool? onBack;
   final bool showChatIcon;
+  final String navigation;
 
   const CustomAppBar({
     Key? key,
     required this.title,
     this.onBack,
     this.showChatIcon = true,
+    required this.navigation,
   }) : super(key: key);
 
   @override
@@ -25,15 +27,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return AppBar(
         title: Text(widget.title),
         centerTitle: true,
-        leading: widget.onBack != null
+        leading: widget.onBack == true
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
-                  if (widget.onBack != null) {
-                    Navigator.pushNamed(context, '/homescreen');
-                  } else {
-                    null;
-                  }
+                  Navigator.pushNamed(context, widget.navigation);
                 })
             : null,
         actions: widget.showChatIcon
@@ -41,7 +39,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 IconButton(
                   icon: const Icon(Icons.chat_bubble_outline),
                   onPressed: () {
-                    Navigator.pop(context, '/chatscreen');
+                    Navigator.popAndPushNamed(context, '/channelscreen');
                   },
                 )
               ]
