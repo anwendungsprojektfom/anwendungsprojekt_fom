@@ -43,19 +43,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadProfileData();
   }
 
-  // Function to load profile data from SharedPreferences
   Future<void> _loadProfileData() async {
-    _prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _name = _prefs.getString('name') ?? 'Tigers';
-      _phone = _prefs.getString('phone') ?? '0123456789';
-      _address = _prefs.getString('address') ?? 'TigersHausen 12, 80993 München';
-      _email = _prefs.getString('email') ?? 'TigerDevTeam@gmail.de';
-      _nameController.text = _name;
-      _phoneController.text = _phone;
-      _addressController.text = _address;
-      _emailController.text = _email;
-    });
+    try {
+      // Retrieve profile data from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final List<String>? nameList = prefs.getStringList('data');
+
+      final String name = nameList!.first;
+      final String phone = nameList.first;
+      final String address = nameList.first;
+      final String email = nameList.first;
+
+      // Set profile data to respective variables and text controllers
+      setState(() {
+        _name = name;
+        print(_name);
+        _phone = phone;
+        _address = address;
+        _email = email;
+        _nameController.text = _name;
+        _phoneController.text = _phone;
+        _addressController.text = _address;
+        _emailController.text = _email;
+      });
+    } catch (e) {
+      print('Error loading profile data from SharedPreferences: $e');
+    }
   }
 
   //Functioon to load profile avatar
@@ -78,7 +91,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Profilescreen', onBack: true, navigation: '/searchscreen',),
+      appBar: const CustomAppBar(
+        title: 'Profilescreen',
+        onBack: true,
+        navigation: '/searchscreen',
+      ),
       body: SingleChildScrollView(
         // Scrollable widget to scroll the content
         child: Container(
