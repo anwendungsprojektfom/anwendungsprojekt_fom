@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sth_app/pages/chatscreen/channelscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:sth_app/pages/chatscreen/chatscreen.dart';
+
 import 'package:sth_app/pages/homescreen/homescreen.dart';
 import 'package:sth_app/pages/loadingscreen/loadingscreen.dart';
 import 'package:sth_app/pages/profilescreen/profilescreen.dart';
@@ -59,7 +59,7 @@ class SthApp extends StatelessWidget {
       routes: {
       '/loadingscreen': (context) => const LoadingScreen(),
       '/homescreen': (context) => const HomeScreen(),
-      '/chatscreen': (context) => ChannelListPage(client: client),
+      '/channelscreen': (context) => ChannelListPage(client: client),
       '/profilescreen': (context) => const ProfileScreen(),
       '/searchscreen': (context) => const SearchScreen(),
     });
