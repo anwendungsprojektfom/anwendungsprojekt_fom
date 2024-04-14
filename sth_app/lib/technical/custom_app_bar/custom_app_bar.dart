@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sth_app/pages/profilescreen/settings.dart';
+import 'package:sth_app/main.dart';
+import 'package:sth_app/pages/chatscreen/channelscreen.dart';
+import 'package:sth_app/pages/homescreen/homescreen.dart';
+import 'package:sth_app/technical/technical.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -11,8 +16,8 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({
     Key? key,
     required this.title,
-    this.onBack,
-    this.showChatIcon = true,
+    required this.onBack,
+    required this.showChatIcon,
     this.showChatScreen = false,
     this.showSettingsIcon = false,
   }) : super(key: key);
@@ -30,35 +35,50 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return AppBar(
       title: Text(widget.title),
       centerTitle: true,
-      leading: widget.onBack != null && widget.onBack!
+      leading: widget.onBack == true
           ? IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                if (widget.onBack != null && widget.onBack!) {
-                  Navigator.pop(context);
-                }
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
               },
             )
           : null,
-      actions: <Widget>[
-        if (widget.showChatIcon && widget.showChatScreen)
-          IconButton(
-            icon: const Icon(Icons.chat_bubble_outline),
-            onPressed: () {
-              Navigator.pushNamed(context, '/chatscreen');
-            },
-          ),
-        if (widget.showSettingsIcon) 
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingsScreen()),
-              );
-            },
-          ),
-      ],
+      actions: widget.showSettingsIcon
+          ? <Widget>[
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                  );
+                },
+              ),
+            ]
+          : (widget.showChatIcon
+              ? <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.chat_bubble_outline),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        CustomPageRoute(
+                          builder: (context) => StreamChat(
+                            client: globalClient,
+                            child: StreamChannel(
+                              channel: globalChannel,
+                              child: ChannelListPage(client: globalClient),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                ]
+              : null),
     );
   }
 }

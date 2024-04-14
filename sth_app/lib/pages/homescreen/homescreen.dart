@@ -15,7 +15,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     _logger.d('Building HomeScreen...');
     return const Scaffold(
-      appBar: CustomAppBar(title: 'HomeScreen', onBack: null),
+      appBar: CustomAppBar(
+        title: 'HomeScreen',
+        onBack: false,
+        showChatIcon: true,
+      ),
       body: Center(
         child: Text('This is our homescreen'),
       ),

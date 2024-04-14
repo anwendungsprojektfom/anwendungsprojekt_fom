@@ -20,7 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   DisplayMode _displayMode = DisplayMode.images;
 
   // List of image paths to display
-  List<String> _imagePaths = [
+  final List<String> _imagePaths = [
     "assets/profilescreenImages/image0.png",
     "assets/profilescreenImages/image1.png",
     "assets/profilescreenImages/image2.png",
@@ -40,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           appBar: AppBar(
             title: const Text('Image'),
             leading: IconButton(
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -49,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           body: SizedBox.expand(
             child: PhotoView(
               imageProvider: AssetImage(_imagePaths[index]),
-              backgroundDecoration: BoxDecoration(color: Colors.black),
+              backgroundDecoration: const BoxDecoration(color: Colors.black),
             ),
           ),
         ),
@@ -60,14 +60,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    List<String> itemsToDisplay =
-        _displayMode == DisplayMode.images ? _imagePaths : [];
+    List<String> itemsToDisplay = _displayMode == DisplayMode.images ? _imagePaths : [];
     return Scaffold(
       // Custom app bar with title and back button
       appBar: AppBar(
         title: const Text('Profile Page'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -94,16 +93,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 height: size.height * 0.4,
                 color: Colors.white, // White background color
-                child: Column(
+                child: const Column(
                   children: [
-                    const SizedBox(height: 50),
-                    const CircleAvatar(
+                    SizedBox(height: 50),
+                    CircleAvatar(
                       radius: 48,
-                      backgroundImage:
-                          AssetImage("assets/profilescreenImages/profile1.png"),
+                      backgroundImage: AssetImage("assets/profilescreenImages/profile1.png"),
                     ),
-                    const SizedBox(height: 15),
-                    const Text(
+                    SizedBox(height: 15),
+                    Text(
                       "Fit",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -111,8 +109,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
+                    SizedBox(height: 4),
+                    Text(
                       "Flutter Developer",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
