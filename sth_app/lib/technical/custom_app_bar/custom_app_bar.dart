@@ -5,14 +5,14 @@ import 'package:sth_app/pages/chatscreen/channelscreen.dart';
 import 'package:sth_app/pages/homescreen/homescreen.dart';
 import 'package:sth_app/technical/technical.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-
+ 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final bool? onBack;
   final bool showChatIcon;
   final bool showChatScreen;
   final bool showSettingsIcon;
-
+ 
   const CustomAppBar({
     Key? key,
     required this.title,
@@ -21,14 +21,14 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.showChatScreen = false,
     this.showSettingsIcon = false,
   }) : super(key: key);
-
+ 
   @override
   _CustomAppBarState createState() => _CustomAppBarState();
-
+ 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
-
+ 
 class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
