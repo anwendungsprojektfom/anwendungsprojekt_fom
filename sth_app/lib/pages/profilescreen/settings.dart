@@ -2,8 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:avatar_glow/avatar_glow.dart';
-import 'package:glassmorphism/glassmorphism.dart';
 import 'package:sth_app/technical/technical.dart';
 
 // Widget for the profile screen, displaying editable profile data
@@ -98,207 +96,166 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  // Widget creation
+// Widget creation
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Settings',
-          style: TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      ),
+      appBar: const CustomAppBar(title: 'Account Profile', onBack: true, showChatScreen: false),
       body: SingleChildScrollView(
-        // Scrollable widget to scroll the content
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/profilescreenImages/bg.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              AvatarGlow(
-                glowColor: const Color.fromARGB(255, 226, 214, 214),
-                child: GestureDetector(
-                  onTap: _pickImage, // Call _pickImage() when the avatar is tapped
-                  child: CircleAvatar(
-                    radius: 70,
-                    backgroundColor: Colors.grey[400],
-                    backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                    child: _avatarImage == null ? const Icon(Icons.add_photo_alternate, size: 70) : null,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 10),
+                // Container to display avatar image and handle image picking
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black, width: 2),
+                    ),
+                    child: CircleAvatar(
+                      radius: 70,
+                      backgroundColor: Colors.grey[400],
+                      backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
+                      child: _avatarImage == null ? const Icon(Icons.add_photo_alternate, size: 70) : null,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              GlassmorphicContainer(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.1,
-                borderRadius: 15,
-                blur: 20,
-                alignment: Alignment.bottomCenter,
-                border: 2,
-                linearGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.3),
-                    Colors.white.withOpacity(0.3),
-                  ],
+                const SizedBox(height: 10),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.11,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                        color: Colors.black.withOpacity(0.1),
+                      ),
+                    ],
+                    color: const Color.fromARGB(255, 114, 114, 114).withOpacity(0.3),
+                  ),
+                  // Text field for editing name
+                  child: ProfileItem(
+                    title: 'Name',
+                    subtitle: _name,
+                    icon: Icons.person,
+                    isEditing: _isEditing,
+                    controller: _nameController,
+                    onChanged: (value) => setState(() => _nameError = !_validateName(value)),
+                    showError: _nameError,
+                    errorText: _nameError ? 'Invalid characters. Only letters, numbers, and spaces are allowed.' : null,
+                  ),
                 ),
-                borderGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.3),
-                    Colors.white.withOpacity(0.3),
-                  ],
+                const SizedBox(height: 10),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.11,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                        color: Colors.black.withOpacity(0.1),
+                      ),
+                    ],
+                    color: const Color.fromARGB(255, 114, 114, 114).withOpacity(0.3),
+                  ),
+                  // Text field for editing phone number
+                  child: ProfileItem(
+                    title: 'Phone',
+                    subtitle: _phone,
+                    icon: Icons.phone,
+                    isEditing: _isEditing,
+                    controller: _phoneController,
+                    onChanged: (value) => setState(() => _phoneError = !_validatePhone(value)),
+                    showError: _phoneError,
+                    errorText: _phoneError ? 'Invalid input. Only numbers are allowed.' : null,
+                  ),
                 ),
-                child: ProfileItem(
-                  title: 'Name',
-                  subtitle: _name,
-                  icon: Icons.person,
-                  isEditing: _isEditing,
-                  controller: _nameController,
-                  onChanged: (value) => setState(() => _nameError = !_validateName(value)),
-                  showError: _nameError,
-                  errorText: _nameError ? 'Invalid characters. Only letters, numbers, and spaces are allowed.' : null,
+                const SizedBox(height: 10),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.11,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                        color: Colors.black.withOpacity(0.1),
+                      ),
+                    ],
+                    color: const Color.fromARGB(255, 114, 114, 114).withOpacity(0.3),
+                  ),
+                  // Text field for editing address
+                  child: ProfileItem(
+                    title: 'Address',
+                    subtitle: _address,
+                    icon: Icons.location_on,
+                    isEditing: _isEditing,
+                    controller: _addressController,
+                    onChanged: (value) => setState(() => _addressError = !_validateAddress(value)),
+                    showError: _addressError,
+                    errorText: _addressError
+                        ? 'Invalid characters. Only letters, numbers, commas, periods, spaces, and umlauts are allowed.'
+                        : null,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              GlassmorphicContainer(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.1,
-                borderRadius: 15,
-                blur: 20,
-                alignment: Alignment.bottomCenter,
-                border: 2,
-                linearGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.3),
-                    Colors.white.withOpacity(0.3),
-                  ],
+                const SizedBox(height: 10),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.11,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                        color: Colors.black.withOpacity(0.1),
+                      ),
+                    ],
+                    color: const Color.fromARGB(255, 114, 114, 114).withOpacity(0.3),
+                  ),
+                  // Text field for editing email address
+                  child: ProfileItem(
+                    title: 'Email',
+                    subtitle: _email,
+                    icon: Icons.email,
+                    isEditing: _isEditing,
+                    controller: _emailController,
+                    onChanged: (value) => setState(() => _emailError = !_validateEmail(value)),
+                    showError: _emailError,
+                    errorText: _emailError ? 'Invalid email format. Please enter a valid email address.' : null,
+                  ),
                 ),
-                borderGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.3),
-                    Colors.white.withOpacity(0.3),
-                  ],
+                const SizedBox(height: 10),
+                Center(
+                  // Button for editing the profile
+                  child: ElevatedButton(
+                    onPressed: _nameError || _phoneError || _addressError || _emailError
+                        ? null
+                        : () {
+                            setState(() {
+                              _isEditing = !_isEditing;
+                              if (!_isEditing) {
+                                _saveProfile();
+                              }
+                            });
+                          },
+                    child: Text(_isEditing ? 'Save' : 'Edit'), // Change button text based on editing mode
+                  ),
                 ),
-                child: ProfileItem(
-                  title: 'Phone',
-                  subtitle: _phone,
-                  icon: Icons.phone,
-                  isEditing: _isEditing,
-                  controller: _phoneController,
-                  onChanged: (value) => setState(() => _phoneError = !_validatePhone(value)),
-                  showError: _phoneError,
-                  errorText: _phoneError ? 'Invalid input. Only numbers are allowed.' : null,
-                ),
-              ),
-              const SizedBox(height: 10),
-              GlassmorphicContainer(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.1,
-                borderRadius: 15,
-                blur: 20,
-                alignment: Alignment.bottomCenter,
-                border: 2,
-                linearGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.3),
-                    Colors.white.withOpacity(0.3),
-                  ],
-                ),
-                borderGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.3),
-                    Colors.white.withOpacity(0.3),
-                  ],
-                ),
-                child: ProfileItem(
-                  title: 'Address',
-                  subtitle: _address,
-                  icon: Icons.location_on,
-                  isEditing: _isEditing,
-                  controller: _addressController,
-                  onChanged: (value) => setState(() => _addressError = !_validateAddress(value)),
-                  showError: _addressError,
-                  errorText: _addressError
-                      ? 'Invalid characters. Only letters, numbers, commas, periods, spaces, and umlauts are allowed.'
-                      : null,
-                ),
-              ),
-              const SizedBox(height: 10),
-              GlassmorphicContainer(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.1,
-                borderRadius: 15,
-                blur: 20,
-                alignment: Alignment.bottomCenter,
-                border: 2,
-                linearGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.3),
-                    Colors.white.withOpacity(0.3),
-                  ],
-                ),
-                borderGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.3),
-                    Colors.white.withOpacity(0.3),
-                  ],
-                ),
-                child: ProfileItem(
-                  title: 'Email',
-                  subtitle: _email,
-                  icon: Icons.email,
-                  isEditing: _isEditing,
-                  controller: _emailController,
-                  onChanged: (value) => setState(() => _emailError = !_validateEmail(value)),
-                  showError: _emailError,
-                  errorText: _emailError ? 'Invalid email format. Please enter a valid email address.' : null,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Center(
-                // Button for editing the profile
-                child: ElevatedButton(
-                  onPressed: _nameError || _phoneError || _addressError || _emailError
-                      ? null
-                      : () {
-                          setState(() {
-                            _isEditing = !_isEditing;
-                            if (!_isEditing) {
-                              _saveProfile();
-                            }
-                          });
-                        },
-                  child: Text(_isEditing ? 'Save' : 'Edit'), // Change button text based on editing mode
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 10),
+              ],
+            ),
           ),
-        ),
-      ),
+        ),    
       bottomNavigationBar: _isEditing
           ? null
           : const CustomBottomNavigationBar(
@@ -349,19 +306,19 @@ class ProfileItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: Colors.white),
-      title: Text(title, style: const TextStyle(color: Colors.white)),
+      leading: Icon(icon, color: const Color.fromARGB(255, 0, 0, 0)),
+      title: Text(title, style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
       subtitle: isEditing
           ? TextFormField(
               controller: controller,
               onChanged: onChanged,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
             )
-          : Text(subtitle, style: const TextStyle(color: Colors.white)),
+          : Text(subtitle, style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
       trailing: showError && errorText != null
           ? Tooltip(
               message: errorText!,
-              child: const Icon(Icons.error, color: Colors.red),
+              child: const Icon(Icons.error, color: Color.fromARGB(255, 0, 0, 0)),
             )
           : null,
     );

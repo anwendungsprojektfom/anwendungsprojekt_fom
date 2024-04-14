@@ -1,191 +1,189 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:glassmorphism/glassmorphism.dart';
-import 'package:sth_app/pages/homescreen/homescreen.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:sth_app/pages/profilescreen/settings.dart';
 import 'package:sth_app/technical/technical.dart';
 
-class ProfileScreen extends StatelessWidget {
+// Enum for different display modes
+enum DisplayMode { images, videos }
+
+// ProfileScreen widget that is a StatefulWidget
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+// State class for ProfileScreen widget
+class _ProfileScreenState extends State<ProfileScreen> {
+  // Variable to store the current display mode
+  DisplayMode _displayMode = DisplayMode.images;
+
+  // List of image paths to display
+  List<String> _imagePaths = [
+    "assets/profilescreenImages/image0.png",
+    "assets/profilescreenImages/image1.png",
+    "assets/profilescreenImages/image2.png",
+    "assets/profilescreenImages/image3.png",
+    "assets/profilescreenImages/image4.png",
+    "assets/profilescreenImages/image5.png",
+    "assets/profilescreenImages/image6.png",
+    "assets/profilescreenImages/image7.png",
+  ];
+
+  // Function to open the gallery
+  void _openGallery(int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Image'),
+            leading: IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          body: SizedBox.expand(
+            child: PhotoView(
+              imageProvider: AssetImage(_imagePaths[index]),
+              backgroundDecoration: BoxDecoration(color: Colors.black),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    List<String> itemsToDisplay =
+        _displayMode == DisplayMode.images ? _imagePaths : [];
     return Scaffold(
+      // Custom app bar with title and back button
       appBar: AppBar(
+        title: const Text('Profile Page'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
+            Navigator.pop(context);
           },
         ),
-        title: const Text(
-          'Profile',
-          style: TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              // Navigate to settings screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
+        ],
       ),
-      body: SizedBox(
-        height: double.infinity,
-        width: double.infinity,
-        child: Stack(
-          children: [
-            Image.asset(
-              "assets/profilescreenImages/bg.png",
-              fit: BoxFit.cover,
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-            ),
-            SafeArea(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: GlassmorphicContainer(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    borderRadius: 20,
-                    blur: 20,
-                    alignment: Alignment.center,
-                    border: 2,
-                    linearGradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFFffffff).withOpacity(0),
-                        const Color(0xFFFFFFFF).withOpacity(0),
-                      ],
-                      stops: const [0.1, 1],
+      body: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Profile header with user details
+              Container(
+                height: size.height * 0.4,
+                color: Colors.white, // White background color
+                child: Column(
+                  children: [
+                    const SizedBox(height: 50),
+                    const CircleAvatar(
+                      radius: 48,
+                      backgroundImage:
+                          AssetImage("assets/profilescreenImages/profile1.png"),
                     ),
-                    borderGradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFFffffff).withOpacity(0.3),
-                        const Color(0xFFFFFFFF).withOpacity(0.3),
-                      ],
+                    const SizedBox(height: 15),
+                    const Text(
+                      "Fit",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Colors.black,
+                      ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                    const SizedBox(height: 4),
+                    const Text(
+                      "Flutter Developer",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 60),
+                child: Material(
+                  elevation: 3,
+                  shadowColor: Colors.black26,
+                  child: SizedBox(
+                    height: 55,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(width: 20),
-                            GlassyBox(
-                              icon: Icons.video_library,
-                              onPressed: () {},
-                              width: 100,
-                              height: 100,
-                            ),
-                            GlassyBox(
-                              icon: Icons.photo,
-                              onPressed: () {},
-                              width: 100,
-                              height: 100,
-                            ),
-                            SizedBox(width: 20),
-                          ],
+                        IconButton(
+                          icon: const Icon(Icons.image, size: 30, color: Colors.black),
+                          onPressed: () {
+                            setState(() {
+                              _displayMode = DisplayMode.images;
+                            });
+                          },
                         ),
-                        Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(width: 20),
-                              GlassyBox(
-                                icon: Icons.settings,
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                                  );
-                                },
-                                width: 60,
-                                height: 60,
-                              ),
-                              GlassyBox(
-                                icon: Icons.rate_review,
-                                onPressed: () {},
-                                width: 60,
-                                height: 60,
-                              ),
-                              SizedBox(width: 20),
-                            ],
-                          ),
+                        IconButton(
+                          icon: const Icon(Icons.play_circle, size: 30, color: Colors.black),
+                          onPressed: () {
+                            setState(() {
+                              _displayMode = DisplayMode.videos;
+                            });
+                          },
                         ),
                       ],
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 9,
+                    crossAxisSpacing: 9,
+                  ),
+                  itemCount: itemsToDisplay.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () => _openGallery(index),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                            image: AssetImage(itemsToDisplay[index]),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )
+            ],
+          )
+        ],
       ),
       bottomNavigationBar: const CustomBottomNavigationBar(
-        currentIndex: 2,
-      ),
-    );
-  }
-}
-
-class GlassyBox extends HookWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
-  final double width;
-  final double height;
-
-  const GlassyBox({
-    Key? key,
-    required this.icon,
-    required this.onPressed,
-    required this.width,
-    required this.height,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final isHovered = useState(false);
-
-    return GestureDetector(
-      onTap: onPressed,
-      onTapDown: (_) => isHovered.value = true,
-      onTapUp: (_) => isHovered.value = false,
-      onTapCancel: () => isHovered.value = false,
-      child: GlassmorphicContainer(
-        width: width,
-        height: height,
-        borderRadius: 20,
-        blur: 20,
-        alignment: Alignment.center,
-        border: 2,
-        linearGradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            const Color(0xFFFFFFFF).withOpacity(isHovered.value ? 0.5 : 0.3),
-            const Color(0xFFFFFFFF).withOpacity(isHovered.value ? 0.4 : 0.2),
-          ],
-          stops: const [0.1, 1],
-        ),
-        borderGradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            const Color(0xFFFFFFFF).withOpacity(0.5),
-            const Color(0xFFFFFFFF).withOpacity(0.5),
-          ],
-        ),
-        child: Icon(
-          icon,
-          color: Colors.white,
-          size: 48,
-        ),
+        currentIndex: 3,
       ),
     );
   }
