@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: 'HomeScreen',
         onBack: false,
         showChatIcon: true,
+        showSettings: false,
       ),
       body: Center(
         child: Text('This is our homescreen'),
