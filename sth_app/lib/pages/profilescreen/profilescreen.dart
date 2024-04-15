@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:sth_app/technical/technical.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 // Enum for different display modes
 enum DisplayMode { images, videos }
@@ -12,6 +15,8 @@ class ProfileScreen extends StatefulWidget {
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
+
+File? _avatarImage;
 
 // State class for ProfileScreen widget
 class _ProfileScreenState extends State<ProfileScreen> {
@@ -56,6 +61,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // Function to load the avatar image from local storage
+  Future<void> _loadAvatarImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? imagePath = prefs.getString('avatar_image_path');
+    if (imagePath != null && imagePath.isNotEmpty) {
+      setState(() {
+        _avatarImage = File(imagePath);
+      });
+    }
+  }
+
+  // Call _loadAvatarImage() in initState()
+  @override
+  void initState() {
+    super.initState();
+    _loadAvatarImage();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -70,12 +93,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 height: size.height * 0.23,
                 color: Colors.white,
-                child: const Column(
+                child: Column(
                   children: [
                     SizedBox(height: 1),
                     CircleAvatar(
                       radius: 48,
-                      backgroundImage: AssetImage("assets/profilescreenImages/profile1.png"),
+                      backgroundColor: Colors.black,
+                      child: CircleAvatar(
+                        radius: 46,
+                        backgroundColor: Colors.white,
+                        backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black, width: 1),
+                          ),
+                        ),
+                      ),
                     ),
                     SizedBox(height: 15),
                     Text(
