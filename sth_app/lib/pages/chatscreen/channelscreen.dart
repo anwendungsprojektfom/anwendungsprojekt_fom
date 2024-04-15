@@ -33,12 +33,13 @@ class _ChannelListPageState extends State<ChannelListPage> {
           title: 'Chats',
           onBack: true,
           showChatIcon: false,
+          showSettings: false,
         ),
         body: RefreshIndicator(
           onRefresh: _controller.refresh,
           child: StreamChannelListView(
             controller: _controller,
-            onChannelTap: (channel) => Navigator.push(
+            onChannelTap: (channel) => Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (_) => StreamChannel(

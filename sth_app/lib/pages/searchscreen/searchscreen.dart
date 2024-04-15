@@ -18,6 +18,7 @@ class _SearchScreenState extends State<SearchScreen> {
         title: 'Search',
         onBack: false,
         showChatIcon: false,
+        showSettings: false,
       ),
       body: Column(
         children: [
