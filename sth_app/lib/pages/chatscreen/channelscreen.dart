@@ -33,6 +33,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
           title: 'Chats',
           onBack: true,
           showChatIcon: false,
+          showSettings: false,
         ),
         body: RefreshIndicator(
           onRefresh: _controller.refresh,

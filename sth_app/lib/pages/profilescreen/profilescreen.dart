@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:sth_app/pages/profilescreen/settings.dart';
 import 'package:sth_app/technical/technical.dart';
 
 // Enum for different display modes
@@ -62,37 +61,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Size size = MediaQuery.of(context).size;
     List<String> itemsToDisplay = _displayMode == DisplayMode.images ? _imagePaths : [];
     return Scaffold(
-      // Custom app bar with title and back button
-      appBar: AppBar(
-        title: const Text('Profile Page'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              // Navigate to settings screen
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
-            },
-          ),
-        ],
-      ),
+      appBar: const CustomAppBar(title: 'Profile Page', onBack: true, showChatIcon: false, showSettings: true),
       body: Stack(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Profile header with user details
               Container(
                 height: size.height * 0.23,
-                color: Colors.white, // White background color
+                color: Colors.white,
                 child: const Column(
                   children: [
                     SizedBox(height: 1),
