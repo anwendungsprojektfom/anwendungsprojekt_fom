@@ -91,11 +91,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               // Profile header with user details
               Container(
-                height: size.height * 0.4,
+                height: size.height * 0.23,
                 color: Colors.white, // White background color
                 child: const Column(
                   children: [
-                    SizedBox(height: 50),
+                    SizedBox(height: 1),
                     CircleAvatar(
                       radius: 48,
                       backgroundImage: AssetImage("assets/profilescreenImages/profile1.png"),
