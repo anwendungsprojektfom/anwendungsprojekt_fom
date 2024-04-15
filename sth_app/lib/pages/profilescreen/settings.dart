@@ -100,7 +100,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Account Profile', onBack: false, showChatIcon: false, showSettings: false),
+      appBar: const CustomAppBar(title: 'Account Profile', onBack: true, showChatIcon: false, showSettings: false),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -259,7 +259,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       bottomNavigationBar: _isEditing
           ? null
           : const CustomBottomNavigationBar(
-              currentIndex: 3), // Navigation element displayed only when not in editing mode
+              currentIndex: 2), // Navigation element displayed only when not in editing mode
     );
   }
 

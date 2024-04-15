@@ -17,7 +17,8 @@ class _SearchScreenState extends State<SearchScreen> {
       appBar: const CustomAppBar(
         title: 'Search',
         onBack: false,
-        showChatIcon: false, showSettings: false,
+        showChatIcon: false,
+        showSettings: false,
       ),
       body: Column(
         children: [

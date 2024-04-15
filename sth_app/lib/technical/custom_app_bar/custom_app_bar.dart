@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sth_app/main.dart';
 import 'package:sth_app/pages/chatscreen/channelscreen.dart';
 import 'package:sth_app/pages/homescreen/homescreen.dart';
+import 'package:sth_app/pages/profilescreen/profilescreen.dart';
 import 'package:sth_app/technical/technical.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-import 'package:sth_app/pages/profilescreen/settings.dart';
-
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -38,7 +37,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ? IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const HomeScreen()));
+                if (ModalRoute.of(context)?.settings.name == '/settingsscreen') {
+                  Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const ProfileScreen()));
+                } else {
+                  Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const HomeScreen()));
+                }
               },
             )
           : null,
@@ -65,10 +68,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
+              Navigator.pushReplacementNamed(context, '/settingsscreen');
             },
           ),
       ],

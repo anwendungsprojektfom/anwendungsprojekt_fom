@@ -4,7 +4,6 @@ import 'package:photo_view/photo_view.dart';
 import 'package:sth_app/technical/technical.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 // Enum for different display modes
 enum DisplayMode { images, videos }
 
@@ -84,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Size size = MediaQuery.of(context).size;
     List<String> itemsToDisplay = _displayMode == DisplayMode.images ? _imagePaths : [];
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Profile Page', onBack: true, showChatIcon: false, showSettings: true),
+      appBar: const CustomAppBar(title: 'Profile Page', onBack: false, showChatIcon: false, showSettings: true),
       body: Stack(
         children: [
           Column(
@@ -95,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Colors.white,
                 child: Column(
                   children: [
-                    SizedBox(height: 1),
+                    const SizedBox(height: 1),
                     CircleAvatar(
                       radius: 48,
                       backgroundColor: Colors.black,
@@ -111,8 +110,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 15),
-                    Text(
+                    const SizedBox(height: 15),
+                    const Text(
                       "Fit",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -120,8 +119,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    Text(
+                    const SizedBox(height: 4),
+                    const Text(
                       "Flutter Developer",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -192,7 +191,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
       bottomNavigationBar: const CustomBottomNavigationBar(
-        currentIndex: 3,
+        currentIndex: 2,
       ),
     );
   }
