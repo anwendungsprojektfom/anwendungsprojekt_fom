@@ -15,7 +15,8 @@ class _LoadingScreen extends State<LoadingScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const HomeScreen()));
+      Navigator.pushReplacement(
+          context, CustomPageRoute(builder: (context) => const HomeScreen()));
     });
   }
 
@@ -27,7 +28,7 @@ class _LoadingScreen extends State<LoadingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(image: AssetImage('assets/images/logoSTH.png')),
+            Image(image: AssetImage('assets/images/FinalLogoSTHOriginal.png')),
             SizedBox(height: 20),
             CircularProgressIndicator(),
           ],

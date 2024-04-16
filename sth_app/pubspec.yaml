@@ -70,7 +70,7 @@ flutter:
     - assets/images/logoSTH.png
     - assets/profilescreenImages/
     - assets/profilescreenVideos/
-    - assets/images/FinalLogoSThOriginal.png
+    - assets/images/FinalLogoSTHOriginal.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
