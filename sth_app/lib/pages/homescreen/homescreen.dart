@@ -18,22 +18,22 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Image.asset('assets/images/FinalLogoSTHOriginal.png',
-            height: 80), // Stellen Sie die Größe nach Bedarf ein
+        title:
+            Image.asset('assets/images/FinalLogoSTHOriginal.png', height: 80), // Stellen Sie die Größe nach Bedarf ein
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.chat),
+            icon: const Icon(Icons.chat),
             onPressed: () {
               // Handle Chat Icon press
             },
           ),
         ],
       ),
-      body: Center(
+      body: const Center(
         child: Text('This is our homescreen'),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
+      bottomNavigationBar: const CustomBottomNavigationBar(
         currentIndex: 0,
       ),
     );

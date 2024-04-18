@@ -15,8 +15,7 @@ class _LoadingScreen extends State<LoadingScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-          context, CustomPageRoute(builder: (context) => const HomeScreen()));
+      Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const HomeScreen()));
     });
   }
 
