@@ -16,8 +16,9 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Search',
-        onBack: true,
-        navigation: '/homescreen',
+        onBack: false,
+        showChatIcon: false,
+        showSettings: false,
       ),
       body: Column(
         children: [

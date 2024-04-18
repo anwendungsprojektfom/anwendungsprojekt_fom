@@ -1,11 +1,13 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:sth_app/technical/technical.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// Widget for the profile screen, displaying editable profile data
+// Enum for different display modes
+enum DisplayMode { images, videos }
+
+// ProfileScreen widget that is a StatefulWidget
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -13,281 +15,183 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-// State class for the profile screen
+File? _avatarImage;
+
+// State class for ProfileScreen widget
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool _isEditing = false;
-  late SharedPreferences _prefs;
-  late String _name, _phone, _address, _email;
-  late TextEditingController _nameController, _phoneController, _addressController, _emailController;
-  late File? _avatarImage;
-  final picker = ImagePicker();
-  bool _nameError = false, _phoneError = false, _addressError = false, _emailError = false;
-  bool _validateName(String name) => RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(name);
-  bool _validatePhone(String phone) => RegExp(r'^[0-9]+$').hasMatch(phone);
-  bool _validateAddress(String address) => RegExp(r'^[a-zA-Z0-9,.\säöüÄÖÜß]+$').hasMatch(address);
-  bool _validateEmail(String email) => RegExp(r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,4}$').hasMatch(email);
+  // Variable to store the current display mode
+  DisplayMode _displayMode = DisplayMode.images;
 
-  // The initState method is called when the widget state is first created
-  @override
-  void initState() {
-    super.initState();
-    _name = '';
-    _phone = '';
-    _address = '';
-    _email = '';
-    _nameController = TextEditingController();
-    _phoneController = TextEditingController();
-    _addressController = TextEditingController();
-    _emailController = TextEditingController();
-    _avatarImage = null;
-    _loadProfileData();
-  }
+  // List of image paths to display
+  final List<String> _imagePaths = [
+    "assets/profilescreenImages/image0.png",
+    "assets/profilescreenImages/image1.png",
+    "assets/profilescreenImages/image2.png",
+    "assets/profilescreenImages/image3.png",
+    "assets/profilescreenImages/image4.png",
+    "assets/profilescreenImages/image5.png",
+    "assets/profilescreenImages/image6.png",
+    "assets/profilescreenImages/image7.png",
+  ];
 
-  Future<void> _loadProfileData() async {
-    try {
-      // Retrieve profile data from SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      final List<String>? nameList = prefs.getStringList('data');
-
-      final String name = nameList!.first;
-      final String phone = nameList.first;
-      final String address = nameList.first;
-      final String email = nameList.first;
-
-      // Set profile data to respective variables and text controllers
-      setState(() {
-        _name = name;
-        print(_name);
-        _phone = phone;
-        _address = address;
-        _email = email;
-        _nameController.text = _name;
-        _phoneController.text = _phone;
-        _addressController.text = _address;
-        _emailController.text = _email;
-      });
-    } catch (e) {
-      print('Error loading profile data from SharedPreferences: $e');
-    }
-  }
-
-  //Functioon to load profile avatar
-  Future<void> _pickImage() async {
-    try {
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        setState(() {
-          _avatarImage = File(pickedFile.path);
-        });
-      } else {
-        print('User cancelled the image selection process.');
-      }
-    } catch (e) {
-      print('Error accessing the gallery: $e');
-    }
-  }
-
-  // Widget creation
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Profilescreen',
-        onBack: true,
-        navigation: '/searchscreen',
-      ),
-      body: SingleChildScrollView(
-        // Scrollable widget to scroll the content
-        child: Container(
-          color: Colors.grey[300],
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () => _pickImage(),
-                child: CircleAvatar(
-                  radius: 70,
-                  backgroundColor: Colors.grey[400],
-                  backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                  child: _avatarImage == null ? const Icon(Icons.add_photo_alternate, size: 70) : null,
-                ),
-              ),
-              const SizedBox(height: 20),
-              // Profile fields
-              ProfileItem(
-                title: 'Name',
-                subtitle: _name,
-                icon: Icons.person,
-                isEditing: _isEditing,
-                controller: _nameController,
-                onChanged: (value) => setState(() => _nameError = !_validateName(value)),
-                showError: _nameError,
-              ),
-              ProfileItem(
-                title: 'Phone',
-                subtitle: _phone,
-                icon: Icons.phone,
-                isEditing: _isEditing,
-                controller: _phoneController,
-                onChanged: (value) => setState(() => _phoneError = !_validatePhone(value)),
-                showError: _phoneError,
-              ),
-              ProfileItem(
-                title: 'Address',
-                subtitle: _address,
-                icon: Icons.location_on,
-                isEditing: _isEditing,
-                controller: _addressController,
-                onChanged: (value) => setState(() => _addressError = !_validateAddress(value)),
-                showError: _addressError,
-              ),
-              ProfileItem(
-                title: 'Email',
-                subtitle: _email,
-                icon: Icons.email,
-                isEditing: _isEditing,
-                controller: _emailController,
-                onChanged: (value) => setState(() => _emailError = !_validateEmail(value)),
-                showError: _emailError,
-              ),
-              const SizedBox(height: 20),
-              Center(
-                // Button for editing the profile
-                child: ElevatedButton(
-                  onPressed: _nameError || _phoneError || _addressError || _emailError
-                      ? null
-                      : () {
-                          setState(() {
-                            _isEditing = !_isEditing;
-                            if (!_isEditing) {
-                              _saveProfile();
-                            }
-                          });
-                        },
-                  child: Text(_isEditing ? 'Save' : 'Edit'), // Change button text based on editing mode
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
+  // Function to open the gallery
+  void _openGallery(int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Image'),
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          body: SizedBox.expand(
+            child: PhotoView(
+              imageProvider: AssetImage(_imagePaths[index]),
+              backgroundDecoration: const BoxDecoration(color: Colors.black),
+            ),
           ),
         ),
       ),
-      bottomNavigationBar: _isEditing
-          ? null
-          : const CustomBottomNavigationBar(
-              currentIndex: 2), // Navigation element displayed only when not in editing mode
     );
   }
 
-  // Function to save profile data in SharedPreference
-  Future<void> _saveProfile() async {
-    await _prefs.setString('name', _nameController.text);
-    await _prefs.setString('phone', _phoneController.text);
-    await _prefs.setString('address', _addressController.text);
-    await _prefs.setString('email', _emailController.text);
-    setState(() {
-      _name = _nameController.text;
-      _phone = _phoneController.text;
-      _address = _addressController.text;
-      _email = _emailController.text;
-      _isEditing = false;
-    });
+  // Function to load the avatar image from local storage
+  Future<void> _loadAvatarImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? imagePath = prefs.getString('avatar_image_path');
+    if (imagePath != null && imagePath.isNotEmpty) {
+      setState(() {
+        _avatarImage = File(imagePath);
+      });
+    }
   }
-}
 
-// Initialize items
-class ProfileItem extends StatelessWidget {
-  final String title, subtitle;
-  final IconData icon;
-  final bool isEditing;
-  final TextEditingController controller;
-  final ValueChanged<String>? onChanged;
-  final bool showError;
+  // Call _loadAvatarImage() in initState()
+  @override
+  void initState() {
+    super.initState();
+    _loadAvatarImage();
+  }
 
-  // Constructor for ProfileItem
-  const ProfileItem({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.isEditing,
-    required this.controller,
-    this.onChanged,
-    required this.showError,
-    Key? key,
-  }) : super(key: key);
-
-  // Widget design and ui with ui content
   @override
   Widget build(BuildContext context) {
-    String errorText = '';
-
-    if (showError) {
-      if (title == 'Name') {
-        errorText = 'Invalid characters. Only letters, numbers, and spaces are allowed.';
-      } else if (title == 'Phone') {
-        errorText = 'Invalid input. Only numbers are allowed.';
-      } else if (title == 'Address') {
-        errorText = 'Invalid characters. Only letters, numbers, commas, periods, spaces, and umlauts are allowed.';
-      } else if (title == 'Email') {
-        errorText = 'Invalid email format. Please enter a valid email address.';
-      }
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(0, 5),
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 10,
-          ),
-        ],
-      ),
-      child: Column(
+    Size size = MediaQuery.of(context).size;
+    List<String> itemsToDisplay = _displayMode == DisplayMode.images ? _imagePaths : [];
+    return Scaffold(
+      appBar: const CustomAppBar(title: 'Profile Page', onBack: false, showChatIcon: false, showSettings: true),
+      body: Stack(
         children: [
-          ListTile(
-            leading: Icon(icon, color: Colors.black),
-            title: Text(title, style: const TextStyle(color: Colors.black)),
-            subtitle: isEditing
-                ? TextFormField(
-                    controller: controller,
-                    onChanged: onChanged,
-                    style: const TextStyle(color: Colors.black),
-                  )
-                : Text(subtitle, style: const TextStyle(color: Colors.black)),
-          ),
-          if (showError)
-            Container(
-              alignment: Alignment.topRight,
-              padding: const EdgeInsets.all(8),
-              child: GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text(''),
-                      content: Text(errorText, style: const TextStyle(color: Colors.black)),
-                      actions: <Widget>[
-                        TextButton(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                height: size.height * 0.23,
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 1),
+                    CircleAvatar(
+                      radius: 48,
+                      backgroundColor: Colors.black,
+                      child: CircleAvatar(
+                        radius: 46,
+                        backgroundColor: Colors.white,
+                        backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black, width: 1),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    const Text(
+                      "Fit",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      "Flutter Developer",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 60),
+                child: Material(
+                  elevation: 3,
+                  shadowColor: Colors.black26,
+                  child: SizedBox(
+                    height: 55,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.image, size: 30, color: Colors.black),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            setState(() {
+                              _displayMode = DisplayMode.images;
+                            });
                           },
-                          child: const Text('OK', style: TextStyle(color: Colors.black)),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.play_circle, size: 30, color: Colors.black),
+                          onPressed: () {
+                            setState(() {
+                              _displayMode = DisplayMode.videos;
+                            });
+                          },
                         ),
                       ],
                     ),
-                  );
-                },
-                child: const Icon(Icons.info, color: Color.fromARGB(255, 207, 90, 83)),
+                  ),
+                ),
               ),
-            ),
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 9,
+                    crossAxisSpacing: 9,
+                  ),
+                  itemCount: itemsToDisplay.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () => _openGallery(index),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                            image: AssetImage(itemsToDisplay[index]),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )
+            ],
+          )
         ],
+      ),
+      bottomNavigationBar: const CustomBottomNavigationBar(
+        currentIndex: 2,
       ),
     );
   }

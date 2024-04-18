@@ -17,9 +17,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return const Scaffold(
       appBar: CustomAppBar(
         title: 'HomeScreen',
-        onBack: null,
+        onBack: false,
         showChatIcon: true,
-        navigation: 'null',
+        showSettings: false,
       ),
       body: Center(
         child: Text('This is our homescreen'),
