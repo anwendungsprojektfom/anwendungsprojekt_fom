@@ -83,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Size size = MediaQuery.of(context).size;
     List<String> itemsToDisplay = _displayMode == DisplayMode.images ? _imagePaths : [];
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Profile Page', onBack: false, showChatIcon: false, showSettings: true),
+      appBar: const CustomAppBar(title: Text('Profile Page'), onBack: false, showChatIcon: false, showSettings: true),
       body: Stack(
         children: [
           Column(

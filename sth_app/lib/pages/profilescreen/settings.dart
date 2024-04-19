@@ -100,7 +100,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Account Profile', onBack: true, showChatIcon: false, showSettings: false),
+      appBar:
+          const CustomAppBar(title: Text('Account Profile'), onBack: true, showChatIcon: false, showSettings: false),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),

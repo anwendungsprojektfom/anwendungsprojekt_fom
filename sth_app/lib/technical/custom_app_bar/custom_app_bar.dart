@@ -7,7 +7,7 @@ import 'package:sth_app/technical/technical.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
-  final String title;
+  final dynamic title;
   final bool? onBack;
   final bool showChatIcon;
   final bool showSettings;
@@ -31,7 +31,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(widget.title),
+      title: widget.title,
       centerTitle: true,
       leading: widget.onBack == true
           ? IconButton(
