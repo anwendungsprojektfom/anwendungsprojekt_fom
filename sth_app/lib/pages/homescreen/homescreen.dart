@@ -11,20 +11,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final Logger _logger = Logger();
+
   @override
   Widget build(BuildContext context) {
     _logger.d('Building HomeScreen...');
-    return const Scaffold(
+    return Scaffold(
       appBar: CustomAppBar(
-        title: 'HomeScreen',
-        onBack: false,
-        showChatIcon: true,
-        showSettings: false,
-      ),
-      body: Center(
+          title: Image.asset('assets/images/FinalLogoSTHOriginal.png', height: 80),
+          onBack: false,
+          showChatIcon: true,
+          showSettings: false),
+      body: const Center(
         child: Text('This is our homescreen'),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
+      bottomNavigationBar: const CustomBottomNavigationBar(
         currentIndex: 0,
       ),
     );

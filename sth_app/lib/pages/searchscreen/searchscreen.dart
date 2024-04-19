@@ -15,7 +15,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        title: 'Search',
+        title: Text('Search'),
         onBack: false,
         showChatIcon: false,
         showSettings: false,

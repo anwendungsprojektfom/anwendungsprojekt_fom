@@ -30,7 +30,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: const CustomAppBar(
-          title: 'Chats',
+          title: Text('Chats'),
           onBack: true,
           showChatIcon: false,
           showSettings: false,
