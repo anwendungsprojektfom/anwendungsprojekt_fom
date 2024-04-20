@@ -13,38 +13,20 @@ Future<void> signUpWithEmailAndPassword(String email, String password) async {
   }
 }
 
-Future<Map<String, dynamic>> getCurrentUserData() async {
-  User? user = FirebaseAuth.instance.currentUser;
-  Map<String, dynamic> userData = {
-    'name': 'Your profile name',
-    'uid': 'Your User ID Token',
-  };
-
-  if (user != null) {
-    String uid = user.uid;
-
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-    DocumentSnapshot<Object?> userDoc = await users.doc(uid).get();
-
-    if (userDoc.exists) {
-      userData = {
-        'name': userDoc.get('name'),
-        'uid': uid,
-      };
-    }
-  }
-
-  return userData;
+Future<Map<String, dynamic>> getCurrentUserData(String userId) async {
+  DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  // Document data is available in documentSnapshot.data()
+  Map<String, dynamic> userData = documentSnapshot.data() as Map<String, dynamic>;
+  return (userData);
 }
 
 Future<String> getCurrentUserName() async {
-  Map<String, dynamic> userData = await getCurrentUserData();
+  Map<String, dynamic> userData = await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
   return userData['name'];
 }
 
 Future<String> getCurrentUserIdToken() async {
-  Map<String, dynamic> userData = await getCurrentUserData();
+  Map<String, dynamic> userData = await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
   return userData['uid'];
 }
 
@@ -72,20 +54,6 @@ Future<void> addDataToFirestore(String data) async {
     await FirebaseFirestore.instance.collection('your_collection').add({
       'field_name': data,
     });
-  } catch (e) {
-    rethrow;
-  }
-}
-
-// Get values from Firestore
-Future<List<String>> getDataFromFirestore() async {
-  try {
-    final querySnapshot = await FirebaseFirestore.instance.collection('your_collection').get();
-    final List<String> dataList = [];
-    for (var doc in querySnapshot.docs) {
-      dataList.add(doc['field_name']);
-    }
-    return dataList;
   } catch (e) {
     rethrow;
   }

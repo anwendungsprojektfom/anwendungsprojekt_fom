@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:sth_app/pages/chatscreen/channelscreen.dart';
 import 'package:sth_app/pages/homescreen/homescreen.dart';
@@ -47,35 +45,20 @@ class SthApp extends StatefulWidget {
 }
 
 class _SthAppState extends State<SthApp> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  List<UserData> _data = [];
+  Future<void> fetchData() async {
+    try {
+      Map<String, dynamic> currentUserData = await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
+
+      saveUserDataToSharedPreferences(currentUserData);
+    } catch (e) {
+      print("Error fetching user data: $e");
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     fetchData();
-  }
-
-  Future<void> fetchData() async {
-    try {
-      QuerySnapshot querySnapshot = await _firestore.collection('users').get();
-      List<UserData> data = querySnapshot.docs.map((doc) {
-        return UserData(
-          name: doc['name'],
-          address: doc['address'],
-          email: doc['email'],
-        );
-      }).toList();
-      setState(() {
-        _data = data;
-      });
-
-      // Save data in shared preferences
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setStringList('data', _data.map((userData) => userData.name).toList());
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
   }
 
   @override
@@ -110,6 +93,4 @@ class _SthAppState extends State<SthApp> {
           },
         ));
   }
-
-
 }

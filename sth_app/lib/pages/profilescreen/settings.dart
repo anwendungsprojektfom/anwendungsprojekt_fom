@@ -15,8 +15,7 @@ class SettingsScreen extends StatefulWidget {
 // State class for the profile screen
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _isEditing = false;
-  late SharedPreferences _prefs;
-  late String _name, _phone, _address, _email;
+  late String? _name, _phone, _address, _email;
   late TextEditingController _nameController, _phoneController, _addressController, _emailController;
   late File? _avatarImage;
   final picker = ImagePicker();
@@ -44,16 +43,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // Function to load the current profileStatus of entities
   Future<void> _loadProfileData() async {
-    _prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
+
     setState(() {
-      _name = _prefs.getString('name') ?? 'Tigers';
-      _phone = _prefs.getString('phone') ?? '+49 123456789';
-      _address = _prefs.getString('address') ?? 'Tigers 12, 80993 München';
-      _email = _prefs.getString('email') ?? 'TigerDevTeam@gmail.de';
-      _nameController.text = _name;
-      _phoneController.text = _phone;
-      _addressController.text = _address;
-      _emailController.text = _email;
+      _name = prefs.getString('name');
+      _phone = prefs.getString('phone');
+      _address = prefs.getString('address');
+      _email = prefs.getString('email');
+      _nameController.text = _name!;
+      _phoneController.text = _phone!;
+      _addressController.text = _address!;
+      _emailController.text = _email!;
       _loadAvatarImage().then((File? image) {
         setState(() {
           _avatarImage = image;
@@ -142,7 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 // Text field for editing name
                 child: ProfileItem(
                   title: 'Name',
-                  subtitle: _name,
+                  subtitle: _name!,
                   icon: Icons.person,
                   isEditing: _isEditing,
                   controller: _nameController,
@@ -169,7 +169,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 // Text field for editing phone number
                 child: ProfileItem(
                   title: 'Phone',
-                  subtitle: _phone,
+                  subtitle: _phone!,
                   icon: Icons.phone,
                   isEditing: _isEditing,
                   controller: _phoneController,
@@ -196,7 +196,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 // Text field for editing address
                 child: ProfileItem(
                   title: 'Address',
-                  subtitle: _address,
+                  subtitle: _address!,
                   icon: Icons.location_on,
                   isEditing: _isEditing,
                   controller: _addressController,
@@ -225,7 +225,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 // Text field for editing email address
                 child: ProfileItem(
                   title: 'Email',
-                  subtitle: _email,
+                  subtitle: _email!,
                   icon: Icons.email,
                   isEditing: _isEditing,
                   controller: _emailController,
@@ -265,10 +265,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // Function to save profile data in SharedPreference
   Future<void> _saveProfile() async {
-    await _prefs.setString('name', _nameController.text);
-    await _prefs.setString('phone', _phoneController.text);
-    await _prefs.setString('address', _addressController.text);
-    await _prefs.setString('email', _emailController.text);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('name', _nameController.text);
+    await prefs.setString('phone', _phoneController.text);
+    await prefs.setString('address', _addressController.text);
+    await prefs.setString('email', _emailController.text);
     setState(() {
       _name = _nameController.text;
       _phone = _phoneController.text;
