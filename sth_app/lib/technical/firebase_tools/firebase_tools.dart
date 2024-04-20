@@ -13,26 +13,47 @@ Future<void> signUpWithEmailAndPassword(String email, String password) async {
   }
 }
 
+Future<Map<String, dynamic>> getCurrentUserData(String userId) async {
+  DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  // Document data is available in documentSnapshot.data()
+  Map<String, dynamic> userData = documentSnapshot.data() as Map<String, dynamic>;
+  return (userData);
+}
+
+Future<String> getCurrentUserName() async {
+  Map<String, dynamic> userData = await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
+  return userData['name'];
+}
+
+Future<String> getCurrentUserIdToken() async {
+  Map<String, dynamic> userData = await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
+  return userData['uid'];
+}
+
+Future<void> updateUsername(String newUsername) async {
+  try {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      String uid = user.uid;
+
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+      DocumentReference userDoc = users.doc(uid);
+
+      await userDoc.update({'username': newUsername});
+    }
+  } catch (error) {
+    print('Error updating username: $error');
+  }
+}
+
 // Push values to Firestore
 Future<void> addDataToFirestore(String data) async {
   try {
     await FirebaseFirestore.instance.collection('your_collection').add({
       'field_name': data,
     });
-  } catch (e) {
-    rethrow;
-  }
-}
-
-// Get values from Firestore
-Future<List<String>> getDataFromFirestore() async {
-  try {
-    final querySnapshot = await FirebaseFirestore.instance.collection('your_collection').get();
-    final List<String> dataList = [];
-    for (var doc in querySnapshot.docs) {
-      dataList.add(doc['field_name']);
-    }
-    return dataList;
   } catch (e) {
     rethrow;
   }
