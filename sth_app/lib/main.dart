@@ -5,7 +5,7 @@ import 'package:sth_app/pages/chatscreen/channelscreen.dart';
 import 'package:sth_app/pages/homescreen/homescreen.dart';
 import 'package:sth_app/pages/loadingscreen/loadingscreen.dart';
 import 'package:sth_app/pages/profilescreen/profilescreen.dart';
-import 'package:sth_app/pages/profilescreen/settings.dart';
+import 'package:sth_app/pages/profilescreen/accountProfile.dart';
 import 'package:sth_app/pages/searchscreen/searchscreen.dart';
 import 'package:sth_app/firebase_options.dart';
 import 'package:sth_app/technical/technical.dart';
