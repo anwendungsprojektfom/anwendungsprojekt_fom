@@ -5,15 +5,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
 
 // Widget for the profile screen, displaying editable profile data
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+class AccountProfileScreen extends StatefulWidget {
+  const AccountProfileScreen({Key? key}) : super(key: key);
 
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
+  _AccountProfileScreenState createState() => _AccountProfileScreenState();
 }
 
 // State class for the profile screen
-class _SettingsScreenState extends State<SettingsScreen> {
+class _AccountProfileScreenState extends State<AccountProfileScreen> {
   bool _isEditing = false;
   late String? _name, _phone, _address, _email;
   late TextEditingController _nameController, _phoneController, _addressController, _emailController;
@@ -246,6 +246,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             _isEditing = !_isEditing;
                             if (!_isEditing) {
                               _saveProfile();
+                              updateUserData(
+                                name: _nameController.text,
+                                phone: _phoneController.text,
+                                address: _addressController.text,
+                                email: _emailController.text,
+                              );
                             }
                           });
                         },
