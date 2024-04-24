@@ -5,7 +5,7 @@ import 'package:sth_app/pages/chatscreen/channelscreen.dart';
 import 'package:sth_app/pages/homescreen/homescreen.dart';
 import 'package:sth_app/pages/loadingscreen/loadingscreen.dart';
 import 'package:sth_app/pages/profilescreen/profilescreen.dart';
-import 'package:sth_app/pages/profilescreen/settings.dart';
+import 'package:sth_app/pages/profilescreen/accountprofilescreen.dart';
 import 'package:sth_app/pages/searchscreen/searchscreen.dart';
 import 'package:sth_app/firebase_options.dart';
 import 'package:sth_app/technical/technical.dart';
@@ -78,7 +78,7 @@ class _SthAppState extends State<SthApp> {
             '/channelscreen': (context) => ChannelListPage(client: globalClient),
             '/profilescreen': (context) => const ProfileScreen(),
             '/searchscreen': (context) => const SearchScreen(),
-            '/settingsscreen': (context) => const SettingsScreen(),
+            '/accountprofilescreen': (context) => const AccountProfileScreen(),
           },
           builder: (context, child) {
             final currentRouteName = ModalRoute.of(context)?.settings.name;

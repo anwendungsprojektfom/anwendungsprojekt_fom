@@ -48,12 +48,23 @@ Future<void> updateUsername(String newUsername) async {
   }
 }
 
-// Push values to Firestore
-Future<void> addDataToFirestore(String data) async {
+// Push values from AccountPage to Cloud Firestore
+Future<void> updateUserData({
+  required String name,
+  required String phone,
+  required String address,
+  required String email,
+}) async {
   try {
-    await FirebaseFirestore.instance.collection('your_collection').add({
-      'field_name': data,
-    });
+    const String userId = 'JN2dcl4RbBNSs7VGEbYZ';
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+    await userRef.set({
+      'name': name,
+      'phone': phone,
+      'address': address,
+      'email': email,
+    }, SetOptions(merge: true));
   } catch (e) {
     rethrow;
   }

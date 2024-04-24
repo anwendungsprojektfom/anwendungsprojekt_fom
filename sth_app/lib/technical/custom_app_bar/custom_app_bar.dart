@@ -37,7 +37,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ? IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                if (ModalRoute.of(context)?.settings.name == '/settingsscreen') {
+                if (ModalRoute.of(context)?.settings.name == '/accountprofilescreen') {
                   Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const ProfileScreen()));
                 } else {
                   Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const HomeScreen()));
@@ -68,7 +68,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/settingsscreen');
+              Navigator.pushReplacementNamed(context, '/accountprofilescreen');
             },
           ),
       ],
