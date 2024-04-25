@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/scheduler.dart';
 
 // Authentication
 Future<void> signUpWithEmailAndPassword(String email, String password) async {
@@ -48,7 +51,7 @@ Future<void> updateUsername(String newUsername) async {
   }
 }
 
-// Push values from AccountPage to Cloud Firestore
+// Push profile details from accountprofilescreen to Firestore Cloud
 Future<void> updateUserData({
   required String name,
   required String phone,
@@ -69,3 +72,59 @@ Future<void> updateUserData({
     rethrow;
   }
 }
+
+// Push avatarImage from accountprofilescreen to Firestore Storage
+Future<bool> uploadAvatarImageToFirebase(File imageFile) async {
+  try {
+    const String userId = 'JN2dcl4RbBNSs7VGEbYZ';
+
+    final storageRef = FirebaseStorage.instance.ref();
+    final fileName = imageFile.path.split("/").last;
+    final timestamp = DateTime.now().microsecondsSinceEpoch;
+    final uploadRef = storageRef.child("$userId/uploads/avatarImages/$timestamp-$fileName");
+    await uploadRef.putFile(imageFile);
+
+    return true;
+  } catch (e) {
+    print('error uploading the avatar: $e');
+    rethrow;
+  }
+}
+
+// Push galeryImage from profilescreen to Firestore Storage
+Future<bool> uploadGaleryImageToFirebase(File imageFile) async {
+  try {
+    const String userId = 'JN2dcl4RbBNSs7VGEbYZ';
+
+    final storageRef = FirebaseStorage.instance.ref();
+    final fileName = imageFile.path.split("/").last;
+    final timestamp = DateTime.now().microsecondsSinceEpoch;
+    final uploadRef = storageRef.child("$userId/uploads/galery/$timestamp-$fileName");
+    await uploadRef.putFile(imageFile);
+
+    return true;
+  } catch (e) {
+    print('error uploading the image: $e');
+    rethrow;
+  }
+}
+
+// Push videofile from profilescreen to Firestore Storage
+Future<bool> uploadVideoFileToFirebase(File videofile) async {
+  try {
+    const String userId = 'JN2dcl4RbBNSs7VGEbYZ';
+
+    final storageRef = FirebaseStorage.instance.ref();
+    final fileName = videofile.path.split("/").last;
+    final timestamp = DateTime.now().microsecondsSinceEpoch;
+    final uploadRef = storageRef.child("$userId/uploads/videos/$timestamp-$fileName");
+    await uploadRef.putFile(videofile);
+
+    return true;
+  } catch (e) {
+    print('error uploading the video: $e');
+    rethrow;
+  }
+}
+
+

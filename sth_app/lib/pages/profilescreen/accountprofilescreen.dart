@@ -78,18 +78,19 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
     return null;
   }
 
-  // Function to pick images
+  // Function to pick images & upload in firebasse
   Future<void> _pickImage() async {
     try {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         final File imageFile = File(pickedFile.path);
-        _saveAvatarImage(imageFile); // Save profile image in local storage
-        setState(() {
-          _avatarImage = imageFile;
-        });
-      } else {
-        print('User cancelled the image selection process.');
+        await _saveAvatarImage(imageFile);
+        bool success = await uploadAvatarImageToFirebase(imageFile);
+        if (success) {
+          setState(() {
+            _avatarImage = imageFile;
+          });
+        } 
       }
     } catch (e) {
       print('Error accessing the gallery: $e');

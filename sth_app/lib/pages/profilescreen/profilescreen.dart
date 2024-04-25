@@ -230,8 +230,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 for (XFile image in images) {
                                   final String newPath = await _saveImage(image.path);
                                   setState(() {
-                                    _imagePaths.insert(0, newPath); // Insert added image at first position
+                                    _imagePaths.insert(0, newPath); 
                                     _saveImagePathsToLocalStorage();
+                                  });
+                                    uploadGaleryImageToFirebase(File(newPath))
+                                  .then((success) {
+                                    //logic
+                                  })
+                                  .catchError((error) {
+                                    print('error uploading the image: $error');
                                   });
                                 }
                               }
