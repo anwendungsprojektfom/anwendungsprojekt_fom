@@ -39,8 +39,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
           onRefresh: _controller.refresh,
           child: StreamChannelListView(
             controller: _controller,
-            onChannelTap: (channel) => Navigator.pushReplacement(
-              context,
+            onChannelTap: (channel) => Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (_) => StreamChannel(
                   channel: channel,

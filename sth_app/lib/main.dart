@@ -72,13 +72,23 @@ class _SthAppState extends State<SthApp> {
           title: 'STH App',
           debugShowCheckedModeBanner: false,
           initialRoute: '/loadingscreen',
-          routes: {
-            '/loadingscreen': (context) => const LoadingScreen(),
-            '/homescreen': (context) => const HomeScreen(),
-            '/channelscreen': (context) => ChannelListPage(client: globalClient),
-            '/profilescreen': (context) => const ProfileScreen(),
-            '/searchscreen': (context) => const SearchScreen(),
-            '/accountprofilescreen': (context) => const AccountProfileScreen(),
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/loadingscreen':
+                return CustomPageRoute.generateRoute(const LoadingScreen());
+              case '/homescreen':
+                return CustomPageRoute.generateRoute(const HomeScreen());
+              case '/channelscreen':
+                return CustomPageRoute.generateRoute(ChannelListPage(client: globalClient));
+              case '/profilescreen':
+                return CustomPageRoute.generateRoute(const ProfileScreen());
+              case '/searchscreen':
+                return CustomPageRoute.generateRoute(const SearchScreen());
+              case '/accountprofilescreen':
+                return CustomPageRoute.generateRoute(const AccountProfileScreen()); // Using RouteGenerator here
+              default:
+                return null;
+            }
           },
           builder: (context, child) {
             final currentRouteName = ModalRoute.of(context)?.settings.name;
