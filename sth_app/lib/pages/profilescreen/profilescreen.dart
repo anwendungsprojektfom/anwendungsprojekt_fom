@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
+import 'package:video_player/video_player.dart';
 
 enum DisplayMode { images, videos }
 
@@ -17,6 +18,7 @@ class ProfileScreen extends StatefulWidget {
 
 File? _avatarImage;
 List<String> _imagePaths = [];
+List<String> _videoPaths = [];
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // Variable to store the current display mode
@@ -54,20 +56,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Function to save image paths to local storage
-  Future<void> _saveImagePathsToLocalStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('saved_image_paths', _imagePaths);
-  }
-
-  // Function to delete the selected image from the gallery view
-  void _deleteImage(int index) {
-    setState(() {
-      _imagePaths.removeAt(index);
-      _saveImagePathsToLocalStorage();
-    });
-
-    Navigator.pop(context);
+  void _openVideo(int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Video'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () => _deleteVideo(index),
+              ),
+            ],
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          body: SizedBox.expand(
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: 16 / 9, // Verhältnis von Breite zu Höhe des Videos
+                child: VideoPlayer(
+                  VideoPlayerController.file(File(_videoPaths[index])),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   // Function to load the avatar image from local storage
@@ -81,11 +102,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _loadAvatarImage();
-    _loadImagesFromStorage();
+  // Function to save image paths to local storage
+  Future<void> _saveImagePathsToLocalStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('saved_image_paths', _imagePaths);
   }
 
   // Function to save the image to a permanent location
@@ -106,6 +126,94 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _imagePaths = savedImagePaths;
       });
     }
+  }
+
+  // Function to add images to galeryPage and upload to firebase
+  Future<void> _uploadGalleryImages() async {
+    final List<XFile> images = await ImagePicker().pickMultiImage();
+    if (images.isNotEmpty) {
+      for (XFile image in images) {
+        final String newPath = await _saveImage(image.path);
+        setState(() {
+          _imagePaths.insert(0, newPath);
+          _saveImagePathsToLocalStorage();
+        });
+        uploadGaleryImageToFirebase(File(newPath)).then((success) {
+          //add firebase logic
+        }).catchError((error) {});
+      }
+    }
+  }
+
+  // Function to delete the selected image from the gallery view
+  void _deleteImage(int index) {
+    setState(() {
+      _imagePaths.removeAt(index);
+      _saveImagePathsToLocalStorage();
+    });
+    Navigator.pop(context);
+  }
+
+  // Function to save video paths to local storage
+  Future<void> _saveVideoPathsToLocalStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('saved_video_paths', _videoPaths);
+  }
+
+  // Function to save the video to a permanent location
+  Future<String> _saveVideo(String videoPath) async {
+    // Funktion zum Speichern von Videos in lokalem Speicher
+    final Directory appDir = await getApplicationDocumentsDirectory();
+    final String fileName = videoPath.split('/').last;
+    final String newPath = '${appDir.path}/$fileName';
+    await File(videoPath).copy(newPath);
+    return newPath;
+  }
+
+  // Function to load videos from local storage
+  Future<void> _loadVideosFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? savedVideoPaths = prefs.getStringList('saved_video_paths');
+    if (savedVideoPaths != null && savedVideoPaths.isNotEmpty) {
+      setState(() {
+        _videoPaths = savedVideoPaths;
+      });
+    }
+  }
+
+  // Function to add videos to videoPage and upload to firebase
+  Future<void> _uploadVideos() async {
+    final XFile? video = await ImagePicker().pickVideo(
+      source: ImageSource.gallery,
+      maxDuration: const Duration(minutes: 5),
+    );
+    if (video != null) {
+      final String newPath = await _saveVideo(video.path);
+      setState(() {
+        _videoPaths.insert(0, newPath);
+        _saveVideoPathsToLocalStorage();
+      });
+      uploadVideoFileToFirebase(File(newPath)).then((success) {
+        //add firebase logic
+      }).catchError((error) {});
+    }
+  }
+
+  // Function to delete the selected video from the gallery view
+  void _deleteVideo(int index) {
+    setState(() {
+      _videoPaths.removeAt(index);
+      _saveVideoPathsToLocalStorage();
+    });
+    Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAvatarImage();
+    _loadImagesFromStorage();
+    _loadVideosFromStorage();
   }
 
   @override
@@ -221,29 +329,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             border: Border.all(color: Colors.black, width: 2),
                           ),
                           child: IconButton(
-                            padding: EdgeInsets.zero,
-                            alignment: Alignment.center,
-                            icon: const Icon(Icons.add, size: 30, color: Colors.black),
-                            onPressed: () async {
-                              final List<XFile> images = await ImagePicker().pickMultiImage();
-                              if (images.isNotEmpty) {
-                                for (XFile image in images) {
-                                  final String newPath = await _saveImage(image.path);
-                                  setState(() {
-                                    _imagePaths.insert(0, newPath); // Insert added image at first position
-                                    _saveImagePathsToLocalStorage();
-                                  });
+                              padding: EdgeInsets.zero,
+                              alignment: Alignment.center,
+                              icon: const Icon(Icons.add, size: 30, color: Colors.black),
+                              onPressed: () async {
+                                if (_displayMode == DisplayMode.images) {
+                                  _uploadGalleryImages();
+                                } else if (_displayMode == DisplayMode.videos) {
+                                  _uploadVideos();
                                 }
-                              }
-                            },
-                          ),
+                              }),
                         ),
                       ],
                     ),
                   ),
                 ),
               ),
-              // Conditional display of images or an empty page
+              // Display images
               if (_displayMode == DisplayMode.images)
                 Expanded(
                   child: GridView.builder(
@@ -269,17 +371,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                   ),
                 ),
-              // Display of empty page for video mode
+              // Display of videos
               if (_displayMode == DisplayMode.videos)
                 Expanded(
-                  child: Container(
-                    color: Colors.white,
-                    child: const Center(
-                      child: Text(
-                        'Videos Page',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 9,
+                      crossAxisSpacing: 9,
                     ),
+                    itemCount: _videoPaths.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () => _openVideo(index),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.grey,
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.play_circle,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
             ],
