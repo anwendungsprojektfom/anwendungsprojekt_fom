@@ -90,7 +90,7 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
           setState(() {
             _avatarImage = imageFile;
           });
-        } 
+        }
       }
     } catch (e) {
       print('Error accessing the gallery: $e');

@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
 import 'package:video_player/video_player.dart';
 
-
 enum DisplayMode { images, videos }
 
 class ProfileScreen extends StatefulWidget {
@@ -20,7 +19,6 @@ class ProfileScreen extends StatefulWidget {
 File? _avatarImage;
 List<String> _imagePaths = [];
 List<String> _videoPaths = [];
-
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // Variable to store the current display mode
@@ -58,40 +56,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-void _openVideo(int index) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Video'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () => _deleteVideo(index),
+  void _openVideo(int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Video'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () => _deleteVideo(index),
+              ),
+            ],
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-          ],
-          leading: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () {
-              Navigator.pop(context);
-            },
           ),
-        ),
-        body: SizedBox.expand(
-          child: Center(
-            child: AspectRatio(
-              aspectRatio: 16 / 9, // Verhältnis von Breite zu Höhe des Videos
-              child: VideoPlayer(
-                VideoPlayerController.file(File(_videoPaths[index])),
+          body: SizedBox.expand(
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: 16 / 9, // Verhältnis von Breite zu Höhe des Videos
+                child: VideoPlayer(
+                  VideoPlayerController.file(File(_videoPaths[index])),
+                ),
               ),
             ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   // Function to load the avatar image from local storage
   Future<void> _loadAvatarImage() async {
@@ -130,22 +128,19 @@ void _openVideo(int index) {
     }
   }
 
-    // Function to add images to galeryPage and upload to firebase
-    Future<void> _uploadGalleryImages() async {
-    final List<XFile>? images = await ImagePicker().pickMultiImage();
-    if (images != null && images.isNotEmpty) {
+  // Function to add images to galeryPage and upload to firebase
+  Future<void> _uploadGalleryImages() async {
+    final List<XFile> images = await ImagePicker().pickMultiImage();
+    if (images.isNotEmpty) {
       for (XFile image in images) {
         final String newPath = await _saveImage(image.path);
         setState(() {
-          _imagePaths.insert(0, newPath); 
+          _imagePaths.insert(0, newPath);
           _saveImagePathsToLocalStorage();
         });
-          uploadGaleryImageToFirebase(File(newPath))
-          .then((success) {
-            //add firebase logic
-          })
-          .catchError((error) {
-          });
+        uploadGaleryImageToFirebase(File(newPath)).then((success) {
+          //add firebase logic
+        }).catchError((error) {});
       }
     }
   }
@@ -160,13 +155,13 @@ void _openVideo(int index) {
   }
 
   // Function to save video paths to local storage
-    Future<void> _saveVideoPathsToLocalStorage() async {
+  Future<void> _saveVideoPathsToLocalStorage() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setStringList('saved_video_paths', _videoPaths);
   }
 
   // Function to save the video to a permanent location
-    Future<String> _saveVideo(String videoPath) async {
+  Future<String> _saveVideo(String videoPath) async {
     // Funktion zum Speichern von Videos in lokalem Speicher
     final Directory appDir = await getApplicationDocumentsDirectory();
     final String fileName = videoPath.split('/').last;
@@ -176,7 +171,7 @@ void _openVideo(int index) {
   }
 
   // Function to load videos from local storage
-    Future<void> _loadVideosFromStorage() async {
+  Future<void> _loadVideosFromStorage() async {
     final prefs = await SharedPreferences.getInstance();
     final List<String>? savedVideoPaths = prefs.getStringList('saved_video_paths');
     if (savedVideoPaths != null && savedVideoPaths.isNotEmpty) {
@@ -186,27 +181,23 @@ void _openVideo(int index) {
     }
   }
 
-    // Function to add videos to videoPage and upload to firebase
-    Future<void> _uploadVideos() async {
-      final XFile? video = await ImagePicker().pickVideo(
-        source: ImageSource.gallery,
-        maxDuration: const Duration(minutes: 5),
-      );
-      if (video != null) {
-        final String newPath = await _saveVideo(video.path);
-        setState(() {
-          _videoPaths.insert(0, newPath); 
-          _saveVideoPathsToLocalStorage();
-        });
-          uploadVideoFileToFirebase(File(newPath))
-          .then((success) {
-            //add firebase logic
-          })
-          .catchError((error) {
-          });
-      }
+  // Function to add videos to videoPage and upload to firebase
+  Future<void> _uploadVideos() async {
+    final XFile? video = await ImagePicker().pickVideo(
+      source: ImageSource.gallery,
+      maxDuration: const Duration(minutes: 5),
+    );
+    if (video != null) {
+      final String newPath = await _saveVideo(video.path);
+      setState(() {
+        _videoPaths.insert(0, newPath);
+        _saveVideoPathsToLocalStorage();
+      });
+      uploadVideoFileToFirebase(File(newPath)).then((success) {
+        //add firebase logic
+      }).catchError((error) {});
     }
-
+  }
 
   // Function to delete the selected video from the gallery view
   void _deleteVideo(int index) {
@@ -338,17 +329,16 @@ void _openVideo(int index) {
                             border: Border.all(color: Colors.black, width: 2),
                           ),
                           child: IconButton(
-                            padding: EdgeInsets.zero,
-                            alignment: Alignment.center,
-                            icon: const Icon(Icons.add, size: 30, color: Colors.black),
-                            onPressed: () async {
-                              if (_displayMode == DisplayMode.images) {
-                                _uploadGalleryImages();
-                              } else if (_displayMode == DisplayMode.videos) {
-                                _uploadVideos();
-                              }
-                            }
-                          ),
+                              padding: EdgeInsets.zero,
+                              alignment: Alignment.center,
+                              icon: const Icon(Icons.add, size: 30, color: Colors.black),
+                              onPressed: () async {
+                                if (_displayMode == DisplayMode.images) {
+                                  _uploadGalleryImages();
+                                } else if (_displayMode == DisplayMode.videos) {
+                                  _uploadVideos();
+                                }
+                              }),
                         ),
                       ],
                     ),
@@ -399,7 +389,7 @@ void _openVideo(int index) {
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.grey,
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Icon(
                               Icons.play_circle,
                               size: 40,
