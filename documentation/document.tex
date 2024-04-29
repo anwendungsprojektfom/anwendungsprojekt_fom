@@ -14,11 +14,6 @@
 %options for tables
 \input{listoftables.tex}
 
-
-\usepackage{acronym}
-
-\usepackage{lmodern}
-
 %renewcommand to apply the font
 \renewcommand\familydefault{\sfdefault}
 \setuptoc{toc}{totoc}
@@ -43,6 +38,7 @@
 \addcontentsline{toc}{chapter}{\protect\listtablename}
 \newpage
 \input{acronyms.tex}
+\input{pagestyle.tex}
 
 
 \newpage
@@ -65,7 +61,10 @@
 \input{09_projektdurchfuehrung/chat_screen/chat_screen.tex}
 
 \input{10_ausblick/ausblick.tex}
-%end
+
+\input{erklärung.tex}
+
+\pagenumbering{gobble}
 
 %end of document
 \end{document}
