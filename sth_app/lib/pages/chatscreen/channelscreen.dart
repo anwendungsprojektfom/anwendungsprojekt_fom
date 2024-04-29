@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sth_app/pages/chatscreen/chatscreen.dart';
-import 'package:sth_app/technical/technical.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 class ChannelListPage extends StatefulWidget {
