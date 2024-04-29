@@ -29,11 +29,14 @@ class _ChannelListPageState extends State<ChannelListPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: const CustomAppBar(
-          title: Text('Chats'),
-          onBack: true,
-          showChatIcon: false,
-          showSettings: false,
+        appBar: StreamChannelHeader(
+          showBackButton: true,
+          onBackPressed: () {
+            Navigator.of(context).pushReplacementNamed('/homescreen');
+          },
+          onImageTap: () {
+            Navigator.of(context).pushReplacementNamed('/profilescreen');
+          },
         ),
         body: RefreshIndicator(
           onRefresh: _controller.refresh,
