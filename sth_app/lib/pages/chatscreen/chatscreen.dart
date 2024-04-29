@@ -32,6 +32,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               );
             },
+          onImageTap: () {
+            Navigator.of(context).pushReplacementNamed('/profilescreen');
+          },
         ),
         body: const Column(
           children: [
