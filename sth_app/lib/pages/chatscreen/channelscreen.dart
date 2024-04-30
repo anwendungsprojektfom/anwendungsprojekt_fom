@@ -41,7 +41,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
   }
 
   void _handleNewChat() async {
-    const otherUserId = 'Steven';
+    const otherUserId = 'students_organisation';
     Channel channel = await createChannel(otherUserId);
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
