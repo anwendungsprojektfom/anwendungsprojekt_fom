@@ -21,8 +21,10 @@ List<String> _imagePaths = [];
 List<String> _videoPaths = [];
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // Variable to store the current display mode
+
   DisplayMode _displayMode = DisplayMode.images;
+  String _userName = "Fit"; // Initial name
+
 
   // Function to open the gallery
   void _openGallery(int index) {
@@ -79,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           body: SizedBox.expand(
             child: Center(
               child: AspectRatio(
-                aspectRatio: 16 / 9, // Verhältnis von Breite zu Höhe des Videos
+                aspectRatio: 16 / 9,
                 child: VideoPlayer(
                   VideoPlayerController.file(File(_videoPaths[index])),
                 ),
@@ -101,6 +103,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
   }
+
+    // Function to load the user name from local storage
+  Future<void> _loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? userName = prefs.getString('name');
+    if (userName != null && userName.isNotEmpty) {
+      setState(() {
+        _userName = userName;
+      });
+    }
+  }
+  
 
   // Function to save image paths to local storage
   Future<void> _saveImagePathsToLocalStorage() async {
@@ -214,6 +228,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadAvatarImage();
     _loadImagesFromStorage();
     _loadVideosFromStorage();
+    _loadUserName();
   }
 
   @override
@@ -249,9 +264,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    const Text(
-                      "Fit",
-                      style: TextStyle(
+                    Text(
+                      _userName,
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
                         color: Colors.black,
