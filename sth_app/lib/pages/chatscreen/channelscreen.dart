@@ -26,6 +26,33 @@ class _ChannelListPageState extends State<ChannelListPage> {
     super.dispose();
   }
 
+  Future<Channel> createChannel(String otherUserId) async {
+    final channel = widget.client.channel(
+      'messaging',
+      extraData: {
+        'members': ['John', otherUserId],
+      },
+    );
+
+    await channel.create();
+    await channel.watch();
+
+    return channel;
+  }
+
+  void _handleNewChat() async {
+    const otherUserId = 'Steven';
+    Channel channel = await createChannel(otherUserId);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => StreamChannel(
+          channel: channel,
+          child: const ChatScreen(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: StreamChannelHeader(
@@ -50,6 +77,10 @@ class _ChannelListPageState extends State<ChannelListPage> {
               ),
             ),
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _handleNewChat,
+          child: const Icon(Icons.add),
         ),
       );
 }
