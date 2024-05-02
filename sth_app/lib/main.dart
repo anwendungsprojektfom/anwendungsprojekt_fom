@@ -47,8 +47,7 @@ class SthApp extends StatefulWidget {
 class _SthAppState extends State<SthApp> {
   Future<void> fetchData() async {
     try {
-      Map<String, dynamic> currentUserData =
-          await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
+      Map<String, dynamic> currentUserData = await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
 
       saveUserDataToSharedPreferences(currentUserData);
     } catch (e) {
@@ -80,15 +79,13 @@ class _SthAppState extends State<SthApp> {
               case '/homescreen':
                 return CustomPageRoute.generateRoute(const HomeScreen());
               case '/channelscreen':
-                return CustomPageRoute.generateRoute(
-                    ChannelListPage(client: globalClient));
+                return CustomPageRoute.generateRoute(ChannelListPage(client: globalClient));
               case '/profilescreen':
                 return CustomPageRoute.generateRoute(const ProfileScreen());
               case '/searchscreen':
                 return CustomPageRoute.generateRoute(const SearchScreen());
               case '/accountprofilescreen':
-                return CustomPageRoute.generateRoute(
-                    const AccountProfileScreen()); // Using RouteGenerator here
+                return CustomPageRoute.generateRoute(const AccountProfileScreen()); // Using RouteGenerator here
               default:
                 return null;
             }

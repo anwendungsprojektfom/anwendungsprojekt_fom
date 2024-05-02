@@ -20,18 +20,18 @@ class _ChatScreenState extends State<ChatScreen> {
         appBar: StreamChannelHeader(
           showBackButton: true,
           onBackPressed: () {
-              Navigator.of(context).pushReplacement(
-                CustomPageRoute.generateRoute(
-                  StreamChat(
-                    client: globalClient,
-                    child: StreamChannel(
-                      channel: globalChannel,
-                      child: ChannelListPage(client: globalClient),
-                    ),
+            Navigator.of(context).pushReplacement(
+              CustomPageRoute.generateRoute(
+                StreamChat(
+                  client: globalClient,
+                  child: StreamChannel(
+                    channel: globalChannel,
+                    child: ChannelListPage(client: globalClient),
                   ),
                 ),
-              );
-            },
+              ),
+            );
+          },
           onImageTap: () {
             Navigator.of(context).pushReplacementNamed('/profilescreen');
           },
