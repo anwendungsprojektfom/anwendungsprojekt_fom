@@ -19,8 +19,8 @@ void main() async {
 
   final client = StreamChatClient('ujgtsxqgs2kv');
 
-  await client.connectUser(User(id: 'test2'),
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdDIifQ.hfNj5j67fyf4z2UBwxQcOqQD6hT74F6bBY6x-aYXzrg');
+  await client.connectUser(User(id: 'John'),
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiSm9obiJ9.ZHqRf0hXB38pwMkr8WcnerUdViBRv-um8MEBigs3FXw');
 
   final channel = client.channel('messaging', id: 'flutterdevs');
   channel.watch();

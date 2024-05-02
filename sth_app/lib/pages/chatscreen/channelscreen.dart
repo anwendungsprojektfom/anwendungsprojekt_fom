@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sth_app/pages/chatscreen/chatscreen.dart';
-import 'package:sth_app/technical/technical.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 class ChannelListPage extends StatefulWidget {
@@ -27,13 +26,43 @@ class _ChannelListPageState extends State<ChannelListPage> {
     super.dispose();
   }
 
+  Future<Channel> createChannel(String otherUserId) async {
+    final channel = widget.client.channel(
+      'messaging',
+      extraData: {
+        'members': ['John', otherUserId],
+      },
+    );
+
+    await channel.create();
+    await channel.watch();
+
+    return channel;
+  }
+
+  void _handleNewChat() async {
+    const otherUserId = 'students_organisation';
+    Channel channel = await createChannel(otherUserId);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => StreamChannel(
+          channel: channel,
+          child: const ChatScreen(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: const CustomAppBar(
-          title: Text('Chats'),
-          onBack: true,
-          showChatIcon: false,
-          showSettings: false,
+        appBar: StreamChannelHeader(
+          showBackButton: true,
+          onBackPressed: () {
+            Navigator.of(context).pushReplacementNamed('/homescreen');
+          },
+          onImageTap: () {
+            Navigator.of(context).pushReplacementNamed('/profilescreen');
+          },
         ),
         body: RefreshIndicator(
           onRefresh: _controller.refresh,
@@ -48,6 +77,10 @@ class _ChannelListPageState extends State<ChannelListPage> {
               ),
             ),
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _handleNewChat,
+          child: const Icon(Icons.add),
         ),
       );
 }
