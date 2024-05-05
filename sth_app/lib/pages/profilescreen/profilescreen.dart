@@ -101,39 +101,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: _hashtags.map((String hashtag) {
-              return GestureDetector(
-                onTap: () {
-                  if (!_selectedHashtags.contains(hashtag)) {
-                    Navigator.pop(context, hashtag);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('The hashtag "$hashtag" has already been selected.'),
-                        duration: Duration(milliseconds: 1000),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                        },
+                        child: Icon(Icons.star_border, color: Colors.black),
                       ),
-                    );
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(20),
+                      SizedBox(width: 8),
+                      Text(
+                        'Add Hashtag',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Text(
-                    hashtag,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.black,
+                ],
+              ),
+              SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _hashtags.map((String hashtag) {
+                  return GestureDetector(
+                    onTap: () {
+                      if (!_selectedHashtags.contains(hashtag)) {
+                        Navigator.pop(context, hashtag);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('The hashtag "$hashtag" has already been selected.'),
+                            duration: Duration(milliseconds: 1000),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        hashtag,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              );
-            }).toList(),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
         );
       },
