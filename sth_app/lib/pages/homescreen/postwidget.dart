@@ -52,11 +52,18 @@ class PostWidget extends StatelessWidget {
                   child: Text('Error loading images'),
                 );
               } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                return Image.memory(
-                  base64Decode(snapshot.data!.first), // Display first image from the second account
-                  fit: BoxFit.cover,
-                  height: 250,
-                  width: double.infinity,
+                return SizedBox(
+                  height: 250, // Set a fixed height for the PageView
+                  child: PageView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return Image.memory(
+                        base64Decode(snapshot.data![index]),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      );
+                    },
+                  ),
                 );
               } else {
                 return const Center(
