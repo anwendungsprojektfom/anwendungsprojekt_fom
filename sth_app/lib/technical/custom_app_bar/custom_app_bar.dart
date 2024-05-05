@@ -30,7 +30,6 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
-    print(ModalRoute.of(context)?.settings.name);
     return AppBar(
       title: widget.title,
       centerTitle: true,

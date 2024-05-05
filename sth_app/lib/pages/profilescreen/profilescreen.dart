@@ -21,10 +21,8 @@ List<String> _imagePaths = [];
 List<String> _videoPaths = [];
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   DisplayMode _displayMode = DisplayMode.images;
   String _userName = "Fit"; // Initial name
-
 
   // Function to open the gallery
   void _openGallery(int index) {
@@ -104,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-    // Function to load the user name from local storage
+  // Function to load the user name from local storage
   Future<void> _loadUserName() async {
     final prefs = await SharedPreferences.getInstance();
     final String? userName = prefs.getString('name');
@@ -114,7 +112,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
   }
-  
 
   // Function to save image paths to local storage
   Future<void> _saveImagePathsToLocalStorage() async {
