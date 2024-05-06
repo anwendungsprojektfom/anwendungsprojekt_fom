@@ -60,6 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // Function to open the videos
   void _openVideo(int index) {
     Navigator.push(
       context,
@@ -95,86 +96,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // function for Hashtags-PopUP
-  void _showHashtagsModal(BuildContext context) async {
-    final selectedHashtag = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                        },
-                        child: Icon(Icons.star_border, color: Colors.black),
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                        'Add Hashtag',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: _hashtags.map((String hashtag) {
-                  return GestureDetector(
-                    onTap: () {
-                      if (!_selectedHashtags.contains(hashtag)) {
-                        Navigator.pop(context, hashtag);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('The hashtag "$hashtag" has already been selected.'),
-                            duration: Duration(milliseconds: 1000),
-                          ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        hashtag,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.black,
-                        ),
+// Function for Hashtags-popUP
+void _showHashtagsModal(BuildContext context) async {
+  final selectedHashtag = await showDialog<String>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {},
+                      child: Icon(Icons.star_border, color: Colors.black),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'Add Hashtag',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
                       ),
                     ),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _hashtags.map((String hashtag) {
+                return GestureDetector(
+                  onTap: () {
+                    if (!_selectedHashtags.contains(hashtag)) {
+                      Navigator.pop(context, hashtag);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('The hashtag "$hashtag" has already been selected.'),
+                          duration: Duration(milliseconds: 1000),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      hashtag,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 
-    if (selectedHashtag != null) {
-      setState(() {
-        _selectedHashtags.add(selectedHashtag);
-      });
-    }
+  if (selectedHashtag != null) {
+    setState(() {
+      _selectedHashtags.add(selectedHashtag);
+      _saveHashtagsToLocalStorage(_selectedHashtags);
+      pushHashtagsToFirebase(_selectedHashtags);
+    });
   }
+}
 
   // Function to load the avatar image from local storage
   Future<void> _loadAvatarImage() async {
@@ -187,7 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-    // Function to load the user name from local storage
+  // Function to load the user name from local storage
   Future<void> _loadUserName() async {
     final prefs = await SharedPreferences.getInstance();
     final String? userName = prefs.getString('name');
@@ -304,6 +306,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.pop(context);
   }
 
+  // Function to save hashtags to local storage
+  Future<void> _saveHashtagsToLocalStorage(List<String> hashtags) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('saved_hashtags', hashtags);
+  }
+
+  // Function to load hashtags from local storage
+  Future<void> _loadHashtagsFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? savedHashtags = prefs.getStringList('saved_hashtags');
+    if (savedHashtags != null && savedHashtags.isNotEmpty) {
+      setState(() {
+        _selectedHashtags = savedHashtags;
+      });
+    }
+  }
+
+  // Function to delete hashtags from local storage
+  Future<void> _deleteHashtagFromLocalStorage(String hashtag) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? savedHashtags = prefs.getStringList('saved_hashtags');
+    if (savedHashtags != null) {
+      savedHashtags.remove(hashtag);
+      await prefs.setStringList('saved_hashtags', savedHashtags);
+    }
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -311,6 +341,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadImagesFromStorage();
     _loadVideosFromStorage();
     _loadUserName();
+    _loadHashtagsFromStorage();
   }
 
 @override
@@ -384,6 +415,8 @@ Widget build(BuildContext context) {
                                           onTap: () {
                                             setState(() {
                                               _selectedHashtags.remove(hashtag);
+                                              _deleteHashtagFromLocalStorage(hashtag);
+                                              deleteHashtagFromFirebase(hashtag);
                                             });
                                           },
                                           child: Icon(Icons.cancel, size: 16),
