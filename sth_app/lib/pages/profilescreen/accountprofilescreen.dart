@@ -143,7 +143,7 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
                       color: Colors.black.withOpacity(0.1),
                     ),
                   ],
-                  color: Color.fromARGB(255, 255, 252, 252).withOpacity(0.7),
+                  color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
                 ),
                 // Text field for editing name
                 child: ProfileItem(
