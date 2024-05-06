@@ -53,7 +53,7 @@ class PostWidget extends StatelessWidget {
                 );
               } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                 return SizedBox(
-                  height: 250, // Set a fixed height for the PageView
+                  height: 200, // Set a fixed height for the PageView
                   child: PageView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
