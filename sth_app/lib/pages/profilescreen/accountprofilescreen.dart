@@ -123,9 +123,11 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
                   ),
                   child: CircleAvatar(
                     radius: 70,
-                    backgroundColor: Colors.grey[400],
+                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                    child: _avatarImage == null ? const Icon(Icons.add_photo_alternate, size: 70) : null,
+                    child: _avatarImage == null
+                        ? Icon(Icons.person, size: 90, color: Colors.blue)
+                        : null,
                   ),
                 ),
               ),

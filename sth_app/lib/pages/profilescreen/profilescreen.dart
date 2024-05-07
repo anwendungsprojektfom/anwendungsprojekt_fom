@@ -404,17 +404,27 @@ void _showHashtagsModal(BuildContext context) async {
                             MaterialPageRoute(builder: (context) => AccountProfileScreen()),
                           );
                         },
-                        child: CircleAvatar(
-                          radius: 46,
-                          backgroundColor: Colors.white,
-                          backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.black, width: 1),
+                        child: _avatarImage != null
+                          ? CircleAvatar(
+                              radius: 46,
+                              backgroundColor: Colors.white,
+                              backgroundImage: FileImage(_avatarImage!),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.black, width: 1),
+                                ),
+                              ),
+                            )
+                          : CircleAvatar(
+                              radius: 46,
+                              backgroundColor: Colors.white,
+                              child: Icon(
+                                Icons.person,
+                                size: 72,
+                                color: Colors.blue,
+                              ),
                             ),
-                          ),
-                        ),
                       ),
                     ),
                     const SizedBox(height: 15),
