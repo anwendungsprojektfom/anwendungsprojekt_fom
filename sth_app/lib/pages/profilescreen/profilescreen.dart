@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:sth_app/pages/profilescreen/accountprofilescreen.dart';
 
 enum DisplayMode { images, videos }
 
@@ -396,14 +397,22 @@ void _showHashtagsModal(BuildContext context) async {
                     CircleAvatar(
                       radius: 48,
                       backgroundColor: Colors.black,
-                      child: CircleAvatar(
-                        radius: 46,
-                        backgroundColor: Colors.white,
-                        backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 1),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => AccountProfileScreen()),
+                          );
+                        },
+                        child: CircleAvatar(
+                          radius: 46,
+                          backgroundColor: Colors.white,
+                          backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.black, width: 1),
+                            ),
                           ),
                         ),
                       ),

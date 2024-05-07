@@ -107,14 +107,13 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
           showChatIcon: false,
           showSettings: false,
           route: '/profilescreen'),
-      body: SingleChildScrollView(
+        body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(22, 0, 20, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 10),
-              // Container to display avatar image and handle image picking
+              const SizedBox(height: 0),
               GestureDetector(
                 onTap: _pickImage,
                 child: Container(
