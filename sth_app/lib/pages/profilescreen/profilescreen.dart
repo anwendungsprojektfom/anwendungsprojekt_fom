@@ -431,7 +431,7 @@ Widget build(BuildContext context) {
                         ),
                       ) 
                       : Text(
-                          '#Hashtag',
+                          'Add Hashtag',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
