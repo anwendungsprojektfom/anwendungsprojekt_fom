@@ -142,11 +142,27 @@ void _showHashtagsModal(BuildContext context) async {
                     if (!_selectedHashtags.contains(hashtag)) {
                       Navigator.pop(context, hashtag);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('The hashtag "$hashtag" has already been selected.'),
-                          duration: Duration(milliseconds: 1000),
-                        ),
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Container(
+                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                              child: Text(
+                                'The hashtag "$hashtag" has already been selected.',
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
                       );
                     }
                   },
@@ -154,7 +170,7 @@ void _showHashtagsModal(BuildContext context) async {
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                     child: Text(
                       hashtag,
@@ -447,7 +463,7 @@ void _showHashtagsModal(BuildContext context) async {
                           ),
                         ) 
                         : Text(
-                            '#Hashtag',
+                            'Add Hashtag',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
