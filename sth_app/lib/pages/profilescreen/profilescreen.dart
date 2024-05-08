@@ -19,12 +19,12 @@ class ProfileScreen extends StatefulWidget {
 File? _avatarImage;
 List<String> _imagePaths = [];
 List<String> _videoPaths = [];
+List<String> _selectedHashtags = [];
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   DisplayMode _displayMode = DisplayMode.images;
-  String _userName = "Fit"; // Initial name
-
+  String _userName = "Fit";
+  final List<String> _hashtags = ["Soccer", "Ice Hockey", "Ju-Jitsu"];
 
   // Function to open the gallery
   void _openGallery(int index) {
@@ -58,6 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // Function to open the videos
   void _openVideo(int index) {
     Navigator.push(
       context,
@@ -93,6 +94,88 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+// Function for Hashtags-popUP
+  void _showHashtagsModal(BuildContext context) async {
+    final selectedHashtag = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {},
+                        child: const Icon(Icons.star_border, color: Colors.black),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Add Hashtag',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _hashtags.map((String hashtag) {
+                  return GestureDetector(
+                    onTap: () {
+                      if (!_selectedHashtags.contains(hashtag)) {
+                        Navigator.pop(context, hashtag);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('The hashtag "$hashtag" has already been selected.'),
+                            duration: const Duration(milliseconds: 1000),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        hashtag,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (selectedHashtag != null) {
+      setState(() {
+        _selectedHashtags.add(selectedHashtag);
+        _saveHashtagsToLocalStorage(_selectedHashtags);
+        pushHashtagsToFirebase(_selectedHashtags);
+      });
+    }
+  }
+
   // Function to load the avatar image from local storage
   Future<void> _loadAvatarImage() async {
     final prefs = await SharedPreferences.getInstance();
@@ -104,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-    // Function to load the user name from local storage
+  // Function to load the user name from local storage
   Future<void> _loadUserName() async {
     final prefs = await SharedPreferences.getInstance();
     final String? userName = prefs.getString('name');
@@ -114,7 +197,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
   }
-  
 
   // Function to save image paths to local storage
   Future<void> _saveImagePathsToLocalStorage() async {
@@ -222,6 +304,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.pop(context);
   }
 
+  // Function to save hashtags to local storage
+  Future<void> _saveHashtagsToLocalStorage(List<String> hashtags) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('saved_hashtags', hashtags);
+  }
+
+  // Function to load hashtags from local storage
+  Future<void> _loadHashtagsFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? savedHashtags = prefs.getStringList('saved_hashtags');
+    if (savedHashtags != null && savedHashtags.isNotEmpty) {
+      setState(() {
+        _selectedHashtags = savedHashtags;
+      });
+    }
+  }
+
+  // Function to delete hashtags from local storage
+  Future<void> _deleteHashtagFromLocalStorage(String hashtag) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? savedHashtags = prefs.getStringList('saved_hashtags');
+    if (savedHashtags != null) {
+      savedHashtags.remove(hashtag);
+      await prefs.setStringList('saved_hashtags', savedHashtags);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -229,6 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadImagesFromStorage();
     _loadVideosFromStorage();
     _loadUserName();
+    _loadHashtagsFromStorage();
   }
 
   @override
@@ -273,13 +383,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      "Flutter Developer",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.black54,
-                      ),
+                    GestureDetector(
+                      onTap: () {
+                        _showHashtagsModal(context);
+                      },
+                      child: _selectedHashtags.isNotEmpty
+                          ? Container(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: _selectedHashtags
+                                      .map((String hashtag) => Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                                            child: Material(
+                                              borderRadius: BorderRadius.circular(16),
+                                              color: Colors.grey[300],
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      hashtag,
+                                                      style: const TextStyle(fontSize: 12),
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _selectedHashtags.remove(hashtag);
+                                                          _deleteHashtagFromLocalStorage(hashtag);
+                                                          deleteHashtagFromFirebase(hashtag);
+                                                        });
+                                                      },
+                                                      child: const Icon(Icons.cancel, size: 16),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                ),
+                              ),
+                            )
+                          : const Text(
+                              'Add Hashtag',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Colors.black54,
+                              ),
+                            ),
                     ),
                   ],
                 ),
