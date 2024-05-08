@@ -21,12 +21,10 @@ List<String> _imagePaths = [];
 List<String> _videoPaths = [];
 List<String> _selectedHashtags = [];
 
-
 class _ProfileScreenState extends State<ProfileScreen> {
-
   DisplayMode _displayMode = DisplayMode.images;
   String _userName = "Fit";
-  List<String> _hashtags = ["Soccer", "Ice Hockey", "Ju-Jitsu"];
+  final List<String> _hashtags = ["Soccer", "Ice Hockey", "Ju-Jitsu"];
 
   // Function to open the gallery
   void _openGallery(int index) {
@@ -97,86 +95,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 // Function for Hashtags-popUP
-void _showHashtagsModal(BuildContext context) async {
-  final selectedHashtag = await showDialog<String>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: Icon(Icons.star_border, color: Colors.black),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Add Hashtag',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
+  void _showHashtagsModal(BuildContext context) async {
+    final selectedHashtag = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {},
+                        child: const Icon(Icons.star_border, color: Colors.black),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _hashtags.map((String hashtag) {
-                return GestureDetector(
-                  onTap: () {
-                    if (!_selectedHashtags.contains(hashtag)) {
-                      Navigator.pop(context, hashtag);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('The hashtag "$hashtag" has already been selected.'),
-                          duration: Duration(milliseconds: 1000),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Add Hashtag',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
                         ),
-                      );
-                    }
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      hashtag,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _hashtags.map((String hashtag) {
+                  return GestureDetector(
+                    onTap: () {
+                      if (!_selectedHashtags.contains(hashtag)) {
+                        Navigator.pop(context, hashtag);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('The hashtag "$hashtag" has already been selected.'),
+                            duration: const Duration(milliseconds: 1000),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        hashtag,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
-      );
-    },
-  );
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
 
-  if (selectedHashtag != null) {
-    setState(() {
-      _selectedHashtags.add(selectedHashtag);
-      _saveHashtagsToLocalStorage(_selectedHashtags);
-      pushHashtagsToFirebase(_selectedHashtags);
-    });
+    if (selectedHashtag != null) {
+      setState(() {
+        _selectedHashtags.add(selectedHashtag);
+        _saveHashtagsToLocalStorage(_selectedHashtags);
+        pushHashtagsToFirebase(_selectedHashtags);
+      });
+    }
   }
-}
 
   // Function to load the avatar image from local storage
   Future<void> _loadAvatarImage() async {
@@ -333,7 +331,6 @@ void _showHashtagsModal(BuildContext context) async {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -344,243 +341,243 @@ void _showHashtagsModal(BuildContext context) async {
     _loadHashtagsFromStorage();
   }
 
-@override
-Widget build(BuildContext context) {
-  Size size = MediaQuery.of(context).size;
-  List<String> itemsToDisplay = _imagePaths;
-  return Scaffold(
-    appBar: const CustomAppBar(title: Text('Profile Page'), onBack: false, showChatIcon: false, showSettings: true),
-    body: Stack(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: size.height * 0.23,
-              color: Colors.white,
-              child: Column(
-                children: [
-                  const SizedBox(height: 1),
-                  CircleAvatar(
-                    radius: 48,
-                    backgroundColor: Colors.black,
-                    child: CircleAvatar(
-                      radius: 46,
-                      backgroundColor: Colors.white,
-                      backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.black, width: 1),
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    List<String> itemsToDisplay = _imagePaths;
+    return Scaffold(
+      appBar: const CustomAppBar(title: Text('Profile Page'), onBack: false, showChatIcon: false, showSettings: true),
+      body: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                height: size.height * 0.23,
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 1),
+                    CircleAvatar(
+                      radius: 48,
+                      backgroundColor: Colors.black,
+                      child: CircleAvatar(
+                        radius: 46,
+                        backgroundColor: Colors.white,
+                        backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black, width: 1),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 15),
-                  Text(
-                    _userName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                      color: Colors.black,
+                    const SizedBox(height: 15),
+                    Text(
+                      _userName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  GestureDetector(
-                    onTap: () {
-                      _showHashtagsModal(context);
-                    },
-                    child: _selectedHashtags.isNotEmpty ? 
-                      Container(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: _selectedHashtags
-                              .map((String hashtag) => Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4),
-                                child: Material(
-                                  borderRadius: BorderRadius.circular(16), 
-                                  color: Colors.grey[300],
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min, 
-                                      children: [
-                                        Text(
-                                          hashtag,
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                        SizedBox(width: 4),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              _selectedHashtags.remove(hashtag);
-                                              _deleteHashtagFromLocalStorage(hashtag);
-                                              deleteHashtagFromFirebase(hashtag);
-                                            });
-                                          },
-                                          child: Icon(Icons.cancel, size: 16),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                    const SizedBox(height: 4),
+                    GestureDetector(
+                      onTap: () {
+                        _showHashtagsModal(context);
+                      },
+                      child: _selectedHashtags.isNotEmpty
+                          ? Container(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: _selectedHashtags
+                                      .map((String hashtag) => Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                                            child: Material(
+                                              borderRadius: BorderRadius.circular(16),
+                                              color: Colors.grey[300],
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      hashtag,
+                                                      style: const TextStyle(fontSize: 12),
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _selectedHashtags.remove(hashtag);
+                                                          _deleteHashtagFromLocalStorage(hashtag);
+                                                          deleteHashtagFromFirebase(hashtag);
+                                                        });
+                                                      },
+                                                      child: const Icon(Icons.cancel, size: 16),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
                                 ),
-                              ))
-                              .toList(),
-                          ),
-                        ),
-                      ) 
-                      : Text(
-                          'Add Hashtag',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: Colors.black54,
-                          ),
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Material(
-                elevation: 3,
-                shadowColor: Colors.black26,
-                child: SizedBox(
-                  height: 55,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.black, width: 2),
+                              ),
+                            )
+                          : const Text(
+                              'Add Hashtag',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Colors.black54,
+                              ),
                             ),
-                            child: IconButton(
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Material(
+                  elevation: 3,
+                  shadowColor: Colors.black26,
+                  child: SizedBox(
+                    height: 55,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.black, width: 2),
+                              ),
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                alignment: Alignment.center,
+                                icon: const Icon(Icons.image, size: 30, color: Colors.black),
+                                onPressed: () {
+                                  setState(() {
+                                    _displayMode = DisplayMode.images;
+                                  });
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.black, width: 2),
+                              ),
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                alignment: Alignment.center,
+                                icon: const Icon(Icons.play_circle, size: 30, color: Colors.black),
+                                onPressed: () {
+                                  setState(() {
+                                    _displayMode = DisplayMode.videos;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black, width: 2),
+                          ),
+                          child: IconButton(
                               padding: EdgeInsets.zero,
                               alignment: Alignment.center,
-                              icon: const Icon(Icons.image, size: 30, color: Colors.black),
-                              onPressed: () {
-                                setState(() {
-                                  _displayMode = DisplayMode.images;
-                                });
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.black, width: 2),
-                            ),
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              alignment: Alignment.center,
-                              icon: const Icon(Icons.play_circle, size: 30, color: Colors.black),
-                              onPressed: () {
-                                setState(() {
-                                  _displayMode = DisplayMode.videos;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 10),
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.black, width: 2),
+                              icon: const Icon(Icons.add, size: 30, color: Colors.black),
+                              onPressed: () async {
+                                if (_displayMode == DisplayMode.images) {
+                                  _uploadGalleryImages();
+                                } else if (_displayMode == DisplayMode.videos) {
+                                  _uploadVideos();
+                                }
+                              }),
                         ),
-                        child: IconButton(
-                            padding: EdgeInsets.zero,
-                            alignment: Alignment.center,
-                            icon: const Icon(Icons.add, size: 30, color: Colors.black),
-                            onPressed: () async {
-                              if (_displayMode == DisplayMode.images) {
-                                _uploadGalleryImages();
-                              } else if (_displayMode == DisplayMode.videos) {
-                                _uploadVideos();
-                              }
-                            }),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            // Display images
-            if (_displayMode == DisplayMode.images)
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 9,
-                    crossAxisSpacing: 9,
-                  ),
-                  itemCount: itemsToDisplay.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () => _openGallery(index),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            image: FileImage(File(itemsToDisplay[index])),
-                            fit: BoxFit.cover,
+              // Display images
+              if (_displayMode == DisplayMode.images)
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 9,
+                      crossAxisSpacing: 9,
+                    ),
+                    itemCount: itemsToDisplay.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () => _openGallery(index),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: FileImage(File(itemsToDisplay[index])),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            // Display of videos
-            if (_displayMode == DisplayMode.videos)
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 9,
-                    crossAxisSpacing: 9,
+                      );
+                    },
                   ),
-                  itemCount: _videoPaths.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () => _openVideo(index),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey,
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.play_circle,
-                            size: 40,
-                            color: Colors.white,
+                ),
+              // Display of videos
+              if (_displayMode == DisplayMode.videos)
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 9,
+                      crossAxisSpacing: 9,
+                    ),
+                    itemCount: _videoPaths.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () => _openVideo(index),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.grey,
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.play_circle,
+                              size: 40,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-          ],
-        )
-      ],
-    ),
-    bottomNavigationBar: const CustomBottomNavigationBar(
-      currentIndex: 2,
-    ),
-  );
-}
+            ],
+          )
+        ],
+      ),
+      bottomNavigationBar: const CustomBottomNavigationBar(
+        currentIndex: 2,
+      ),
+    );
+  }
 }

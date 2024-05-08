@@ -158,4 +158,3 @@ Future<void> deleteHashtagFromFirebase(String hashtag) async {
     print('Error deleting hashtag from Firebase: $e');
   }
 }
-
