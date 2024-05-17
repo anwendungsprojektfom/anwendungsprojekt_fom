@@ -24,12 +24,10 @@ List<String> _imagePaths = [];
 List<String> _videoPaths = [];
 List<String> _selectedHashtags = [];
 
-
 class _ProfileScreenState extends State<ProfileScreen> {
-
   DisplayMode _displayMode = DisplayMode.images;
   String _userName = "Fit";
-  List<String> _hashtags = ["Soccer", "Ice Hockey", "Ju-Jitsu"];
+  final List<String> _hashtags = ["Soccer", "Ice Hockey", "Ju-Jitsu"];
 
   // Function to open the gallery
   void _openGallery(int index) {
@@ -65,11 +63,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // Function to open the videos
   void _openVideo(int index) {
-    VideoPlayerController _controller = VideoPlayerController.file(File(_videoPaths[index]));
-    _controller.initialize().then((_) {
-      _controller.play();
+    VideoPlayerController controller = VideoPlayerController.file(File(_videoPaths[index]));
+    controller.initialize().then((_) {
+      controller.play();
     });
-    
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -85,16 +83,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             leading: IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
-                _controller.pause();
-                _controller.dispose();
+                controller.pause();
+                controller.dispose();
                 Navigator.pop(context);
               },
             ),
           ),
           body: Center(
             child: AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
+              aspectRatio: controller.value.aspectRatio,
+              child: VideoPlayer(controller),
             ),
           ),
         ),
@@ -103,102 +101,102 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 // Function for Hashtags-popUP
-void _showHashtagsModal(BuildContext context) async {
-  final selectedHashtag = await showDialog<String>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: Icon(Icons.star_border, color: Colors.black),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Add Hashtag',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
+  void _showHashtagsModal(BuildContext context) async {
+    final selectedHashtag = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {},
+                        child: const Icon(Icons.star_border, color: Colors.black),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _hashtags.map((String hashtag) {
-                return GestureDetector(
-                  onTap: () {
-                    if (!_selectedHashtags.contains(hashtag)) {
-                      Navigator.pop(context, hashtag);
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            content: Container(
-                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                              child: Text(
-                                'The hashtag "$hashtag" has already been selected.',
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text('OK'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Text(
-                      hashtag,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.black,
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Add Hashtag',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
-      );
-    },
-  );
+                ],
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _hashtags.map((String hashtag) {
+                  return GestureDetector(
+                    onTap: () {
+                      if (!_selectedHashtags.contains(hashtag)) {
+                        Navigator.pop(context, hashtag);
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                                child: Text(
+                                  'The hashtag "$hashtag" has already been selected.',
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text(
+                        hashtag,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
 
-  if (selectedHashtag != null) {
-    setState(() {
-      _selectedHashtags.add(selectedHashtag);
-      _saveHashtagsToLocalStorage(_selectedHashtags);
-      pushHashtagsToFirebase(_selectedHashtags);
-    });
+    if (selectedHashtag != null) {
+      setState(() {
+        _selectedHashtags.add(selectedHashtag);
+        _saveHashtagsToLocalStorage(_selectedHashtags);
+        pushHashtagsToFirebase(_selectedHashtags);
+      });
+    }
   }
-}
 
   // Function to load the avatar image from local storage
   Future<void> _loadAvatarImage() async {
@@ -328,7 +326,7 @@ void _showHashtagsModal(BuildContext context) async {
     Navigator.pop(context);
   }
 
-  // Function to show video thumbnail 
+  // Function to show video thumbnail
   Future<Uint8List?> _generateThumbnail(String videoPath) async {
     final thumbnail = await VideoThumbnail.thumbnailData(
       video: videoPath,
@@ -366,7 +364,6 @@ void _showHashtagsModal(BuildContext context) async {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -401,30 +398,30 @@ void _showHashtagsModal(BuildContext context) async {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => AccountProfileScreen()),
+                            MaterialPageRoute(builder: (context) => const AccountProfileScreen()),
                           );
                         },
                         child: _avatarImage != null
-                          ? CircleAvatar(
-                              radius: 46,
-                              backgroundColor: Colors.white,
-                              backgroundImage: FileImage(_avatarImage!),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.black, width: 1),
+                            ? CircleAvatar(
+                                radius: 46,
+                                backgroundColor: Colors.white,
+                                backgroundImage: FileImage(_avatarImage!),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.black, width: 1),
+                                  ),
+                                ),
+                              )
+                            : const CircleAvatar(
+                                radius: 46,
+                                backgroundColor: Colors.white,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 72,
+                                  color: Colors.blue,
                                 ),
                               ),
-                            )
-                          : CircleAvatar(
-                              radius: 46,
-                              backgroundColor: Colors.white,
-                              child: Icon(
-                                Icons.person,
-                                size: 72,
-                                color: Colors.blue,
-                              ),
-                            ),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -441,54 +438,54 @@ void _showHashtagsModal(BuildContext context) async {
                       onTap: () {
                         _showHashtagsModal(context);
                       },
-                      child: _selectedHashtags.isNotEmpty ? 
-                        Container(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: _selectedHashtags
-                                .map((String hashtag) => Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(16), 
-                                    color: Colors.grey[300],
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 8),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min, 
-                                        children: [
-                                          Text(
-                                            hashtag,
-                                            style: TextStyle(fontSize: 12),
-                                          ),
-                                          SizedBox(width: 4),
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                _selectedHashtags.remove(hashtag);
-                                                _deleteHashtagFromLocalStorage(hashtag);
-                                                deleteHashtagFromFirebase(hashtag);
-                                              });
-                                            },
-                                            child: Icon(Icons.cancel, size: 16),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ))
-                                .toList(),
+                      child: _selectedHashtags.isNotEmpty
+                          ? Container(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: _selectedHashtags
+                                      .map((String hashtag) => Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                                            child: Material(
+                                              borderRadius: BorderRadius.circular(16),
+                                              color: Colors.grey[300],
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      hashtag,
+                                                      style: const TextStyle(fontSize: 12),
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _selectedHashtags.remove(hashtag);
+                                                          _deleteHashtagFromLocalStorage(hashtag);
+                                                          deleteHashtagFromFirebase(hashtag);
+                                                        });
+                                                      },
+                                                      child: const Icon(Icons.cancel, size: 16),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                ),
+                              ),
+                            )
+                          : const Text(
+                              'Add Hashtag',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Colors.black54,
+                              ),
                             ),
-                          ),
-                        ) 
-                        : Text(
-                            'Add Hashtag',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: Colors.black54,
-                            ),
-                          ),
                     ),
                   ],
                 ),
@@ -598,8 +595,8 @@ void _showHashtagsModal(BuildContext context) async {
               // Display of videos
               if (_displayMode == DisplayMode.videos)
                 Expanded(
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     mainAxisSpacing: 9,
                     crossAxisSpacing: 9,
@@ -614,7 +611,7 @@ void _showHashtagsModal(BuildContext context) async {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return Container(
                               color: Colors.grey,
-                              child: Center(
+                              child: const Center(
                                 child: CircularProgressIndicator(),
                               ),
                             );
@@ -622,7 +619,7 @@ void _showHashtagsModal(BuildContext context) async {
                           if (snapshot.hasError || snapshot.data == null) {
                             return Container(
                               color: Colors.grey,
-                              child: Center(
+                              child: const Center(
                                 child: Icon(
                                   Icons.error_outline,
                                   color: Colors.white,
@@ -643,8 +640,7 @@ void _showHashtagsModal(BuildContext context) async {
                       ),
                     );
                   },
-                )
-                ),
+                )),
             ],
           )
         ],
