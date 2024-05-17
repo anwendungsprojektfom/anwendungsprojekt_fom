@@ -53,7 +53,7 @@ Future<void> updateUsername(String newUsername) async {
   }
 }
 
-// Push profile details from accountprofilescreen to Firestore Cloud
+// Push profile details from accountprofilescreen to Cloud Firestore
 Future<void> updateUserData({
   required String name,
   required String phone,
@@ -148,5 +148,38 @@ Future<bool> uploadVideoFileToFirebase(File videofile) async {
   } catch (e) {
     print('error uploading the video: $e');
     rethrow;
+  }
+}
+
+// Push hashtags from profilescreen to Cloud Firestore
+Future<void> pushHashtagsToFirebase(List<String> hashtags) async {
+  try {
+    const String userId = 'JN2dcl4RbBNSs7VGEbYZ';
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+    if (hashtags.length > 3) {
+      throw Exception('May allowed elements: 3');
+    }
+
+    await userRef.update({
+      'selectedHashtags': hashtags,
+    });
+  } catch (e) {
+    print('Error pushing hashtag to Firebase: $e');
+    rethrow;
+  }
+}
+
+//Delete hashtag from Cloud Firestore
+Future<void> deleteHashtagFromFirebase(String hashtag) async {
+  try {
+    const String userId = 'JN2dcl4RbBNSs7VGEbYZ';
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+    await userRef.update({
+      'selectedHashtags': FieldValue.arrayRemove([hashtag]),
+    });
+  } catch (e) {
+    print('Error deleting hashtag from Firebase: $e');
   }
 }

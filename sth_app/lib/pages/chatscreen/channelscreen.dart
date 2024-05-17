@@ -63,6 +63,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
           onImageTap: () {
             Navigator.of(context).pushReplacementNamed('/profilescreen');
           },
+          title: const Text("Chats"),
         ),
         body: RefreshIndicator(
           onRefresh: _controller.refresh,
