@@ -16,19 +16,23 @@ Future<void> signUpWithEmailAndPassword(String email, String password) async {
 }
 
 Future<Map<String, dynamic>> getCurrentUserData(String userId) async {
-  DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  DocumentSnapshot documentSnapshot =
+      await FirebaseFirestore.instance.collection('users').doc(userId).get();
   // Document data is available in documentSnapshot.data()
-  Map<String, dynamic> userData = documentSnapshot.data() as Map<String, dynamic>;
+  Map<String, dynamic> userData =
+      documentSnapshot.data() as Map<String, dynamic>;
   return (userData);
 }
 
 Future<String> getCurrentUserName() async {
-  Map<String, dynamic> userData = await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
+  Map<String, dynamic> userData =
+      await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
   return userData['name'];
 }
 
 Future<String> getCurrentUserIdToken() async {
-  Map<String, dynamic> userData = await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
+  Map<String, dynamic> userData =
+      await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
   return userData['uid'];
 }
 
@@ -39,7 +43,8 @@ Future<void> updateUsername(String newUsername) async {
     if (user != null) {
       String uid = user.uid;
 
-      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
 
       DocumentReference userDoc = users.doc(uid);
 
@@ -80,7 +85,8 @@ Future<bool> uploadAvatarImageToFirebase(File imageFile) async {
     final storageRef = FirebaseStorage.instance.ref();
     final fileName = imageFile.path.split("/").last;
     final timestamp = DateTime.now().microsecondsSinceEpoch;
-    final uploadRef = storageRef.child("$userId/uploads/avatarImages/$timestamp-$fileName");
+    final uploadRef =
+        storageRef.child("$userId/uploads/avatarImages/$timestamp-$fileName");
     await uploadRef.putFile(imageFile);
 
     return true;
@@ -98,7 +104,8 @@ Future<bool> uploadGaleryImageToFirebase(File imageFile) async {
     final storageRef = FirebaseStorage.instance.ref();
     final fileName = imageFile.path.split("/").last;
     final timestamp = DateTime.now().microsecondsSinceEpoch;
-    final uploadRef = storageRef.child("$userId/uploads/galery/$timestamp-$fileName");
+    final uploadRef =
+        storageRef.child("$userId/uploads/galery/$timestamp-$fileName");
     await uploadRef.putFile(imageFile);
 
     return true;
@@ -116,7 +123,8 @@ Future<bool> uploadVideoFileToFirebase(File videofile) async {
     final storageRef = FirebaseStorage.instance.ref();
     final fileName = videofile.path.split("/").last;
     final timestamp = DateTime.now().microsecondsSinceEpoch;
-    final uploadRef = storageRef.child("$userId/uploads/videos/$timestamp-$fileName");
+    final uploadRef =
+        storageRef.child("$userId/uploads/videos/$timestamp-$fileName");
     await uploadRef.putFile(videofile);
 
     return true;
@@ -156,5 +164,27 @@ Future<void> deleteHashtagFromFirebase(String hashtag) async {
     });
   } catch (e) {
     print('Error deleting hashtag from Firebase: $e');
+  }
+}
+
+// Implement search method in Firestore
+
+Future<List<Map<String, dynamic>>> searchUsersByHashtags(String hashtag) async {
+  try {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('hashtags', arrayContains: hashtag)
+        .get();
+
+    if (querySnapshot.docs.isEmpty) {
+      return [];
+    }
+
+    return querySnapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
+  } catch (e) {
+    print('Error searching users: $e');
+    return [];
   }
 }
