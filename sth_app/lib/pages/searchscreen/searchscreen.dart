@@ -8,8 +8,21 @@ class SearchScreen extends StatefulWidget {
   _SearchScreenState createState() => _SearchScreenState();
 }
 
+// Weiter oben im Code: Import-Anweisungen und Klasse beibehalten
+
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+  List<Map<String, dynamic>> searchResults = [];
+
+  void performSearch() async {
+    String searchQuery = _searchController.text.trim();
+    if (searchQuery.startsWith('#')) {
+      var results = await searchUsersByHashtags(searchQuery);
+      setState(() {
+        searchResults = results;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +44,26 @@ class _SearchScreenState extends State<SearchScreen> {
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
               ),
+              onSubmitted: (value) => performSearch(),
             ),
           ),
-          const Expanded(
-            child: Center(
-              child: Text('This is our searchscreen.'),
-            ),
+          Expanded(
+            child: searchResults.isEmpty
+                ? const Center(child: Text('No results found.'))
+                : ListView.builder(
+                    itemCount: searchResults.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(searchResults[index]['username']),
+                        subtitle:
+                            Text(searchResults[index]['hashtags'].join(', ')),
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, searchResults[index]['profileUrl']);
+                        },
+                      );
+                    },
+                  ),
           ),
         ],
       ),
