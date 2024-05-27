@@ -1,0 +1,62 @@
+\chapter{Profile-Screen \& Accountprofile-Screen}
+In diesem Kapitel wird sowohl auf die Umsetzung der Flutter-Komponenten für den Profile-Screen als auch den Accountprofile-Screen des Projekts eingegangen.
+Dabei liegt der Fokus auf die konzeptionelle Gestaltung und Implementierung beider App-Seiten, die es beispielsweise Benutzern ermöglichen, ihr Profilbild sowie multimediale Inhalte wie Bilder und Videos zu verwalten, aber auch personenbezogene Daten sicher abzuspeichern. 
+Diese Funktionalitäten werden dabei unter Einsatz verschiedener Flutter-Pakete und Kernfunktionen der Dart-Programmiersprache umgesetzt. 
+\\
+Beginnend mit dem Profile-Screen, wird eine StatefulWidget-Klasse verwendet, die Zustandsänderungen verfolgt und das Benutzerinterface entsprechend aktualisiert.
+Verschiedene Funktionen werden definiert, um auf Benutzerinteraktionen zu reagieren, beispielsweise das Öffnen von Galerieinhalten, das Laden von Bildern und Videos aus dem lokalen Speicher, das Hochladen von Medieninhalten auf Firebase sowie das Löschen von Bildern und Videos aus der Ansicht.
+Darüber hinaus werden Methoden implementiert, um die Anwendungszustände zu verwalten, Benutzereingaben zu verarbeiten und Multimedia-Inhalte wie Bilder und Videos sicher zwischen dem lokalen Speicher, der in der Regel durch ``shared preferences'' verwaltet wird, und dem Backend in Firebase zu übertragen. 
+Dadurch werden die Benutzerdaten effizient synchronisiert und sicher in der Cloud gespeichert, wodurch Datenschutz und Datensicherheit gewährleistet werden. 
+Bei Bedarf können diese Daten dann nahtlos abgerufen und aktualisiert werden. Dabei spielen bei der Implementierung dieser Features folgende Methoden eine entscheidende Rolle:
+\\``build'' ist die Methode, die das Benutzerinterface basierend auf dem aktuellen Zustand der StatefulWidget-Klasse aufbaut. Sie ist der Ausgangspunkt für den Aufbau der UI-Elemente und ermöglicht die dynamische Erstellung und Aktualisierung des Bildschirms. 
+Die Methode ``initState'' spielt eine wichtige Rolle bei der Initialisierung des Zustands der StatefulWidget-Klasse. Hier werden unter anderem Informationen aus dem lokalen Speicher geladen und andere vorbereitende Maßnahmen getroffen, um das Benutzerinterface entsprechend anzupassen und eine konsistente Benutzererfahrung zu gewährleisten. 
+Diese beiden Methoden bilden das Rückgrat des Profile-Screens und ermöglichen es, mithilfe von weiteren Methoden, die Benutzeroberfläche zu strukturieren und den Zustand der App zu verwalten.
+Zusätzliche Methoden wie ``openGallery'' und ``openVideo'' sind von entscheidender Bedeutung, um dem Benutzer die Möglichkeit zu geben, Bilder und Videos auszuwählen und anzuzeigen. 
+Durch das Öffnen neuer Bildschirmfenster bieten sie eine intuitive Benutzeroberfläche und ermöglichen es dem Benutzer, Inhalte zu erkunden. 
+Darüber hinaus bieten sie Funktionen zum Anzeigen, Schließen und Löschen von Inhalten, was die Interaktivität und Benutzerfreundlichkeit der STH-App verbessert.
+Methoden wie ``loadAvatarImage'' und ``loadUserName'' spielen eine essenzielle Rolle, um den Avatar des Benutzers und seinen Benutzernamen aus dem lokalen Speicher zu laden. 
+Diese Informationen werden wiederum aus dem Accountprofile-Screen bezogen, was eine Integration und eine personalisierte Anpassung des Benutzerinterfaces ermöglicht. 
+Durch das Laden dieser Daten können Benutzer ihre Profile individuell gestalten und ein konsistentes Benutzererlebnis über verschiedene Bildschirme hinweg gewährleisten. 
+Im Kontext der Datenschutzsicherheit spielen Methoden wie ``saveImagePathsToLocalStorage'', ``saveImage'', ``loadImagesFromStorage'' und ``uploadGalleryImages'' eine entscheidende Rolle beim Speichern, Laden und Hochladen von Bildern. 
+Diese Methoden ermöglichen es Benutzern, ihre Bilder sowohl lokal im lokalen Speicher über die SharedPreferences als auch in der Cloud über das Backend in Firebase sicher zu verwalten und zu teilen. 
+Durch die Verwendung dieser Methoden wird die Integrität der Benutzerdaten gewahrt und gleichzeitig eine zuverlässige Speicherung und Übertragung von Bildinhalten gewährleistet. 
+Ähnlich wichtig sind Methoden wie ``saveVideoPathsToLocalStorage'', ``saveVideo'', ``loadVideosFromStorage'' und ``uploadVideos'' für die Verwaltung von Videos.
+Sie ermöglichen es dem Benutzer, multimediale Inhalte nahtlos zu verwalten und zu teilen. Dabei werden die Videodaten sowohl lokal im lokalen Speicher gespeichert als auch über das Backend in Firebase hochgeladen, wo sie für weitere Verwendungszwecke verfügbar sind.
+Diese Methoden spielen somit eine essenzielle Rolle bei der Sicherung und Bereitstellung von Videoinhalten für die Benutzer der App.
+Um dem Benutzer die Kontrolle über seine Inhalte zu geben, dienen ``deleteImage'' und ``deleteVideo'' dazu, ausgewählte Bilder und Videos zu löschen. 
+``generateThumbnail'' ermöglicht es, Vorschaubilder für Videos anzuzeigen, um dem Benutzer eine Vorschau des Inhalts zu bieten.
+Die Methoden ``saveHashtagsToLocalStorage'', ``loadHashtagsFromStorage'' und ``deleteHashtagFromLocalStorage'' tragen zur Verwaltung von Hashtags bei und verbessern die Personalisierung und Relevanz der bereitgestellten Inhalte. 
+Die Methode ``showHashtagsModal'' erlaubt es dem Benutzer, Hashtags auszuwählen und hinzuzufügen, um seine Interessen zu kennzeichnen. Sie fördert die Benutzerbeteiligung und ermöglicht die Personalisierung von Inhalten.
+Die Benutzeroberfläche des Profilbildschirms setzt sich aus einem Header-Bereich mit dem Benutzernamen und dem Profilbild sowie einem Abschnitt zur Anzeige und Verwaltung von Bild- und Videoinhalten zusammen. 
+Die Anzeige kann zwischen Bildern und Videos umgeschaltet werden, und Benutzer haben die Möglichkeit, neue Medieninhalte auszuwählen und hochzuladen, welche von den Methoden pickMultiImage und pickVideo unterstützt werden. 
+Für die Gestaltung der Benutzeroberfläche kommen verschiedene Flutter-Widgets wie Column, Stack, AppBar, CircleAvatar und GridView zum Einsatz, um eine ansprechende und benutzerfreundliche Erfahrung zu gewährleisten.
+Zusätzlich werden benutzerdefinierte Widgets wie CustomAppBar und CustomBottomNavigationBar verwendet, um die Navigation und Interaktion zu erleichtern und das Design konsistent zu halten.
+\\
+Im Accountprofile-Screen hingegen erscheinen bearbeitbare personenbezogene Daten, wobei zur Validierung der Eingaben reguläre Ausdrücke (Regex) herangezogen werden. 
+Den Nutzern wird die Gelegenheit geboten, ihre Profildaten anzupassen und zu sichern – darunter fallen der Name, die Telefonnummer, die Adresse und die E-Mail-Adresse. 
+Beim Start des Bildschirms werden die aktuellen Profildaten aus den SharedPreferences geladen und in entsprechenden Textfeldern angezeigt. 
+Nutzer können diese Informationen bearbeiten und die Änderungen anschließend speichern. Hier haben Nutzer die Freiheit, ein Profilbild zu wählen, das dann in einem kreisförmigen Avatar angezeigt wird. 
+Das ausgesuchte Bild wird nicht nur lokal auf dem Gerät gespeichert, sondern auch im Backend abgelegt. Bei Bedarf wird es von Firebase abgerufen, um anderen Seiten mit den entsprechenden Daten zu bereichern. Die Benutzeroberfläche des Accountprofilbildschirms besteht aus mehreren Textfeldern für die Bearbeitung von Profildaten sowie einem Abschnitt für das Profilbild. 
+Im Bearbeitungsmodus werden die Textfelder kenntlich und sichtbar zur Bearbeitung hervorgehoben, sodass Nutzer ihre Daten ändern können. Fehlermeldungen erscheinen, falls ungültige Eingaben gemacht wurden, und ein Tooltip mit einem Hover-Effekt informiert die Nutzer über die Art des Fehlers.
+Auch hierbei wurden folgende Methode zur Implementierung benötigt, um unseren konzeptionellen Anforderungen gerecht zu werden: 
+\\
+Die Build-Methode erstellt die Benutzeroberfläche des Accountprofil-Screens. Sie umfasst Textfelder für die Bearbeitung von Profildaten sowie einen Bereich für das Profilbild. 
+Die UI wird je nach Bearbeitungsstatus der Daten dynamisch angepasst. Die PickImage-Methode ermöglicht es Benutzern, ein Profilbild auszuwählen und es hochzuladen. Sie wird aktiviert, sobald der Benutzer auf die entsprechende Schaltfläche klickt.
+Dadurch wird die Bildauswahl gestartet, und das ausgewählte Bild wird für das Profil verwendet. Beim Start des Bildschirms ruft die LoadProfileData-Methode die aktuellen Profildaten aus den SharedPreferences ab. 
+Diese Daten, einschließlich Name, Telefonnummer, Adresse und E-Mail, werden dann in den entsprechenden Textfeldern angezeigt, damit der Benutzer sie bearbeiten kann. Um das ausgewählte Profilbild lokal zu speichern und sicherzustellen, dass es für spätere Verwendungszwecke verfügbar ist, wird die Methode saveAvatarImage verwendet.
+Nachdem der Benutzer ein Bild ausgewählt hat, wird es lokal auf dem Gerät gespeichert. Zusätzlich dazu werden die aktualisierten Profildaten, einschließlich des Profilbildes, im Backend gespeichert, damit das Profilbild auch von anderen Seiten oder Anwendungen wiederverwendet werden kann. 
+Die LoadAvatarImage-Methode wird aufgerufen, um das Profilbild aus der lokalen Speicherung zu laden. Dadurch wird das zuvor gespeicherte Profilbild beim Öffnen des Accountprofil-Screens geladen und im Kreisavatar angezeigt. 
+Für die Validierung der personenbezogenen Daten werden unter Verwendung von regulären Ausdrücken (Regex) folgende Methoden verwendet. Diese dienen dazu, sicherzustellen, dass die eingegebenen Daten gültig sind, bevor sie gespeichert werden. Dabei werden sämtliche personenbezogenen Daten sowohl lokal auf dem Gerät als auch im Backend gespeichert, um die Integrität der Daten zu gewährleisten und sicherzustellen, dass sie für verschiedene Anwendungen verfügbar sind: 
+
+\begin{itemize}[itemsep=0pt]
+    \item{Die ValidatePhone-Methode validiert die eingegebene Telefonnummer und akzeptiert nur Zahlen und optional ein Pluszeichen am Anfang}
+\end{itemize}
+\begin{itemize}[itemsep=0pt]
+    \item{Um die Gültigkeit der eingegebenen Adresse zu überprüfen, wird die ValidateAddress-Methode verwendet. Diese erwartet Buchstaben, Zahlen, Kommas, Punkte, Leerzeichen und Umlaute als gültige Zeichen} 
+\end{itemize}
+\begin{itemize}[itemsep=0pt]
+	\item{Die ValidateEmail-Methode prüft, ob die eingegebene E-Mail-Adresse gültig ist und erwartet das übliche Format einer E-Mail-Adresse}
+\end{itemize}
+Während des abschließenden Bearbeitungsvorgangs wird die Methode updateUserData aufgerufen. Diese Funktion dient dazu, die Profildaten in der Cloud Firestore-Datenbank zu aktualisieren. Dabei werden sämtliche neuen Informationen wie Name, Telefonnummer, Adresse und E-Mail in der Datenbank aktualisiert, um sicherzustellen, dass sie synchronisiert und auf dem neuesten Stand sind. Dies ermöglicht es, die aktualisierten Daten für andere Zwecke zu beziehen und weiterzuverwenden. Sobald der Benutzer die Profildaten bearbeitet hat, werden diese mithilfe der SaveProfile-Methode in den SharedPreferences gespeichert, um sie beim nächsten Öffnen des Bildschirms wiederherzustellen.  Die Interaktion zwischen dem Profilbildschirm und dem Accountprofilbildschirm sowie der Datenaustausch zwischen ihnen bestimmen die grundlegende Ausrichtung der app-spezifischen Funktionen. Diese Funktionen erstrecken sich auf verschiedene Bereiche der Anwendung, wie beispielsweise den Home-Screen über das Backend, die dem Benutzer die Wiedergabe von Informationen in Form von Bildern, Videos und personenbezogenen Daten ermöglicht. Auch der Suchbildschirm profitiert von der Implementierung der Daten über das Backend, da dieser den Suchalgorithmus unterstützt und dem Benutzer dabei hilft, relevante Ergebnisse zu finden, die im Sinne einer Social-Media-App agieren.
+
+

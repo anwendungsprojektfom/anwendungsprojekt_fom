@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:path_provider/path_provider.dart';
@@ -6,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:sth_app/pages/profilescreen/accountprofilescreen.dart';
 
 enum DisplayMode { images, videos }
 
@@ -19,12 +22,12 @@ class ProfileScreen extends StatefulWidget {
 File? _avatarImage;
 List<String> _imagePaths = [];
 List<String> _videoPaths = [];
+List<String> _selectedHashtags = [];
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   DisplayMode _displayMode = DisplayMode.images;
-  String _userName = "Fit"; // Initial name
-
+  String _userName = "Fit";
+  final List<String> _hashtags = ["Soccer", "Ice Hockey", "Ju-Jitsu"];
 
   // Function to open the gallery
   void _openGallery(int index) {
@@ -58,7 +61,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // Function to open the videos
   void _openVideo(int index) {
+    VideoPlayerController controller = VideoPlayerController.file(File(_videoPaths[index]));
+    controller.initialize().then((_) {
+      controller.play();
+    });
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -74,23 +83,119 @@ class _ProfileScreenState extends State<ProfileScreen> {
             leading: IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
+                controller.pause();
+                controller.dispose();
                 Navigator.pop(context);
               },
             ),
           ),
-          body: SizedBox.expand(
-            child: Center(
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: VideoPlayer(
-                  VideoPlayerController.file(File(_videoPaths[index])),
-                ),
-              ),
+          body: Center(
+            child: AspectRatio(
+              aspectRatio: controller.value.aspectRatio,
+              child: VideoPlayer(controller),
             ),
           ),
         ),
       ),
     );
+  }
+
+// Function for Hashtags-popUP
+  void _showHashtagsModal(BuildContext context) async {
+    final selectedHashtag = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {},
+                        child: const Icon(Icons.star_border, color: Colors.black),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Add Hashtag',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _hashtags.map((String hashtag) {
+                  return GestureDetector(
+                    onTap: () {
+                      if (!_selectedHashtags.contains(hashtag)) {
+                        Navigator.pop(context, hashtag);
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                                child: Text(
+                                  'The hashtag "$hashtag" has already been selected.',
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text(
+                        hashtag,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (selectedHashtag != null) {
+      setState(() {
+        _selectedHashtags.add(selectedHashtag);
+        _saveHashtagsToLocalStorage(_selectedHashtags);
+        pushHashtagsToFirebase(_selectedHashtags);
+      });
+    }
   }
 
   // Function to load the avatar image from local storage
@@ -104,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-    // Function to load the user name from local storage
+  // Function to load the user name from local storage
   Future<void> _loadUserName() async {
     final prefs = await SharedPreferences.getInstance();
     final String? userName = prefs.getString('name');
@@ -114,7 +219,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
   }
-  
 
   // Function to save image paths to local storage
   Future<void> _saveImagePathsToLocalStorage() async {
@@ -222,6 +326,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.pop(context);
   }
 
+  // Function to show video thumbnail
+  Future<Uint8List?> _generateThumbnail(String videoPath) async {
+    final thumbnail = await VideoThumbnail.thumbnailData(
+      video: videoPath,
+      imageFormat: ImageFormat.JPEG,
+      maxHeight: 100,
+      quality: 25,
+    );
+    return thumbnail;
+  }
+
+  // Function to save hashtags to local storage
+  Future<void> _saveHashtagsToLocalStorage(List<String> hashtags) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('saved_hashtags', hashtags);
+  }
+
+  // Function to load hashtags from local storage
+  Future<void> _loadHashtagsFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? savedHashtags = prefs.getStringList('saved_hashtags');
+    if (savedHashtags != null && savedHashtags.isNotEmpty) {
+      setState(() {
+        _selectedHashtags = savedHashtags;
+      });
+    }
+  }
+
+  // Function to delete hashtags from local storage
+  Future<void> _deleteHashtagFromLocalStorage(String hashtag) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? savedHashtags = prefs.getStringList('saved_hashtags');
+    if (savedHashtags != null) {
+      savedHashtags.remove(hashtag);
+      await prefs.setStringList('saved_hashtags', savedHashtags);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -229,6 +371,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadImagesFromStorage();
     _loadVideosFromStorage();
     _loadUserName();
+    _loadHashtagsFromStorage();
   }
 
   @override
@@ -251,16 +394,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     CircleAvatar(
                       radius: 48,
                       backgroundColor: Colors.black,
-                      child: CircleAvatar(
-                        radius: 46,
-                        backgroundColor: Colors.white,
-                        backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 1),
-                          ),
-                        ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const AccountProfileScreen()),
+                          );
+                        },
+                        child: _avatarImage != null
+                            ? CircleAvatar(
+                                radius: 46,
+                                backgroundColor: Colors.white,
+                                backgroundImage: FileImage(_avatarImage!),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.black, width: 1),
+                                  ),
+                                ),
+                              )
+                            : const CircleAvatar(
+                                radius: 46,
+                                backgroundColor: Colors.white,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 72,
+                                  color: Colors.blue,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -273,13 +434,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      "Flutter Developer",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.black54,
-                      ),
+                    GestureDetector(
+                      onTap: () {
+                        _showHashtagsModal(context);
+                      },
+                      child: _selectedHashtags.isNotEmpty
+                          ? Container(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: _selectedHashtags
+                                      .map((String hashtag) => Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                                            child: Material(
+                                              borderRadius: BorderRadius.circular(16),
+                                              color: Colors.grey[300],
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      hashtag,
+                                                      style: const TextStyle(fontSize: 12),
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _selectedHashtags.remove(hashtag);
+                                                          _deleteHashtagFromLocalStorage(hashtag);
+                                                          deleteHashtagFromFirebase(hashtag);
+                                                        });
+                                                      },
+                                                      child: const Icon(Icons.cancel, size: 16),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                ),
+                              ),
+                            )
+                          : const Text(
+                              'Add Hashtag',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Colors.black54,
+                              ),
+                            ),
                     ),
                   ],
                 ),
@@ -389,33 +595,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Display of videos
               if (_displayMode == DisplayMode.videos)
                 Expanded(
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 9,
-                      crossAxisSpacing: 9,
-                    ),
-                    itemCount: _videoPaths.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () => _openVideo(index),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey,
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.play_circle,
-                              size: 40,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+                    child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 9,
+                    crossAxisSpacing: 9,
                   ),
-                ),
+                  itemCount: _videoPaths.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () => _openVideo(index),
+                      child: FutureBuilder<Uint8List?>(
+                        future: _generateThumbnail(_videoPaths[index]),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Container(
+                              color: Colors.grey,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          if (snapshot.hasError || snapshot.data == null) {
+                            return Container(
+                              color: Colors.grey,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.error_outline,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            );
+                          }
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: MemoryImage(snapshot.data!),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                )),
             ],
           )
         ],
