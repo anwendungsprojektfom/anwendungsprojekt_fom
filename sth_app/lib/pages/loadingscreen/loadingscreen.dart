@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:sth_app/pages/homescreen/homescreen.dart';
-import 'package:sth_app/technical/technical.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({Key? key}) : super(key: key);
@@ -15,7 +13,7 @@ class _LoadingScreen extends State<LoadingScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const HomeScreen()));
+      Navigator.of(context).pushReplacementNamed('/homescreen');
     });
   }
 

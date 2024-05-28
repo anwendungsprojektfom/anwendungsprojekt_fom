@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sth_app/main.dart';
 import 'package:sth_app/pages/chatscreen/channelscreen.dart';
-import 'package:sth_app/pages/homescreen/homescreen.dart';
-import 'package:sth_app/pages/profilescreen/profilescreen.dart';
 import 'package:sth_app/technical/technical.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
@@ -11,6 +9,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? onBack;
   final bool showChatIcon;
   final bool showSettings;
+  final String? route;
 
   const CustomAppBar({
     Key? key,
@@ -18,6 +17,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
     required this.onBack,
     required this.showChatIcon,
     required this.showSettings,
+    this.route,
   }) : super(key: key);
 
   @override
@@ -37,11 +37,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ? IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                if (ModalRoute.of(context)?.settings.name == '/settingsscreen') {
-                  Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const ProfileScreen()));
-                } else {
-                  Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const HomeScreen()));
-                }
+                Navigator.of(context).pushReplacementNamed(widget.route ?? '/homescreen');
               },
             )
           : null,
@@ -50,10 +46,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
           IconButton(
             icon: const Icon(Icons.chat_bubble_outline),
             onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                CustomPageRoute(
-                  builder: (context) => StreamChat(
+              Navigator.of(context).pushReplacement(
+                CustomPageRoute.generateRoute(
+                  StreamChat(
                     client: globalClient,
                     child: StreamChannel(
                       channel: globalChannel,
@@ -68,7 +63,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/settingsscreen');
+              Navigator.of(context).pushReplacementNamed('/accountprofilescreen');
             },
           ),
       ],

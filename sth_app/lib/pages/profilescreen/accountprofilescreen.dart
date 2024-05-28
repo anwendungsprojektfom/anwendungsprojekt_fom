@@ -5,18 +5,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
 
 // Widget for the profile screen, displaying editable profile data
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+class AccountProfileScreen extends StatefulWidget {
+  const AccountProfileScreen({Key? key}) : super(key: key);
 
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
+  _AccountProfileScreenState createState() => _AccountProfileScreenState();
 }
 
 // State class for the profile screen
-class _SettingsScreenState extends State<SettingsScreen> {
+class _AccountProfileScreenState extends State<AccountProfileScreen> {
   bool _isEditing = false;
-  late SharedPreferences _prefs;
-  late String _name, _phone, _address, _email;
+  late String? _name, _phone, _address, _email;
   late TextEditingController _nameController, _phoneController, _addressController, _emailController;
   late File? _avatarImage;
   final picker = ImagePicker();
@@ -44,16 +43,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // Function to load the current profileStatus of entities
   Future<void> _loadProfileData() async {
-    _prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
+
     setState(() {
-      _name = _prefs.getString('name') ?? 'Tigers';
-      _phone = _prefs.getString('phone') ?? '+49 123456789';
-      _address = _prefs.getString('address') ?? 'Tigers 12, 80993 München';
-      _email = _prefs.getString('email') ?? 'TigerDevTeam@gmail.de';
-      _nameController.text = _name;
-      _phoneController.text = _phone;
-      _addressController.text = _address;
-      _emailController.text = _email;
+      _name = prefs.getString('name');
+      _phone = prefs.getString('phone');
+      _address = prefs.getString('address');
+      _email = prefs.getString('email');
+      _nameController.text = _name!;
+      _phoneController.text = _phone!;
+      _addressController.text = _address!;
+      _emailController.text = _email!;
       _loadAvatarImage().then((File? image) {
         setState(() {
           _avatarImage = image;
@@ -78,18 +78,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return null;
   }
 
-  // Function to pick images
+  // Function to pick images & upload in firebasse
   Future<void> _pickImage() async {
     try {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         final File imageFile = File(pickedFile.path);
-        _saveAvatarImage(imageFile); // Save profile image in local storage
-        setState(() {
-          _avatarImage = imageFile;
-        });
-      } else {
-        print('User cancelled the image selection process.');
+        await _saveAvatarImage(imageFile);
+        bool success = await uploadAvatarImageToFirebase(imageFile);
+        if (success) {
+          setState(() {
+            _avatarImage = imageFile;
+          });
+        }
       }
     } catch (e) {
       print('Error accessing the gallery: $e');
@@ -100,16 +101,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          const CustomAppBar(title: Text('Account Profile'), onBack: true, showChatIcon: false, showSettings: false),
+      appBar: const CustomAppBar(
+          title: Text('Account Profile'),
+          onBack: true,
+          showChatIcon: false,
+          showSettings: false,
+          route: '/profilescreen'),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(22, 0, 20, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 10),
-              // Container to display avatar image and handle image picking
+              const SizedBox(height: 0),
               GestureDetector(
                 onTap: _pickImage,
                 child: Container(
@@ -119,9 +123,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   child: CircleAvatar(
                     radius: 70,
-                    backgroundColor: Colors.grey[400],
+                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                    child: _avatarImage == null ? const Icon(Icons.add_photo_alternate, size: 70) : null,
+                    child: _avatarImage == null ? const Icon(Icons.person, size: 90, color: Colors.blue) : null,
                   ),
                 ),
               ),
@@ -138,12 +142,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: Colors.black.withOpacity(0.1),
                     ),
                   ],
-                  color: const Color.fromARGB(255, 114, 114, 114).withOpacity(0.3),
+                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
                 ),
                 // Text field for editing name
                 child: ProfileItem(
                   title: 'Name',
-                  subtitle: _name,
+                  subtitle: _name!,
                   icon: Icons.person,
                   isEditing: _isEditing,
                   controller: _nameController,
@@ -165,12 +169,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: Colors.black.withOpacity(0.1),
                     ),
                   ],
-                  color: const Color.fromARGB(255, 114, 114, 114).withOpacity(0.3),
+                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
                 ),
                 // Text field for editing phone number
                 child: ProfileItem(
                   title: 'Phone',
-                  subtitle: _phone,
+                  subtitle: _phone!,
                   icon: Icons.phone,
                   isEditing: _isEditing,
                   controller: _phoneController,
@@ -192,12 +196,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: Colors.black.withOpacity(0.1),
                     ),
                   ],
-                  color: const Color.fromARGB(255, 114, 114, 114).withOpacity(0.3),
+                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
                 ),
                 // Text field for editing address
                 child: ProfileItem(
                   title: 'Address',
-                  subtitle: _address,
+                  subtitle: _address!,
                   icon: Icons.location_on,
                   isEditing: _isEditing,
                   controller: _addressController,
@@ -221,12 +225,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: Colors.black.withOpacity(0.1),
                     ),
                   ],
-                  color: const Color.fromARGB(255, 114, 114, 114).withOpacity(0.3),
+                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
                 ),
                 // Text field for editing email address
                 child: ProfileItem(
                   title: 'Email',
-                  subtitle: _email,
+                  subtitle: _email!,
                   icon: Icons.email,
                   isEditing: _isEditing,
                   controller: _emailController,
@@ -246,6 +250,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             _isEditing = !_isEditing;
                             if (!_isEditing) {
                               _saveProfile();
+                              updateUserData(
+                                name: _nameController.text,
+                                phone: _phoneController.text,
+                                address: _addressController.text,
+                                email: _emailController.text,
+                              );
                             }
                           });
                         },
@@ -266,10 +276,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // Function to save profile data in SharedPreference
   Future<void> _saveProfile() async {
-    await _prefs.setString('name', _nameController.text);
-    await _prefs.setString('phone', _phoneController.text);
-    await _prefs.setString('address', _addressController.text);
-    await _prefs.setString('email', _emailController.text);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('name', _nameController.text);
+    await prefs.setString('phone', _phoneController.text);
+    await prefs.setString('address', _addressController.text);
+    await prefs.setString('email', _emailController.text);
     setState(() {
       _name = _nameController.text;
       _phone = _phoneController.text;

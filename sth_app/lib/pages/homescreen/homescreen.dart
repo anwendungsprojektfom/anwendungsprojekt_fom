@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:sth_app/pages/homescreen/postwidget.dart';
 import 'package:sth_app/technical/technical.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final Logger _logger = Logger();
+  final int _currentPage = 0; // Variable for the slider value
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +23,19 @@ class _HomeScreenState extends State<HomeScreen> {
           onBack: false,
           showChatIcon: true,
           showSettings: false),
-      body: const Center(
-        child: Text('This is our homescreen'),
+      body: const SingleChildScrollView(
+        child: Column(
+          children: [
+            // First Post
+            PostWidget(
+              userId: 'JN2dcl4RbBNSs7VGEbYZ',
+            ),
+            // Second Post
+            PostWidget(
+              userId: 'JN2dcl4RbBNSs7VGEbYZ',
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: const CustomBottomNavigationBar(
         currentIndex: 0,

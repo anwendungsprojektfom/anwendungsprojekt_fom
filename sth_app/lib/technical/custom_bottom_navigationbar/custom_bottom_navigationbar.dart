@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sth_app/pages/homescreen/homescreen.dart';
-import 'package:sth_app/pages/profilescreen/profilescreen.dart';
-import 'package:sth_app/pages/searchscreen/searchscreen.dart';
-import 'package:sth_app/technical/technical.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -15,13 +11,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
   void _onTabTapped(BuildContext context, int index) {
     switch (index) {
       case 0:
-        Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const HomeScreen()));
+        Navigator.of(context).pushReplacementNamed('/homescreen');
         break;
       case 1:
-        Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const SearchScreen()));
+        Navigator.of(context).pushReplacementNamed('/searchscreen');
         break;
       case 2:
-        Navigator.pushReplacement(context, CustomPageRoute(builder: (context) => const ProfileScreen()));
+        Navigator.of(context).pushReplacementNamed('/profilescreen');
         break;
     }
   }

@@ -1,13 +1,17 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:sth_app/technical/technical.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sth_app/technical/technical.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:sth_app/pages/profilescreen/accountprofilescreen.dart';
 
-// Enum for different display modes
 enum DisplayMode { images, videos }
 
-// ProfileScreen widget that is a StatefulWidget
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -16,23 +20,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 File? _avatarImage;
+List<String> _imagePaths = [];
+List<String> _videoPaths = [];
+List<String> _selectedHashtags = [];
 
-// State class for ProfileScreen widget
 class _ProfileScreenState extends State<ProfileScreen> {
-  // Variable to store the current display mode
   DisplayMode _displayMode = DisplayMode.images;
-
-  // List of image paths to display
-  final List<String> _imagePaths = [
-    "assets/profilescreenImages/image0.png",
-    "assets/profilescreenImages/image1.png",
-    "assets/profilescreenImages/image2.png",
-    "assets/profilescreenImages/image3.png",
-    "assets/profilescreenImages/image4.png",
-    "assets/profilescreenImages/image5.png",
-    "assets/profilescreenImages/image6.png",
-    "assets/profilescreenImages/image7.png",
-  ];
+  String _userName = "Fit";
+  final List<String> _hashtags = ["Soccer", "Ice Hockey", "Ju-Jitsu"];
 
   // Function to open the gallery
   void _openGallery(int index) {
@@ -42,6 +37,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         builder: (context) => Scaffold(
           appBar: AppBar(
             title: const Text('Image'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () => _deleteImage(index),
+              ),
+            ],
             leading: IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
@@ -51,13 +52,150 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           body: SizedBox.expand(
             child: PhotoView(
-              imageProvider: AssetImage(_imagePaths[index]),
+              imageProvider: FileImage(File(_imagePaths[index])),
               backgroundDecoration: const BoxDecoration(color: Colors.black),
             ),
           ),
         ),
       ),
     );
+  }
+
+  // Function to open the videos
+  void _openVideo(int index) {
+    VideoPlayerController controller = VideoPlayerController.file(File(_videoPaths[index]));
+    controller.initialize().then((_) {
+      controller.play();
+    });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Video'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () => _deleteVideo(index),
+              ),
+            ],
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                controller.pause();
+                controller.dispose();
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          body: Center(
+            child: AspectRatio(
+              aspectRatio: controller.value.aspectRatio,
+              child: VideoPlayer(controller),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+// Function for Hashtags-popUP
+  void _showHashtagsModal(BuildContext context) async {
+    final selectedHashtag = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {},
+                        child: const Icon(Icons.star_border, color: Colors.black),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Add Hashtag',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _hashtags.map((String hashtag) {
+                  return GestureDetector(
+                    onTap: () {
+                      if (!_selectedHashtags.contains(hashtag)) {
+                        Navigator.pop(context, hashtag);
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                                child: Text(
+                                  'The hashtag "$hashtag" has already been selected.',
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text(
+                        hashtag,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (selectedHashtag != null) {
+      setState(() {
+        _selectedHashtags.add(selectedHashtag);
+        _saveHashtagsToLocalStorage(_selectedHashtags);
+        pushHashtagsToFirebase(_selectedHashtags);
+      });
+    }
   }
 
   // Function to load the avatar image from local storage
@@ -71,17 +209,175 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Call _loadAvatarImage() in initState()
+  // Function to load the user name from local storage
+  Future<void> _loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? userName = prefs.getString('name');
+    if (userName != null && userName.isNotEmpty) {
+      setState(() {
+        _userName = userName;
+      });
+    }
+  }
+
+  // Function to save image paths to local storage
+  Future<void> _saveImagePathsToLocalStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('saved_image_paths', _imagePaths);
+  }
+
+  // Function to save the image to a permanent location
+  Future<String> _saveImage(String imagePath) async {
+    final Directory appDir = await getApplicationDocumentsDirectory();
+    final String fileName = imagePath.split('/').last;
+    final String newPath = '${appDir.path}/$fileName';
+    await File(imagePath).copy(newPath);
+    return newPath;
+  }
+
+  // Function to load images from local storage
+  Future<void> _loadImagesFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? savedImagePaths = prefs.getStringList('saved_image_paths');
+    if (savedImagePaths != null && savedImagePaths.isNotEmpty) {
+      setState(() {
+        _imagePaths = savedImagePaths;
+      });
+    }
+  }
+
+  // Function to add images to galeryPage and upload to firebase
+  Future<void> _uploadGalleryImages() async {
+    final List<XFile> images = await ImagePicker().pickMultiImage();
+    if (images.isNotEmpty) {
+      for (XFile image in images) {
+        final String newPath = await _saveImage(image.path);
+        setState(() {
+          _imagePaths.insert(0, newPath);
+          _saveImagePathsToLocalStorage();
+        });
+        uploadGaleryImageToFirebase(File(newPath)).then((success) {
+          //add firebase logic
+        }).catchError((error) {});
+      }
+    }
+  }
+
+  // Function to delete the selected image from the gallery view
+  void _deleteImage(int index) {
+    setState(() {
+      _imagePaths.removeAt(index);
+      _saveImagePathsToLocalStorage();
+    });
+    Navigator.pop(context);
+  }
+
+  // Function to save video paths to local storage
+  Future<void> _saveVideoPathsToLocalStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('saved_video_paths', _videoPaths);
+  }
+
+  // Function to save the video to a permanent location
+  Future<String> _saveVideo(String videoPath) async {
+    // Funktion zum Speichern von Videos in lokalem Speicher
+    final Directory appDir = await getApplicationDocumentsDirectory();
+    final String fileName = videoPath.split('/').last;
+    final String newPath = '${appDir.path}/$fileName';
+    await File(videoPath).copy(newPath);
+    return newPath;
+  }
+
+  // Function to load videos from local storage
+  Future<void> _loadVideosFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? savedVideoPaths = prefs.getStringList('saved_video_paths');
+    if (savedVideoPaths != null && savedVideoPaths.isNotEmpty) {
+      setState(() {
+        _videoPaths = savedVideoPaths;
+      });
+    }
+  }
+
+  // Function to add videos to videoPage and upload to firebase
+  Future<void> _uploadVideos() async {
+    final XFile? video = await ImagePicker().pickVideo(
+      source: ImageSource.gallery,
+      maxDuration: const Duration(minutes: 5),
+    );
+    if (video != null) {
+      final String newPath = await _saveVideo(video.path);
+      setState(() {
+        _videoPaths.insert(0, newPath);
+        _saveVideoPathsToLocalStorage();
+      });
+      uploadVideoFileToFirebase(File(newPath)).then((success) {
+        //add firebase logic
+      }).catchError((error) {});
+    }
+  }
+
+  // Function to delete the selected video from the gallery view
+  void _deleteVideo(int index) {
+    setState(() {
+      _videoPaths.removeAt(index);
+      _saveVideoPathsToLocalStorage();
+    });
+    Navigator.pop(context);
+  }
+
+  // Function to show video thumbnail
+  Future<Uint8List?> _generateThumbnail(String videoPath) async {
+    final thumbnail = await VideoThumbnail.thumbnailData(
+      video: videoPath,
+      imageFormat: ImageFormat.JPEG,
+      maxHeight: 100,
+      quality: 25,
+    );
+    return thumbnail;
+  }
+
+  // Function to save hashtags to local storage
+  Future<void> _saveHashtagsToLocalStorage(List<String> hashtags) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('saved_hashtags', hashtags);
+  }
+
+  // Function to load hashtags from local storage
+  Future<void> _loadHashtagsFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? savedHashtags = prefs.getStringList('saved_hashtags');
+    if (savedHashtags != null && savedHashtags.isNotEmpty) {
+      setState(() {
+        _selectedHashtags = savedHashtags;
+      });
+    }
+  }
+
+  // Function to delete hashtags from local storage
+  Future<void> _deleteHashtagFromLocalStorage(String hashtag) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? savedHashtags = prefs.getStringList('saved_hashtags');
+    if (savedHashtags != null) {
+      savedHashtags.remove(hashtag);
+      await prefs.setStringList('saved_hashtags', savedHashtags);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadAvatarImage();
+    _loadImagesFromStorage();
+    _loadVideosFromStorage();
+    _loadUserName();
+    _loadHashtagsFromStorage();
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    List<String> itemsToDisplay = _displayMode == DisplayMode.images ? _imagePaths : [];
+    List<String> itemsToDisplay = _imagePaths;
     return Scaffold(
       appBar: const CustomAppBar(title: Text('Profile Page'), onBack: false, showChatIcon: false, showSettings: true),
       body: Stack(
@@ -98,41 +394,104 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     CircleAvatar(
                       radius: 48,
                       backgroundColor: Colors.black,
-                      child: CircleAvatar(
-                        radius: 46,
-                        backgroundColor: Colors.white,
-                        backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 1),
-                          ),
-                        ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const AccountProfileScreen()),
+                          );
+                        },
+                        child: _avatarImage != null
+                            ? CircleAvatar(
+                                radius: 46,
+                                backgroundColor: Colors.white,
+                                backgroundImage: FileImage(_avatarImage!),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.black, width: 1),
+                                  ),
+                                ),
+                              )
+                            : const CircleAvatar(
+                                radius: 46,
+                                backgroundColor: Colors.white,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 72,
+                                  color: Colors.blue,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 15),
-                    const Text(
-                      "Fit",
-                      style: TextStyle(
+                    Text(
+                      _userName,
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
                         color: Colors.black,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      "Flutter Developer",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.black54,
-                      ),
+                    GestureDetector(
+                      onTap: () {
+                        _showHashtagsModal(context);
+                      },
+                      child: _selectedHashtags.isNotEmpty
+                          ? Container(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: _selectedHashtags
+                                      .map((String hashtag) => Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                                            child: Material(
+                                              borderRadius: BorderRadius.circular(16),
+                                              color: Colors.grey[300],
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      hashtag,
+                                                      style: const TextStyle(fontSize: 12),
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _selectedHashtags.remove(hashtag);
+                                                          _deleteHashtagFromLocalStorage(hashtag);
+                                                          deleteHashtagFromFirebase(hashtag);
+                                                        });
+                                                      },
+                                                      child: const Icon(Icons.cancel, size: 16),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                ),
+                              ),
+                            )
+                          : const Text(
+                              'Add Hashtag',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Colors.black54,
+                              ),
+                            ),
                     ),
                   ],
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 60),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Material(
                   elevation: 3,
                   shadowColor: Colors.black26,
@@ -141,51 +500,147 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.image, size: 30, color: Colors.black),
-                          onPressed: () {
-                            setState(() {
-                              _displayMode = DisplayMode.images;
-                            });
-                          },
+                        Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.black, width: 2),
+                              ),
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                alignment: Alignment.center,
+                                icon: const Icon(Icons.image, size: 30, color: Colors.black),
+                                onPressed: () {
+                                  setState(() {
+                                    _displayMode = DisplayMode.images;
+                                  });
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.black, width: 2),
+                              ),
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                alignment: Alignment.center,
+                                icon: const Icon(Icons.play_circle, size: 30, color: Colors.black),
+                                onPressed: () {
+                                  setState(() {
+                                    _displayMode = DisplayMode.videos;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.play_circle, size: 30, color: Colors.black),
-                          onPressed: () {
-                            setState(() {
-                              _displayMode = DisplayMode.videos;
-                            });
-                          },
+                        const SizedBox(width: 10),
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black, width: 2),
+                          ),
+                          child: IconButton(
+                              padding: EdgeInsets.zero,
+                              alignment: Alignment.center,
+                              icon: const Icon(Icons.add, size: 30, color: Colors.black),
+                              onPressed: () async {
+                                if (_displayMode == DisplayMode.images) {
+                                  _uploadGalleryImages();
+                                } else if (_displayMode == DisplayMode.videos) {
+                                  _uploadVideos();
+                                }
+                              }),
                         ),
                       ],
                     ),
                   ),
                 ),
               ),
-              Expanded(
-                child: GridView.builder(
+              // Display images
+              if (_displayMode == DisplayMode.images)
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 9,
+                      crossAxisSpacing: 9,
+                    ),
+                    itemCount: itemsToDisplay.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () => _openGallery(index),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: FileImage(File(itemsToDisplay[index])),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              // Display of videos
+              if (_displayMode == DisplayMode.videos)
+                Expanded(
+                    child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     mainAxisSpacing: 9,
                     crossAxisSpacing: 9,
                   ),
-                  itemCount: itemsToDisplay.length,
+                  itemCount: _videoPaths.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
-                      onTap: () => _openGallery(index),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            image: AssetImage(itemsToDisplay[index]),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                      onTap: () => _openVideo(index),
+                      child: FutureBuilder<Uint8List?>(
+                        future: _generateThumbnail(_videoPaths[index]),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Container(
+                              color: Colors.grey,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          if (snapshot.hasError || snapshot.data == null) {
+                            return Container(
+                              color: Colors.grey,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.error_outline,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            );
+                          }
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: MemoryImage(snapshot.data!),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     );
                   },
-                ),
-              )
+                )),
             ],
           )
         ],
