@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:path_provider/path_provider.dart';
@@ -6,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:sth_app/pages/profilescreen/accountprofilescreen.dart';
 
 enum DisplayMode { images, videos }
 
@@ -60,6 +63,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // Function to open the videos
   void _openVideo(int index) {
+    VideoPlayerController controller = VideoPlayerController.file(File(_videoPaths[index]));
+    controller.initialize().then((_) {
+      controller.play();
+    });
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -75,18 +83,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             leading: IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
+                controller.pause();
+                controller.dispose();
                 Navigator.pop(context);
               },
             ),
           ),
-          body: SizedBox.expand(
-            child: Center(
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: VideoPlayer(
-                  VideoPlayerController.file(File(_videoPaths[index])),
-                ),
-              ),
+          body: Center(
+            child: AspectRatio(
+              aspectRatio: controller.value.aspectRatio,
+              child: VideoPlayer(controller),
             ),
           ),
         ),
@@ -135,11 +141,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       if (!_selectedHashtags.contains(hashtag)) {
                         Navigator.pop(context, hashtag);
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('The hashtag "$hashtag" has already been selected.'),
-                            duration: const Duration(milliseconds: 1000),
-                          ),
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                                child: Text(
+                                  'The hashtag "$hashtag" has already been selected.',
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
                         );
                       }
                     },
@@ -147,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Text(
                         hashtag,
@@ -304,6 +326,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.pop(context);
   }
 
+  // Function to show video thumbnail
+  Future<Uint8List?> _generateThumbnail(String videoPath) async {
+    final thumbnail = await VideoThumbnail.thumbnailData(
+      video: videoPath,
+      imageFormat: ImageFormat.JPEG,
+      maxHeight: 100,
+      quality: 25,
+    );
+    return thumbnail;
+  }
+
   // Function to save hashtags to local storage
   Future<void> _saveHashtagsToLocalStorage(List<String> hashtags) async {
     final prefs = await SharedPreferences.getInstance();
@@ -361,16 +394,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     CircleAvatar(
                       radius: 48,
                       backgroundColor: Colors.black,
-                      child: CircleAvatar(
-                        radius: 46,
-                        backgroundColor: Colors.white,
-                        backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 1),
-                          ),
-                        ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const AccountProfileScreen()),
+                          );
+                        },
+                        child: _avatarImage != null
+                            ? CircleAvatar(
+                                radius: 46,
+                                backgroundColor: Colors.white,
+                                backgroundImage: FileImage(_avatarImage!),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.black, width: 1),
+                                  ),
+                                ),
+                              )
+                            : const CircleAvatar(
+                                radius: 46,
+                                backgroundColor: Colors.white,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 72,
+                                  color: Colors.blue,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -544,33 +595,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Display of videos
               if (_displayMode == DisplayMode.videos)
                 Expanded(
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 9,
-                      crossAxisSpacing: 9,
-                    ),
-                    itemCount: _videoPaths.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () => _openVideo(index),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey,
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.play_circle,
-                              size: 40,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+                    child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 9,
+                    crossAxisSpacing: 9,
                   ),
-                ),
+                  itemCount: _videoPaths.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () => _openVideo(index),
+                      child: FutureBuilder<Uint8List?>(
+                        future: _generateThumbnail(_videoPaths[index]),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Container(
+                              color: Colors.grey,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          if (snapshot.hasError || snapshot.data == null) {
+                            return Container(
+                              color: Colors.grey,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.error_outline,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            );
+                          }
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: MemoryImage(snapshot.data!),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                )),
             ],
           )
         ],

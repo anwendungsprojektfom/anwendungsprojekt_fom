@@ -109,12 +109,11 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
           route: '/profilescreen'),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(22, 0, 20, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 10),
-              // Container to display avatar image and handle image picking
+              const SizedBox(height: 0),
               GestureDetector(
                 onTap: _pickImage,
                 child: Container(
@@ -126,7 +125,7 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
                     radius: 70,
                     backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : null,
-                    child: _avatarImage == null ? const Icon(Icons.add_photo_alternate, size: 70) : null,
+                    child: _avatarImage == null ? const Icon(Icons.person, size: 90, color: Colors.blue) : null,
                   ),
                 ),
               ),
@@ -143,7 +142,7 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
                       color: Colors.black.withOpacity(0.1),
                     ),
                   ],
-                  color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
+                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
                 ),
                 // Text field for editing name
                 child: ProfileItem(
@@ -170,7 +169,7 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
                       color: Colors.black.withOpacity(0.1),
                     ),
                   ],
-                  color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
+                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
                 ),
                 // Text field for editing phone number
                 child: ProfileItem(
@@ -197,7 +196,7 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
                       color: Colors.black.withOpacity(0.1),
                     ),
                   ],
-                  color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
+                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
                 ),
                 // Text field for editing address
                 child: ProfileItem(
@@ -226,7 +225,7 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
                       color: Colors.black.withOpacity(0.1),
                     ),
                   ],
-                  color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
+                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
                 ),
                 // Text field for editing email address
                 child: ProfileItem(

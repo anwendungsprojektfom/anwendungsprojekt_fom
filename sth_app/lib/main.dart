@@ -47,7 +47,7 @@ class SthApp extends StatefulWidget {
 class _SthAppState extends State<SthApp> {
   Future<void> fetchData() async {
     try {
-      Map<String, dynamic> currentUserData = await getCurrentUserData('MtPDCjiV4J3MRwO79mqY');
+      Map<String, dynamic> currentUserData = await getCurrentUserData('JN2dcl4RbBNSs7VGEbYZ');
 
       saveUserDataToSharedPreferences(currentUserData);
     } catch (e) {
