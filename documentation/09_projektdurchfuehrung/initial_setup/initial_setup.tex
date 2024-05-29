@@ -13,4 +13,54 @@ Zusätzlich wurde ein Team in Microsoft Teams erstellt, in dem die Kommunikation
 Im nächsten Schritt hat das Projektteam im Projektstart-Meeting ein Framework bzw\. eine Programmiersprache für das STH-Projekt gesucht, die sowohl eine gute Dokumentation, eine leicht verständliche Programmiersprache, Plattformunabhängigkeit für iOS/Android und die Kompatibilität zum Kompilieren der Applikation für die Betriebssysteme Windows und MacOS bietet.
 Durch bereits vorhandenes Know-How wurde das Google-Framework Flutter gewählt.\newline
 Flutter ist ein Open-Source-Framework von Google, das eine Frontend-Entwicklung von Benutzeroberflächen für Apps bietet.
+Dabei gilt das Prinzip One-Codebase, welches bedeutet, dass Anwendungen für die unterschiedlichen Betriebssysteme iOS und Android aus einem Sourcecode kompiliert werden.
+\newline
+Für die Einrichtung des Repositories wird zunächst das Github Projekt ``anwendungsprojekt\_fom'' erstellt und das Projektteam freigegeben.
+Im nächsten Schritt wurde auf den Entwicklungsrechnern der Projektmitglieder die Entwicklungsumgebung Visual Studio Code für die Code-Entwicklung und das Framework Flutter der Version 3\.19\.3 installiert und eingerichtet.
+``Flutter'' bietet außerdem die Möglichkeit mithilfe des ``flutter create'' Terminal Commands ein initiales Flutter-Projekt erstellen zu lassen.
+Dieses initiale Setup beinhaltet eine voll funktionsfähige Beispiel-App, die für den ersten Test des Setups erfolgreich für Android und iOS kompiliert werden konnte.
+Für einen erfolgreichen iOS-Build wird zudem ein Apple-Gerät mit dem Betriebssystem macOS und die Apple-Software xCode benötigt, um iOS-spezifische Einheiten der App kompilieren zu können.
+\newline
+Für einen sogenannten ``Clean Code'', der für alle Projektmitglieder gut lesbar und verständlich ist, wurde festgelegt, dass für jede Änderung im Code der ``Flutter Formatter (Terminal Command: dart format -l 120 \.)\" und der Dart Analyzer (Terminal Command: dart analyze \&\& dart fix --apply)'' ausgeführt werden muss.
+\section*{Google Firebase Tools als Backend}
+Firebase ist ein Cloud Service, der von Google bereitgestellt wird.
+Dieser bietet folgende wichtige Funktionen, die für die STH App essentiell sind:\newline
+- Der Cloud Firestore ist eine Cloud-Datenbank, in der verschiedene Werte von Variablen gespeichert werden können.\newline
+- Der Cloud Storage ist ein Cloud-Speicher, in dem Dateien unterschiedlicher Dateiformate hinterlegt werden können.\newline
+- Die Chat- und Kommunikationsfähigkeit\newline
+Über den Terminal\-Command ``flutter pub add'' incl\. den jeweiligen Flutter packages / dependencies \(firebase\_auth, firebase\_core, firebase\_storage, cloud\_firestore\) wurden Flutter Packages dem Projekt hinzugefügt und können verwendet werden.
+
+\section*{Zentrale Funktionen für Firebase, Shared Preferences, Flutter Page Routing, Flutter Bottom Navigationbar und Flutter App Bar}
+Zusätzlich wurden Funktionen, die an anderen Stellen des Codes wiederverwendet werden, zentralisiert.
+Dazu wurde im Repository ein Ordner ``technical'' angelegt und dieser in die jeweilige Grundfunktionalitäten unterteilt:
+\\
+\\
+\textbf{Firebase}
+\begin{itemize}[itemsep=0pt]
+    \item{Authentifizierungsmethoden (Login / Register)} 
+	\item{Datei-Upload und -Download Funktionen} 
+	\item{Upload und Download von Variablenwerten} 
+\end{itemize}
+\textbf{Shared Preferences}
+\begin{itemize}[itemsep=0pt]
+    \item{Lokale Speicherung von Daten nach Download aus Firebase} 
+	\item{Update Funktion von editierten Daten} 
+\end{itemize}
+\textbf{Custom Page Route}
+\begin{itemize}[itemsep=0pt]
+    \item{Einmalige zentrale Konfiguration des Routing-Verhaltens zwischen Screens} 
+	\item{Flutter PageRouteBuilder incl\. generateRoute Funktion und neuer Screen als Übergabeparameter} 
+\end{itemize}
+\textbf{Custom App Bar}
+\begin{itemize}[itemsep=0pt]
+    \item{Einmalige zentrale Konfiguration der Flutter App Bar für ein einheitliches Design} 
+	\item{Boolean-Übergabeparameter für die Anzeige von Buttons/Icons}
+	\item{String-Übergabeparameter für den Seitentitel} 
+\end{itemize}
+\textbf{Custom Bottom Navigationbar}
+\begin{itemize}[itemsep=0pt]
+    \item{Einmalige zentrale Konfiguration der Flutter Bottom Navigationbar für ein einheitliches Design} 
+	\item{Hervorhebung der aktuell ausgewählten Seite in der App}
+	\item{Routing bei Auswahl eines Buttons in der Navigationbar} 
+\end{itemize}
 
