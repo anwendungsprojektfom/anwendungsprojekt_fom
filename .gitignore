@@ -4,6 +4,7 @@ documentation/.vscode
 .env
 .DS_Store
 *.aux
+*.acr
 *.log
 *.out
 *.synctex.gz
