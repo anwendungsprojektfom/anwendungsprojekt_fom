@@ -43,7 +43,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: currentIndex == index ? Colors.blue : Colors.transparent, // Apply border when tab is selected
+            color: currentIndex == index ? Colors.blue : Colors.transparent,
             width: 2.0,
           ),
         ),

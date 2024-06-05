@@ -396,10 +396,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       backgroundColor: Colors.black,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const AccountProfileScreen()),
-                          );
+                          Navigator.of(context).pushReplacementNamed('/accountprofilescreen');
                         },
                         child: _avatarImage != null
                             ? CircleAvatar(
