@@ -170,7 +170,7 @@ Future<void> pushHashtagsToFirebase(List<String> hashtags) async {
   }
 }
 
-//Delete hashtag from Cloud Firestore
+// Delete hashtag from Cloud Firestore
 Future<void> deleteHashtagFromFirebase(String hashtag) async {
   try {
     const String userId = 'JN2dcl4RbBNSs7VGEbYZ';
@@ -183,3 +183,56 @@ Future<void> deleteHashtagFromFirebase(String hashtag) async {
     print('Error deleting hashtag from Firebase: $e');
   }
 }
+
+// Function to search users by name or hashtags
+Future<List<Map<String, dynamic>>> searchUsers(String searchTerm) async {
+  try {
+    CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
+    QuerySnapshot querySnapshotByName = await usersRef.where('name', isEqualTo: searchTerm).get();
+    QuerySnapshot querySnapshotByHashtag = await usersRef.where('selectedHashtags', arrayContains: searchTerm).get();
+    
+    List<Map<String, dynamic>> foundProfiles = [];
+
+    querySnapshotByName.docs.forEach((doc) {
+      if (doc != null && doc.data() != null) {
+        Map<String, dynamic>? userData = doc.data() as Map<String, dynamic>?;
+
+        if (userData != null) {
+          foundProfiles.add({
+            'name': userData['name'],
+            'email': userData['email'],
+            'phone': userData['phone'],
+            'address': userData['address'],
+            'selectedHashtags': List<String>.from(userData['selectedHashtags']),
+          });
+        }
+      }
+    });
+
+    querySnapshotByHashtag.docs.forEach((doc) {
+      if (doc != null && doc.data() != null) {
+        Map<String, dynamic>? userData = doc.data() as Map<String, dynamic>?;
+
+        if (userData != null) {
+          foundProfiles.add({
+            'name': userData['name'],
+            'email': userData['email'],
+            'phone': userData['phone'],
+            'address': userData['address'],
+            'selectedHashtags': List<String>.from(userData['selectedHashtags']),
+          });
+        }
+      }
+    });
+
+    return foundProfiles;
+  } catch (e) {
+    print('Error searching users: $e');
+    return [];
+  }
+}
+
+
+
+
+
