@@ -101,7 +101,12 @@ class _AccountProfileScreenState extends State<AccountProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: Text('Account Profile'), onBack: true, showChatIcon: false, showSettings: false, route: '/profilescreen'),
+      appBar: const CustomAppBar(
+          title: Text('Account Profile'),
+          onBack: true,
+          showChatIcon: false,
+          showSettings: false,
+          route: '/profilescreen'),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(22, 0, 20, 20),
