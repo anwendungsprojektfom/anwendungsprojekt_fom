@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:sth_app/pages/profilescreen/accountprofilescreen.dart';
 
 enum DisplayMode { images, videos }
 

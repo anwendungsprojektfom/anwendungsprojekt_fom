@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 
 // Authentication
@@ -195,7 +194,7 @@ Future<List<Map<String, dynamic>>> searchUsers(String searchTerm) async {
     List<Map<String, dynamic>> foundProfiles = [];
 
     for (var doc in querySnapshotByName.docs + querySnapshotByHashtag.docs) {
-      if (doc != null && doc.data() != null) {
+      if (doc.data() != null) {
         Map<String, dynamic>? userData = doc.data() as Map<String, dynamic>?;
 
         if (userData != null) {
@@ -227,7 +226,7 @@ Future<File?> getLatestAvatarForUser(String userPath) async {
 
     final ListResult result = await FirebaseStorage.instance.ref(userPath).listAll();
     for (final ref in result.items) {
-      final file = File('${ref.fullPath}');
+      final file = File(ref.fullPath);
       imageFiles.add(file);
     }
 
