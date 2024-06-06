@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sth_app/technical/technical.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:sth_app/pages/profilescreen/accountprofilescreen.dart';
 
 enum DisplayMode { images, videos }
 
@@ -396,10 +395,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       backgroundColor: Colors.black,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const AccountProfileScreen()),
-                          );
+                          Navigator.of(context).pushReplacementNamed('/accountprofilescreen');
                         },
                         child: _avatarImage != null
                             ? CircleAvatar(

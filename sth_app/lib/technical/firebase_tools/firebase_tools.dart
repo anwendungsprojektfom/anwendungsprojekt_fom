@@ -170,7 +170,7 @@ Future<void> pushHashtagsToFirebase(List<String> hashtags) async {
   }
 }
 
-//Delete hashtag from Cloud Firestore
+// Delete hashtag from Cloud Firestore
 Future<void> deleteHashtagFromFirebase(String hashtag) async {
   try {
     const String userId = 'JN2dcl4RbBNSs7VGEbYZ';
@@ -181,5 +181,66 @@ Future<void> deleteHashtagFromFirebase(String hashtag) async {
     });
   } catch (e) {
     print('Error deleting hashtag from Firebase: $e');
+  }
+}
+
+// Function to search users by name or hashtags
+Future<List<Map<String, dynamic>>> searchUsers(String searchTerm) async {
+  try {
+    CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
+    QuerySnapshot querySnapshotByName = await usersRef.where('name', isEqualTo: searchTerm).get();
+    QuerySnapshot querySnapshotByHashtag = await usersRef.where('selectedHashtags', arrayContains: searchTerm).get();
+
+    List<Map<String, dynamic>> foundProfiles = [];
+
+    for (var doc in querySnapshotByName.docs + querySnapshotByHashtag.docs) {
+      if (doc.data() != null) {
+        Map<String, dynamic>? userData = doc.data() as Map<String, dynamic>?;
+
+        if (userData != null) {
+          final userPath = doc.reference.path; // Pfad zum Benutzer im Firestore
+          final avatarImage = await getLatestAvatarForUser(userPath);
+          foundProfiles.add({
+            'name': userData['name'],
+            'email': userData['email'],
+            'phone': userData['phone'],
+            'address': userData['address'],
+            'selectedHashtags': List<String>.from(userData['selectedHashtags']),
+            'avatar': avatarImage?.path,
+          });
+        }
+      }
+    }
+
+    return foundProfiles;
+  } catch (e) {
+    print('Error searching users: $e');
+    return [];
+  }
+}
+
+// Function to get latest avatar from storage
+Future<File?> getLatestAvatarForUser(String userPath) async {
+  try {
+    final List<File> imageFiles = [];
+
+    final ListResult result = await FirebaseStorage.instance.ref(userPath).listAll();
+    for (final ref in result.items) {
+      final file = File(ref.fullPath);
+      imageFiles.add(file);
+    }
+
+    imageFiles.sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
+
+    for (var file in imageFiles) {
+      if (file.path.endsWith('.png') || file.path.endsWith('.jpg') || file.path.endsWith('.jpeg')) {
+        return file;
+      }
+    }
+
+    return null;
+  } catch (e) {
+    print('Error finding latest avatar image for user: $e');
+    return null;
   }
 }
