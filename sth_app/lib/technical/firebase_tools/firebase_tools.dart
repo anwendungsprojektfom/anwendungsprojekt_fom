@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 
 // Authentication
@@ -190,40 +191,27 @@ Future<List<Map<String, dynamic>>> searchUsers(String searchTerm) async {
     CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
     QuerySnapshot querySnapshotByName = await usersRef.where('name', isEqualTo: searchTerm).get();
     QuerySnapshot querySnapshotByHashtag = await usersRef.where('selectedHashtags', arrayContains: searchTerm).get();
-    
+
     List<Map<String, dynamic>> foundProfiles = [];
 
-    querySnapshotByName.docs.forEach((doc) {
+    for (var doc in querySnapshotByName.docs + querySnapshotByHashtag.docs) {
       if (doc != null && doc.data() != null) {
         Map<String, dynamic>? userData = doc.data() as Map<String, dynamic>?;
 
         if (userData != null) {
+          final userPath = doc.reference.path; // Pfad zum Benutzer im Firestore
+          final avatarImage = await getLatestAvatarForUser(userPath);
           foundProfiles.add({
             'name': userData['name'],
             'email': userData['email'],
             'phone': userData['phone'],
             'address': userData['address'],
             'selectedHashtags': List<String>.from(userData['selectedHashtags']),
+            'avatar': avatarImage?.path,
           });
         }
       }
-    });
-
-    querySnapshotByHashtag.docs.forEach((doc) {
-      if (doc != null && doc.data() != null) {
-        Map<String, dynamic>? userData = doc.data() as Map<String, dynamic>?;
-
-        if (userData != null) {
-          foundProfiles.add({
-            'name': userData['name'],
-            'email': userData['email'],
-            'phone': userData['phone'],
-            'address': userData['address'],
-            'selectedHashtags': List<String>.from(userData['selectedHashtags']),
-          });
-        }
-      }
-    });
+    }
 
     return foundProfiles;
   } catch (e) {
@@ -232,7 +220,28 @@ Future<List<Map<String, dynamic>>> searchUsers(String searchTerm) async {
   }
 }
 
+// Function to get latest avatar from storage
+Future<File?> getLatestAvatarForUser(String userPath) async {
+  try {
+    final List<File> imageFiles = [];
 
+    final ListResult result = await FirebaseStorage.instance.ref(userPath).listAll();
+    for (final ref in result.items) {
+      final file = File('${ref.fullPath}');
+      imageFiles.add(file);
+    }
 
+    imageFiles.sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
 
+    for (var file in imageFiles) {
+      if (file.path.endsWith('.png') || file.path.endsWith('.jpg') || file.path.endsWith('.jpeg')) {
+        return file;
+      }
+    }
 
+    return null;
+  } catch (e) {
+    print('Error finding latest avatar image for user: $e');
+    return null;
+  }
+}

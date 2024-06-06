@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sth_app/technical/technical.dart';
 
@@ -12,8 +13,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> searchResults = [];
 
-  // Methode zum Suchen von Benutzern
-  void fetchUserSearchResults(String searchTerm) async {
+  Future<void> fetchUserSearchResults(String searchTerm) async {
     if (searchTerm.isNotEmpty) {
       List<Map<String, dynamic>> results = await searchUsers(searchTerm);
       setState(() {
@@ -55,9 +55,13 @@ class _SearchScreenState extends State<SearchScreen> {
                 final phoneNumber = userData['phone'];
                 final address = userData['address'];
                 final hashtags = (userData['selectedHashtags'] as List).join(', ');
+                final avatarPath = userData['avatar'];
 
                 return Card(
                   child: ListTile(
+                    leading: avatarPath != null
+                        ? Image.file(File(avatarPath))
+                        : Icon(Icons.account_circle, size: 50),
                     title: Text('Name: $name'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,8 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         Text('Hashtags: $hashtags'),
                       ],
                     ),
-                    onTap: () {
-                    },
+                    onTap: () {},
                   ),
                 );
               },
@@ -83,3 +86,4 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 }
+
