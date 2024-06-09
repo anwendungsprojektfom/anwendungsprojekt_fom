@@ -3,7 +3,7 @@
 Der Ladebildschirm ist ein essenzieller Bestandteil der Benutzererfahrung unserer STH-App (SportTalentHub). Er erscheint, bevor der Nutzer die Hauptfunktionen der App nutzen kann, und dient als Zwischenbildschirm, um dem Nutzer zu signalisieren, dass die App lädt.
 
 \section*{Ziele des Ladebildschirms}
-Der Ladebildschirm hat mehrere wichtige Funktionen. Er zeigt dem Nutzer visuelles Feedback, dass die App aktiv ist und lädt, wodurch eine bessere Benutzererfahrung gewährleistet wird. Der Ladebildschirm wurde so gestaltet, dass er genau drei Sekunden lang angezeigt wird. Dies gibt der App ausreichend Zeit, um die notwendigen Daten und Ressourcen im Hintergrund zu laden. \newline
+Der Ladebildschirm hat mehrere wichtige Funktionen. Er zeigt dem Nutzer visuelles Feedback, dass die App aktiv ist und lädt, wodurch eine bessere Benutzererfahrung gewährleistet wird. Der Ladebildschirm wurde so gestaltet, dass er genau vier Sekunden lang angezeigt wird. Dies gibt der App ausreichend Zeit, um die notwendigen Daten und Ressourcen im Hintergrund zu laden. \newline
 Es ist entscheidend, dass nach Ablauf der vier Sekunden die Benutzer zur Startseite (Homepage) der App navigiert werden und nicht zu anderen Seiten wie der Profil- oder Chatseite.
 
 \section*{Gestaltung des Ladebildschirms}
@@ -17,36 +17,10 @@ Das Logo wurde im Ladebildschirm implementiert und ein animiertes Symbol hinzuge
 Es wurde darauf geachtet, dass nach dem Ablauf der vier Sekunden der Nutzer zur Startseite navigiert wird. Dies wurde durch entsprechende Programmierung in Flutter sichergestellt.
 
 \section*{Wichtige Funktionen des Ladebildschirms}
-Der Ladebildschirm wurde in Flutter programmiert und enthält folgende wichtige Funktionen:\newline
-- Die `initState`-Methode startet einen Timer, der nach einer Dauer von drei Sekunden den Nutzer zur Startseite (Homescreen) weiterleitet:
-\begin{verbatim}
-  @override
-  void initState() {
-    super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacementNamed('/homescreen');
-    });
-  }
-\end{verbatim}
-- Der Ladebildschirm verwendet ein `Scaffold`-Widget mit einem weißen Hintergrund und einem zentrierten `Column`-Widget, das das Logo und einen `CircularProgressIndicator` anzeigt:
-\begin{verbatim}
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image(image: AssetImage('assets/images/FinalLogoSTHOriginal.png')),
-            SizedBox(height: 20),
-            CircularProgressIndicator(),
-          ],
-        ),
-      ),
-    );
-  }
-\end{verbatim}
+Der Ladebildschirm wurde in Flutter programmiert und enthält folgende wichtige Funktionen:
+- In der `initState`-Methode wird ein Timer gestartet, der nach einer Dauer von drei Sekunden den Nutzer zur Startseite (Homescreen) weiterleitet. Dies wird durch die Methode `Navigator.of(context).pushReplacementNamed('/homescreen')` erreicht.
+- Der Ladebildschirm verwendet ein `Scaffold`-Widget mit einem weißen Hintergrund und einem zentrierten `Column`-Widget, das das Logo und einen `CircularProgressIndicator` anzeigt. Das Logo wird mit einem `Image`-Widget eingebunden, das auf die Bilddatei im Asset-Verzeichnis verweist.
+- Das `CircularProgressIndicator`-Widget zeigt eine Animation an, die den Ladevorgang visuell unterstützt.
 
 \section*{Änderungen am App-Logo}
 Neben der Erstellung und Implementierung des Logos für den Ladebildschirm war es auch notwendig, das App-Logo selbst zu ändern. Das Ändern des App-Logos wurde in der `pubspec.yaml`-Datei wie folgt konfiguriert:
