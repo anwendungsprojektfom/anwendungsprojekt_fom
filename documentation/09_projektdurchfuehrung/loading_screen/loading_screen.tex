@@ -16,6 +16,38 @@ Bevor das Logo endgültig in die App integriert wurde, wurde es im Rahmen eines 
 Das Logo wurde im Ladebildschirm implementiert und ein animiertes Symbol hinzugefügt, das die Ladebewegung anzeigt. \newline
 Es wurde darauf geachtet, dass nach dem Ablauf der vier Sekunden der Nutzer zur Startseite navigiert wird. Dies wurde durch entsprechende Programmierung in Flutter sichergestellt.
 
+\section*{Wichtige Funktionen des Ladebildschirms}
+Der Ladebildschirm wurde in Flutter programmiert und enthält folgende wichtige Funktionen:\newline
+- Die `initState`-Methode startet einen Timer, der nach einer Dauer von drei Sekunden den Nutzer zur Startseite (Homescreen) weiterleitet:
+\begin{verbatim}
+  @override
+  void initState() {
+    super.initState();
+    Timer(const Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacementNamed('/homescreen');
+    });
+  }
+\end{verbatim}
+- Der Ladebildschirm verwendet ein `Scaffold`-Widget mit einem weißen Hintergrund und einem zentrierten `Column`-Widget, das das Logo und einen `CircularProgressIndicator` anzeigt:
+\begin{verbatim}
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image(image: AssetImage('assets/images/FinalLogoSTHOriginal.png')),
+            SizedBox(height: 20),
+            CircularProgressIndicator(),
+          ],
+        ),
+      ),
+    );
+  }
+\end{verbatim}
+
 \section*{Änderungen am App-Logo}
 Neben der Erstellung und Implementierung des Logos für den Ladebildschirm war es auch notwendig, das App-Logo selbst zu ändern. Das Ändern des App-Logos war technisch weniger anspruchsvoll. Es erforderte lediglich, das neue Logo in den entsprechenden Bereich des App-Projekts einzufügen. \newline
 Wir entschieden uns außerdem, das Logo auch auf der Startseite der App anzuzeigen. Hierzu wurde ein Code in die Startseite geschrieben, der diese Funktion realisiert.
