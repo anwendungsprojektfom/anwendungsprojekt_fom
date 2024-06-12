@@ -188,26 +188,36 @@ Future<void> deleteHashtagFromFirebase(String hashtag) async {
 Future<List<Map<String, dynamic>>> searchUsers(String searchTerm) async {
   try {
     CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
-    QuerySnapshot querySnapshotByName = await usersRef.where('name', isEqualTo: searchTerm).get();
-    QuerySnapshot querySnapshotByHashtag = await usersRef.where('selectedHashtags', arrayContains: searchTerm).get();
+
+    QuerySnapshot allUsersSnapshot = await usersRef.get();
 
     List<Map<String, dynamic>> foundProfiles = [];
 
-    for (var doc in querySnapshotByName.docs + querySnapshotByHashtag.docs) {
-      if (doc.data() != null) {
+    String searchTermLower = searchTerm.toLowerCase();
+
+    for (var doc in allUsersSnapshot.docs) {
+      if (doc != null && doc.data() != null) {
         Map<String, dynamic>? userData = doc.data() as Map<String, dynamic>?;
 
         if (userData != null) {
-          final userPath = doc.reference.path; // Pfad zum Benutzer im Firestore
-          final avatarImage = await getLatestAvatarForUser(userPath);
-          foundProfiles.add({
-            'name': userData['name'],
-            'email': userData['email'],
-            'phone': userData['phone'],
-            'address': userData['address'],
-            'selectedHashtags': List<String>.from(userData['selectedHashtags']),
-            'avatar': avatarImage?.path,
-          });
+          String name = userData['name'].toString().toLowerCase();
+          List<String> hashtags = List<String>.from(userData['selectedHashtags']).map((hashtag) => hashtag.toLowerCase()).toList();
+
+          bool matchesName = name.contains(searchTermLower);
+          bool matchesHashtag = hashtags.any((hashtag) => hashtag.contains(searchTermLower));
+
+          if (matchesName || matchesHashtag) {
+            final userPath = doc.reference.path;
+            final avatarImage = await getLatestAvatarForUser(userPath);
+            foundProfiles.add({
+              'name': userData['name'],
+              'email': userData['email'],
+              'phone': userData['phone'],
+              'address': userData['address'],
+              'selectedHashtags': List<String>.from(userData['selectedHashtags']),
+              'avatar': avatarImage?.path,
+            });
+          }
         }
       }
     }
@@ -226,7 +236,7 @@ Future<File?> getLatestAvatarForUser(String userPath) async {
 
     final ListResult result = await FirebaseStorage.instance.ref(userPath).listAll();
     for (final ref in result.items) {
-      final file = File(ref.fullPath);
+      final file = File('${ref.fullPath}');
       imageFiles.add(file);
     }
 
