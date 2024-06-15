@@ -59,7 +59,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
                 return Card(
                   child: ListTile(
-                    leading: avatarPath != null ? Image.file(File(avatarPath)) : const Icon(Icons.account_circle, size: 50),
+                    leading:
+                        avatarPath != null ? Image.file(File(avatarPath)) : const Icon(Icons.account_circle, size: 50),
                     title: Text('Name: $name'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

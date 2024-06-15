@@ -32,7 +32,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             // Second Post
             PostWidget(
-              userId: 'JN2dcl4RbBNSs7VGEbYZ',
+              userId: 'JN2dcl4RbBNSs7VGEbYC',
+            ),
+            PostWidget(
+              userId: 'JN2dcl4RbBNSs7VGEbYB',
+            ),
+            PostWidget(
+              userId: 'JN2dcl4RbBNSs7VGEbYA',
             ),
           ],
         ),

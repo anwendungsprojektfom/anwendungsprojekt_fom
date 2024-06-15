@@ -25,8 +25,8 @@ Future<Map<String, dynamic>> getCurrentUserData(String userId) async {
   return (userData);
 }
 
-Future<String> getCurrentUserName() async {
-  Map<String, dynamic> userData = await getCurrentUserData('JN2dcl4RbBNSs7VGEbYZ');
+Future<String> getCurrentUserName(String userId) async {
+  Map<String, dynamic> userData = await getCurrentUserData(userId);
   return userData['name'];
 }
 
@@ -133,6 +133,28 @@ Future<List<String>> downloadImagesFromFirebase(String userId) async {
   }
 }
 
+Future<List<String>> downloadAvatarFromFirebase(String userId) async {
+  try {
+    final storageRef = FirebaseStorage.instance.ref().child("$userId/uploads/avatarImages/");
+    final listResult = await storageRef.listAll();
+    List<String> base64Images = [];
+
+    for (var item in listResult.items) {
+      final data = await item.getData();
+      Uint8List imageBytes = data!;
+
+      // Convert imageBytes to base64 string
+      String base64Image = base64Encode(imageBytes);
+      base64Images.add(base64Image);
+    }
+
+    return base64Images;
+  } catch (e) {
+    print('Error fetching images: $e');
+    rethrow; // Rethrow the error to be handled by the caller
+  }
+}
+
 // Push videofile from profilescreen to Firestore Storage
 Future<bool> uploadVideoFileToFirebase(File videofile) async {
   try {
@@ -196,12 +218,13 @@ Future<List<Map<String, dynamic>>> searchUsers(String searchTerm) async {
     String searchTermLower = searchTerm.toLowerCase();
 
     for (var doc in allUsersSnapshot.docs) {
-      if (doc != null && doc.data() != null) {
+      if (doc.data() != null) {
         Map<String, dynamic>? userData = doc.data() as Map<String, dynamic>?;
 
         if (userData != null) {
           String name = userData['name'].toString().toLowerCase();
-          List<String> hashtags = List<String>.from(userData['selectedHashtags']).map((hashtag) => hashtag.toLowerCase()).toList();
+          List<String> hashtags =
+              List<String>.from(userData['selectedHashtags']).map((hashtag) => hashtag.toLowerCase()).toList();
 
           bool matchesName = name.contains(searchTermLower);
           bool matchesHashtag = hashtags.any((hashtag) => hashtag.contains(searchTermLower));
@@ -236,7 +259,7 @@ Future<File?> getLatestAvatarForUser(String userPath) async {
 
     final ListResult result = await FirebaseStorage.instance.ref(userPath).listAll();
     for (final ref in result.items) {
-      final file = File('${ref.fullPath}');
+      final file = File(ref.fullPath);
       imageFiles.add(file);
     }
 
