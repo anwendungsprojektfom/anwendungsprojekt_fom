@@ -12,7 +12,6 @@
 %options for figures
 \input{listoffigures.tex}
 %options for tables
-\input{listoftables.tex}
 
 %renewcommand to apply the font
 \renewcommand\familydefault{\sfdefault}
@@ -30,12 +29,10 @@
 %Inhaltsverzeichnis
 \tableofcontents
 
-%abbildungen & tabellen
+%abbildungen
 \listoffigures
 \addcontentsline{toc}{chapter}{\protect\listfigurename}
 
-\listoftables
-\addcontentsline{toc}{chapter}{\protect\listtablename}
 \newpage
 \input{acronyms.tex}
 \input{pagestyle.tex}
