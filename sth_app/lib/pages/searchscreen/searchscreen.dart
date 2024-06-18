@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sth_app/technical/technical.dart';
 
@@ -50,17 +50,43 @@ class _SearchScreenState extends State<SearchScreen> {
               itemCount: searchResults.length,
               itemBuilder: (context, index) {
                 final userData = searchResults[index];
+                final userId = userData['userId'];
                 final name = userData['name'];
                 final email = userData['email'];
                 final phoneNumber = userData['phone'];
                 final address = userData['address'];
                 final hashtags = (userData['selectedHashtags'] as List).join(', ');
-                final avatarPath = userData['avatar'];
 
                 return Card(
                   child: ListTile(
-                    leading:
-                        avatarPath != null ? Image.file(File(avatarPath)) : const Icon(Icons.account_circle, size: 50),
+                    leading: FutureBuilder<List<String>>(
+                      future: downloadAvatarFromFirebase(userId),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircleAvatar(
+                            radius: 25,
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return const CircleAvatar(
+                            radius: 25,
+                            child: Icon(Icons.error),
+                          );
+                        } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                          return CircleAvatar(
+                            radius: 25,
+                            backgroundImage: MemoryImage(
+                              base64Decode(snapshot.data![0]),
+                            ),
+                          );
+                        } else {
+                          return const CircleAvatar(
+                            radius: 25,
+                            child: Icon(Icons.account_circle, size: 50),
+                          );
+                        }
+                      },
+                    ),
                     title: Text('Name: $name'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
