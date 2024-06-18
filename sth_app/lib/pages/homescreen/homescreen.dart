@@ -12,7 +12,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final Logger _logger = Logger();
-  final int _currentPage = 0; // Variable for the slider value
 
   @override
   Widget build(BuildContext context) {

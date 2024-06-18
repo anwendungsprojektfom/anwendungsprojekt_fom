@@ -233,6 +233,7 @@ Future<List<Map<String, dynamic>>> searchUsers(String searchTerm) async {
             final userPath = doc.reference.path;
             final avatarImage = await getLatestAvatarForUser(userPath);
             foundProfiles.add({
+              'userId': doc.id,
               'name': userData['name'],
               'email': userData['email'],
               'phone': userData['phone'],
