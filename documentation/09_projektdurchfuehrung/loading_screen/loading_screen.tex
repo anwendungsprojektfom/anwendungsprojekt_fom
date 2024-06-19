@@ -1,29 +1,23 @@
-\chapter{Ladebildschirm}
+\chapter{Loading-Screen}
+Der Loading-Screen ist ein wesentlicher Bestandteil der Benutzererfahrung unserer STH-App. Er erscheint vor dem Zugriff des Nutzers auf die Hauptfunktionen der App und signalisiert, dass die App lädt, während gleichzeitig alle benötigten Ressourcen für den initialen Aufruf vorbereitet werden.
 
-Der Ladebildschirm ist ein essenzieller Bestandteil der Benutzererfahrung unserer STH-App (SportTalentHub). Er erscheint, bevor der Nutzer die Hauptfunktionen der App nutzen kann, und dient als Zwischenbildschirm, um dem Nutzer zu signalisieren, dass die App lädt.
+\section{Gestaltung des Logos}
+Für die Gestaltung des Logos wurden mehrere Schritte durchgeführt. Das Logo wurde mithilfe von Canva erstellt und sollte den Charakter sowie die Zielgruppe der STH-APP-App widerspiegeln.
+Besonderes Augenmerk wurde darauf gelegt, dass das Design für die STH-APP-App geeignet ist. Die Inspiration für das Logo wurde aus verschiedenen Quellen wie der NFL gewonnen. Die Farben und das Design sollten sportlich und ansprechend sein.
+Das Logo wurde in den Ladebildschirm eingebaut und mit einem animierten Symbol ergänzt, das die Ladebewegung veranschaulicht. 
+Es wurde akribisch darauf geachtet, dass der Nutzer nach genau vier Sekunden automatisch zur Startseite navigiert wird. Diese präzise Funktionalität war entscheidend, da gleichzeitig Ressourcen im Hintergrund geladen werden mussten. Sie wurde durch gezielte Programmierung in Flutter sichergestellt.
 
-\section*{Ziele des Ladebildschirms}
-Der Ladebildschirm hat mehrere wichtige Funktionen. Er zeigt dem Nutzer visuelles Feedback, dass die App aktiv ist und lädt, wodurch eine bessere Benutzererfahrung gewährleistet wird. Der Ladebildschirm wurde so gestaltet, dass er genau vier Sekunden lang angezeigt wird. Dies gibt der App ausreichend Zeit, um die notwendigen Daten und Ressourcen im Hintergrund zu laden. \newline
-Es ist entscheidend, dass nach Ablauf der vier Sekunden die Benutzer zur Startseite (Homepage) der App navigiert werden und nicht zu anderen Seiten wie der Profil- oder Chatseite.
+\section{Technische Aspekte des Loading-Screens}
+Die folgenden technischen Aspekte beschreiben den Prozess und die Implementierung des Ladebildschirms:
 
-\section*{Gestaltung des Ladebildschirms}
-Für die Gestaltung des Ladebildschirms waren mehrere Schritte notwendig. Das Logo wurde mit Canva erstellt und musste den Charakter und die Zielgruppe der App widerspiegeln. \newline
-Es wurde darauf geachtet, dass das Design für eine SportTalentHub-App geeignet ist. Die Inspiration für das Logo wurde aus verschiedenen Quellen, wie der NFL, gezogen. Die Farben und das Design sollten sportlich und ansprechend sein. \newline
-Nach der Erstellung wurde das Logo transparent gemacht, um es optimal in den Ladebildschirm integrieren zu können.
+\begin{itemize}[itemsep=0pt]
+    \item In der \enquote{initState}-Methode wird ein Timer gestartet, der nach einer Dauer von vier Sekunden den Nutzer zur Startseite weiterleitet. Dies wird durch die Methode \enquote{Navigator.of(context).pushReplacementNamed('/homescreen')} erreicht.
+    \item Der Ladebildschirm verwendet ein \enquote{Scaffold}-Widget mit einem weißen Hintergrund und einem zentrierten \enquote{Column}-Widget, das das Logo und einen \enquote{CircularProgressIndicator} anzeigt. Das Logo wird mit einem \enquote{Image}-Widget eingebunden, das auf die Bilddatei im Asset-Verzeichnis verweist.
+    \item Das \enquote{CircularProgressIndicator}-Widget zeigt eine Animation an, die den Ladevorgang visuell unterstützt.
+\end{itemize}
 
-Bevor das Logo endgültig in die App integriert wurde, wurde es im Rahmen eines wöchentlichen Meetings präsentiert. Das positive Feedback der Teammitglieder bestätigte die Eignung des Logos, sodass es anschließend in den Ladebildschirm eingefügt wurde.
-
-Das Logo wurde im Ladebildschirm implementiert und ein animiertes Symbol hinzugefügt, das die Ladebewegung anzeigt. \newline
-Es wurde darauf geachtet, dass nach dem Ablauf der vier Sekunden der Nutzer zur Startseite navigiert wird. Dies wurde durch entsprechende Programmierung in Flutter sichergestellt.
-
-\section*{Wichtige Funktionen des Ladebildschirms}
-Der Ladebildschirm wurde in Flutter programmiert und enthält folgende wichtige Funktionen:
-- In der `initState`-Methode wird ein Timer gestartet, der nach einer Dauer von drei Sekunden den Nutzer zur Startseite (Homescreen) weiterleitet. Dies wird durch die Methode `Navigator.of(context).pushReplacementNamed('/homescreen')` erreicht.
-- Der Ladebildschirm verwendet ein `Scaffold`-Widget mit einem weißen Hintergrund und einem zentrierten `Column`-Widget, das das Logo und einen `CircularProgressIndicator` anzeigt. Das Logo wird mit einem `Image`-Widget eingebunden, das auf die Bilddatei im Asset-Verzeichnis verweist.
-- Das `CircularProgressIndicator`-Widget zeigt eine Animation an, die den Ladevorgang visuell unterstützt.
-
-\section*{Änderungen am App-Logo}
-Neben der Erstellung und Implementierung des Logos für den Ladebildschirm war es auch notwendig, das App-Logo selbst zu ändern. Das Ändern des App-Logos wurde in der `pubspec.yaml`-Datei wie folgt konfiguriert:
+\section{Dependencies des Logos}
+Um das Bild zu variieren und Änderungen vornehmen zu können, wurden Dependencies benötigt: Neben der Erstellung und Implementierung des Logos für den Ladebildschirm war es auch notwendig, das App-Logo selbst anzupassen. Die Konfiguration für die Anpassung des App-Logos wurde in der `pubspec.yaml`-Datei wie folgt vorgenommen:
 \begin{verbatim}
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -31,5 +25,4 @@ flutter_launcher_icons:
   image_path: "assets/Images/FinalLogoSTHOriginal.png"
   min_sdk_android: 21
 \end{verbatim}
-Hierbei wurde das neue Logo in den entsprechenden Bereich des App-Projekts eingefügt. \newline
-Wir entschieden uns außerdem, das Logo auch auf der Startseite der App anzuzeigen. Hierzu wurde ein Code in die Startseite geschrieben, der diese Funktion realisiert.
+Dadurch konnten neue Logos erfolgreich in den entsprechenden Bereich des App-Projekts integriert werden.

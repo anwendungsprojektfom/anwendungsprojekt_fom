@@ -1,7 +1,7 @@
 \chapter{Initiale Einrichtung der Tools für das STH-Projekt}
 Dieses Kapitel beschreibt die initiale Einrichtung des Flutter-Code-Repositories, die Nutzung von Google Firebase und die Verwendung vorhandener Microsoft Teams Add-On Tools für die Projektorganisation.
 
-\section*{Microsoft Teams Tools für die Organisation des Projektes und der Aufgaben für das Projektteam}
+\section{Microsoft Teams Tools für die Organisation des Projektes und der Aufgaben für das Projektteam}
 Im Projektstart-Meeting hat das Projektteam zusätzlich zur Ideenfindung und Projektteam-Aufteilung entschieden, dass das STH-Projekt mit agilen Projektmanagement-Methoden angelehnt an Scrum durchgeführt werden soll.
 Zunächst wurde dafür ein Tool gesucht, das sowohl die Dokumentation von besprochenen Themen als auch die Planung von Aufgaben und die Kommunikation im Projektteam ermöglicht.
 Nach einigen Recherechen und Diskussionen hat sich das Projektteam für Microsoft Teams entschieden.
@@ -9,7 +9,7 @@ Teams bietet mit seinen Add-On Tools die benötigten Möglichkeiten:\newline
 Ergebnisse aus Diskussionen und Weekly-Standup-Meetings können mit Microsoft OneNote dokumentiert werden.
 Aufgaben für das Projektteam können mit dem Add-On Microsoft Planner in einem Kanban Board übersichtlich dargestellt werden und der jeweilige Aufgabenstatus kann von jedem Projektmitglied eingesehen und bearbeitet werden.
 Zusätzlich wurde ein Team in Microsoft Teams erstellt, in dem die Kommunikation im Projektteam stattgefunden hat und Neuerungen oder Probleme bei der Entwicklung besprochen werden konnten. 
-\section*{Einrichtung des Flutter-Code-Repositories für das STH-Projekt}
+\section{Einrichtung des Flutter-Code-Repositories für das STH-Projekt}
 Im nächsten Schritt hat das Projektteam im Projektstart-Meeting ein Framework bzw\. eine Programmiersprache für das STH-Projekt gesucht, die sowohl eine gute Dokumentation, eine leicht verständliche Programmiersprache, Plattformunabhängigkeit für iOS/Android und die Kompatibilität zum Kompilieren der Applikation für die Betriebssysteme Windows und MacOS bietet.
 Durch bereits vorhandenes Know-How wurde das Google-Framework Flutter gewählt.\newline
 Flutter ist ein Open-Source-Framework von Google, das eine Frontend-Entwicklung von Benutzeroberflächen für Apps bietet.
@@ -22,7 +22,7 @@ Dieses initiale Setup beinhaltet eine voll funktionsfähige Beispiel-App, die f�
 Für einen erfolgreichen iOS-Build wird zudem ein Apple-Gerät mit dem Betriebssystem macOS und die Apple-Software xCode benötigt, um iOS-spezifische Einheiten der App kompilieren zu können.
 \newline
 Für einen sogenannten ``Clean Code'', der für alle Projektmitglieder gut lesbar und verständlich ist, wurde festgelegt, dass für jede Änderung im Code der ``Flutter Formatter (Terminal Command: dart format -l 120 \.)\" und der Dart Analyzer (Terminal Command: dart analyze \&\& dart fix --apply)'' ausgeführt werden muss.
-\section*{Google Firebase Tools als Backend}
+\section{Google Firebase Tools als Backend}
 Firebase ist ein Cloud Service, der von Google bereitgestellt wird.
 Dieser bietet folgende wichtige Funktionen, die für die STH App essentiell sind:
 \begin{itemize}
@@ -32,7 +32,7 @@ Dieser bietet folgende wichtige Funktionen, die für die STH App essentiell sind
 \end{itemize}
 Über den Terminal\-Command ``flutter pub add'' incl\. den jeweiligen Flutter packages / dependencies \(firebase\_auth, firebase\_core, firebase\_storage, cloud\_firestore\) wurden Flutter Packages dem Projekt hinzugefügt und können verwendet werden.
 
-\section*{Zentrale Funktionen für Firebase, Shared Preferences, Flutter Page Routing, Flutter Bottom Navigationbar und Flutter App Bar}
+\section{Zentrale Funktionen für Firebase, Shared Preferences, Flutter Page Routing, Flutter Bottom Navigationbar und Flutter App Bar}
 Zusätzlich wurden Funktionen, die an anderen Stellen des Codes wiederverwendet werden, zentralisiert.
 Dazu wurde im Repository ein Ordner ``technical'' angelegt und dieser in die jeweilige Grundfunktionalitäten unterteilt:
 \\
