@@ -1,13 +1,8 @@
 \chapter{Search-Screen}
-Der Search-Screen ist eine zentrale Funktion unserer STH-App. Er ermöglicht es den Nutzern, sowohl Sportlern als auch Sportmanagern gezielt nach bestimmten Personen anhand von Hashtags oder Namen in der Firebase-Datenbank zu suchen. 
-Diese Funktion ist eng mit Firebase verknüpft, da dort die Profildaten der Nutzer gespeichert sind. Durch diese Integration können Nutzer nach anderen Nutzern suchen. 
+Der Search-Screen bietet die Möglichkeit, dass Nutzer, Sportler und Sportmanager gezielt nach bestimmten Personen anhand von Hashtags oder Namen zu suchen. 
+Diese Funktion ist eng mit Firebase verknüpft, da dort die Profildaten der gesuchten Nutzer gespeichert sind.
 Sobald ein Suchbegriff eingegeben wird, sei es ein Hashtag oder ein Name, zeigt der Search-Screen die entsprechenden Personen an.
-
-\section{Funktionen des Search-Screens}
-Der Search-Screen ist eine zentrale Funktion unserer Flutter-basierten STH-App, die es Nutzern ermöglicht, gezielt nach Sportlern und Sportmanagern in der Datenbank zu suchen. 
-Benutzer können diese Suche entweder über Hashtags oder Namen durchführen. Die Suchfunktion verwendet Pattern-Matching, um präzise Ergebnisse zu liefern, basierend auf den eingegebenen Suchkriterien.
-Die Ergebnisse der Suche werden dynamisch von Firebase abgerufen und umfassen alle relevanten Datenbank-Items für die gefundenen Benutzer. Jedes Suchergebnis wird in einem ansprechenden Layout präsentiert, das neben grundlegenden Informationen auch Avatare der entsprechenden Benutzer zeigt. Diese Avatare werden direkt von Firebase heruntergeladen und den jeweiligen Profilen zugewiesen, um eine personalisierte Darstellung zu ermöglichen.
-
-
-\section{Zukünftige Erweiterungen}
-Zukünftige Erweiterungen der Suchfunktion könnten die Speicherung früher gesuchter Personen im Suchbereich umfassen. Außerdem wäre es möglich, die Suche zu erweitern, sodass nicht nur nach Hashtags und Namen gesucht werden kann, sondern auch nach weiteren Informationen oder Merkmalen. Zusätzlich sollte es möglich sein, eine Profilseite aufzurufen, auf der alle Account-Informationen eingesehen werden können.
+Die Suchfunktion verwendet Pattern-Matching, um präzise Ergebnisse zu liefern, basierend auf den eingegebenen Suchkriterien.
+Die Ergebnisse der Suche werden dynamisch von Firebase abgerufen und umfassen alle relevanten Werte für die gefundenen Benutzer.
+Jedes Suchergebnis wird in einem strukturierten Layout präsentiert, das neben grundlegenden Informationen auch Avatare der entsprechenden Benutzer zeigt.
+Dabei werden sowohl die personenbezogenen Informationen und das Profilbild für einen User in ein Array gespeichert und dem User im Suchergebnis zugeordnet.
