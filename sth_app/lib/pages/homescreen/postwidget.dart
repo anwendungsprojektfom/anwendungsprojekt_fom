@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:sth_app/technical/firebase_tools/firebase_tools.dart';
 import 'package:sth_app/technical/technical.dart';
 
 class PostWidget extends StatelessWidget {
@@ -21,26 +22,65 @@ class PostWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.black, // Choose the color of the border
-                    width: 2.0, // Choose the width of the border
-                  ),
-                ),
-                child: const CircleAvatar(
-                  radius: 20,
-                  backgroundImage: AssetImage('assets/Images/logoSTH.png'),
-                ),
+              FutureBuilder<List<String>>(
+                future: downloadAvatarFromFirebase(userId),
+                builder: (context, snapshot) {
+                  Widget avatar;
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    avatar = const CircleAvatar(
+                      radius: 20,
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    avatar = const CircleAvatar(
+                      radius: 20,
+                      child: Icon(Icons.error),
+                    );
+                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    avatar = CircleAvatar(
+                      radius: 20,
+                      backgroundImage: MemoryImage(
+                        base64Decode(snapshot.data![0]),
+                      ),
+                    );
+                  } else {
+                    avatar = const CircleAvatar(
+                      radius: 20,
+                      child: Icon(Icons.person),
+                    );
+                  }
+                  return Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 2.0,
+                      ),
+                    ),
+                    child: avatar,
+                  );
+                },
               ),
               const SizedBox(width: 8.0),
-              _buildPostWidget(),
+              FutureBuilder<String?>(
+                future: getCurrentUserName(userId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return const Text('Error loading username');
+                  } else if (snapshot.hasData) {
+                    return Text(snapshot.data ?? 'No username found');
+                  } else {
+                    return const Text('No username found');
+                  }
+                },
+              ),
             ],
           ),
           const SizedBox(height: 8.0),
           FutureBuilder<List<String>>(
-            future: downloadImagesFromFirebase('JN2dcl4RbBNSs7VGEbYZ'), // Replace 'secondAccountID' with actual ID
+            future: downloadImagesFromFirebase(userId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -53,7 +93,7 @@ class PostWidget extends StatelessWidget {
                 );
               } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                 return SizedBox(
-                  height: 200, // Set a fixed height for the PageView
+                  height: 200,
                   child: PageView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
@@ -85,13 +125,16 @@ class PostWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPostWidget() {
-    return const Column(
+  Widget _buildPostWidget(String? name) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text("Jonas", style: TextStyle(fontWeight: FontWeight.bold)),
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            name ?? '', // Provide a default value in case name is null
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
       ],
     );

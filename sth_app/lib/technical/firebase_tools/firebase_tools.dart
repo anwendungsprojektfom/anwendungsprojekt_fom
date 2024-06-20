@@ -25,8 +25,8 @@ Future<Map<String, dynamic>> getCurrentUserData(String userId) async {
   return (userData);
 }
 
-Future<String> getCurrentUserName() async {
-  Map<String, dynamic> userData = await getCurrentUserData('JN2dcl4RbBNSs7VGEbYZ');
+Future<String> getCurrentUserName(String userId) async {
+  Map<String, dynamic> userData = await getCurrentUserData(userId);
   return userData['name'];
 }
 
@@ -133,6 +133,28 @@ Future<List<String>> downloadImagesFromFirebase(String userId) async {
   }
 }
 
+Future<List<String>> downloadAvatarFromFirebase(String userId) async {
+  try {
+    final storageRef = FirebaseStorage.instance.ref().child("$userId/uploads/avatarImages/");
+    final listResult = await storageRef.listAll();
+    List<String> base64Images = [];
+
+    for (var item in listResult.items) {
+      final data = await item.getData();
+      Uint8List imageBytes = data!;
+
+      // Convert imageBytes to base64 string
+      String base64Image = base64Encode(imageBytes);
+      base64Images.add(base64Image);
+    }
+
+    return base64Images;
+  } catch (e) {
+    print('Error fetching images: $e');
+    rethrow; // Rethrow the error to be handled by the caller
+  }
+}
+
 // Push videofile from profilescreen to Firestore Storage
 Future<bool> uploadVideoFileToFirebase(File videofile) async {
   try {
@@ -188,26 +210,38 @@ Future<void> deleteHashtagFromFirebase(String hashtag) async {
 Future<List<Map<String, dynamic>>> searchUsers(String searchTerm) async {
   try {
     CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
-    QuerySnapshot querySnapshotByName = await usersRef.where('name', isEqualTo: searchTerm).get();
-    QuerySnapshot querySnapshotByHashtag = await usersRef.where('selectedHashtags', arrayContains: searchTerm).get();
+
+    QuerySnapshot allUsersSnapshot = await usersRef.get();
 
     List<Map<String, dynamic>> foundProfiles = [];
 
-    for (var doc in querySnapshotByName.docs + querySnapshotByHashtag.docs) {
+    String searchTermLower = searchTerm.toLowerCase();
+
+    for (var doc in allUsersSnapshot.docs) {
       if (doc.data() != null) {
         Map<String, dynamic>? userData = doc.data() as Map<String, dynamic>?;
 
         if (userData != null) {
-          final userPath = doc.reference.path; // Pfad zum Benutzer im Firestore
-          final avatarImage = await getLatestAvatarForUser(userPath);
-          foundProfiles.add({
-            'name': userData['name'],
-            'email': userData['email'],
-            'phone': userData['phone'],
-            'address': userData['address'],
-            'selectedHashtags': List<String>.from(userData['selectedHashtags']),
-            'avatar': avatarImage?.path,
-          });
+          String name = userData['name'].toString().toLowerCase();
+          List<String> hashtags =
+              List<String>.from(userData['selectedHashtags']).map((hashtag) => hashtag.toLowerCase()).toList();
+
+          bool matchesName = name.contains(searchTermLower);
+          bool matchesHashtag = hashtags.any((hashtag) => hashtag.contains(searchTermLower));
+
+          if (matchesName || matchesHashtag) {
+            final userPath = doc.reference.path;
+            final avatarImage = await getLatestAvatarForUser(userPath);
+            foundProfiles.add({
+              'userId': doc.id,
+              'name': userData['name'],
+              'email': userData['email'],
+              'phone': userData['phone'],
+              'address': userData['address'],
+              'selectedHashtags': List<String>.from(userData['selectedHashtags']),
+              'avatar': avatarImage?.path,
+            });
+          }
         }
       }
     }
