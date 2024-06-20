@@ -2,13 +2,13 @@
 \setcounter{figure}{0}
 \renewcommand{\thefigure}{\arabic{figure}}
 
+
 %reset the figure name
 \renewcommand{\figurename}{Bild}
 
-%format the figure appereance in tof
+% Format the figure appearance in ToF
 \titlecontents{figure}[0mm]%
-{Bild }%
-{\thecontentslabel\quad: ~}%
+{}%  % No extra indentation
+{}%  % Format: Bild <number>:
 {}%
-{\enspace\dotfill\enspace\thecontentspage}
-
+{\titlerule*[1pc]{.}\contentspage}  % Dotted line and page number
