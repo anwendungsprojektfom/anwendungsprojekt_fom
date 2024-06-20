@@ -1,24 +1,8 @@
-\chapter{Suchbildschirm}
-
-Der Suchbildschirm ist eine zentrale Funktion unserer STH-App (SportTalentHub). Er ermöglicht es den Nutzern, sowohl Sportlern als auch Sportmanagern, gezielt nach bestimmten Personen anhand von Hashtags oder Namen zu suchen.
-
-\section*{Ziele des Suchbildschirms}
-Das Hauptziel des Suchbildschirms ist es, den Nutzern eine effiziente Möglichkeit zu bieten, Spieler oder Manager zu finden. Dies kann durch die Eingabe von Hashtags oder Namen erfolgen. Die Suchfunktion ist über das Suchsymbol auf dem Startbildschirm zugänglich.
-
-\section*{Integration mit Firebase}
-Die Suchfunktion ist eng mit Firebase verbunden. Firebase spielt eine entscheidende Rolle, da dort die Profildaten der Nutzer gespeichert sind. Dadurch können Nutzer problemlos nach anderen Nutzern suchen. Wenn ein Suchbegriff, sei es ein Hashtag oder ein Name, eingegeben wird, erscheinen die gesuchten Personen auf dem Suchbildschirm. Bei Auswahl einer Person wird der Nutzer zu deren Profil weitergeleitet.
-
-\section*{Wichtigkeit der Suchfunktion}
-Die Suchfunktion ist für unsere App von großer Bedeutung. Sie ermöglicht es Sportmanagern, gezielt nach bestimmten Merkmalen oder Fähigkeiten zu suchen und schnell und effektiv Ergebnisse zu erhalten. Dies verbessert die Benutzererfahrung und erhöht die Effizienz der App.
-
-\section*{Wichtige Funktionen des Suchbildschirms}
-Der Suchbildschirm wurde in Flutter programmiert und enthält folgende wichtige Funktionen:
-- Ein `TextEditingController` wird verwendet, um die Eingabe des Suchbegriffs zu steuern und zu überwachen.
-- Eine Methode namens `fetchUserSearchResults` wird aufgerufen, wenn sich der Text im Suchfeld ändert. Diese Methode überprüft, ob der Suchbegriff nicht leer ist, und ruft dann die Suchergebnisse von Firebase ab. Die Suchergebnisse werden in einer Liste gespeichert und auf dem Bildschirm angezeigt.
-- Das Layout des Suchbildschirms besteht aus einem `Scaffold`-Widget, das eine benutzerdefinierte App-Leiste (`CustomAppBar`) und eine Suchleiste enthält. Die Suchleiste ist ein `TextField`-Widget mit einer Eingabeaufforderung und einem Suchsymbol.
-- Die Suchergebnisse werden in einer scrollbaren Liste (`ListView.builder`) angezeigt. Jede Ergebniszeile zeigt Informationen wie Name, E-Mail, Telefonnummer, Adresse und Hashtags des Nutzers an. Wenn ein Profilbild vorhanden ist, wird es ebenfalls angezeigt.
-- Ein `Card`-Widget umgibt jede Ergebniszeile, um eine visuell ansprechende Darstellung zu gewährleisten. Beim Tippen auf eine Ergebniszeile wird der Nutzer zu weiteren Details des ausgewählten Profils weitergeleitet.
-- Am unteren Rand des Bildschirms befindet sich eine benutzerdefinierte Navigationsleiste (`CustomBottomNavigationBar`), die es den Nutzern ermöglicht, leicht zwischen verschiedenen Abschnitten der App zu navigieren.
-
-\section*{Zukünftige Erweiterungen}
-Zukünftige Erweiterungen der Suchfunktion könnten die Speicherung früher gesuchter Personen im Suchbereich umfassen. Außerdem wäre es möglich, die Suche zu erweitern, sodass nicht nur nach Hashtags und Namen gesucht werden kann, sondern auch nach weiteren Informationen oder Merkmalen.
+\chapter{Search-Screen}
+Der Search-Screen bietet die Möglichkeit, dass Nutzer, Sportler und Sportmanager gezielt nach bestimmten Personen anhand von Hashtags oder Namen zu suchen. 
+Diese Funktion ist eng mit Firebase verknüpft, da dort die Profildaten der gesuchten Nutzer gespeichert sind.
+Sobald ein Suchbegriff eingegeben wird, sei es ein Hashtag oder ein Name, zeigt der Search-Screen die entsprechenden Personen an.
+Die Suchfunktion verwendet Pattern-Matching, um präzise Ergebnisse zu liefern, basierend auf den eingegebenen Suchkriterien.
+Die Ergebnisse der Suche werden dynamisch von Firebase abgerufen und umfassen alle relevanten Werte für die gefundenen Benutzer.
+Jedes Suchergebnis wird in einem strukturierten Layout präsentiert, das neben grundlegenden Informationen auch Avatare der entsprechenden Benutzer zeigt.
+Dabei werden sowohl die personenbezogenen Informationen und das Profilbild für einen User in ein Array gespeichert und dem User im Suchergebnis zugeordnet.

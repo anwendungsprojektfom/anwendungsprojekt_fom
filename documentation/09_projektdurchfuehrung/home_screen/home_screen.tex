@@ -1,22 +1,22 @@
-\chapter{Homescreen}
-Der Homescreen ist der erste und damit wichtigste Anzeigebildschirm für die STH-App. 
+\chapter{Home-Screen}
+Der Home-Screen ist der erste und damit wichtigste Anzeigebildschirm für die STH-App. 
 Dieser wird direkt nach dem App Start angezeigt und ist somit sofort sichtbar.
-\section*{Anforderungen an den Homescreen}
-Für die Funktionalitäten auf dem Homescreen wurden zunächst vergleichbare Apps wie Instagram verglichen und die wichtigsten Funktionen ausgearbeitet.\newline
+\section{Anforderungen an den Home-Screen}
+Für die Funktionalitäten auf dem Home-Screen wurden zunächst vergleichbare Apps wie Instagram verglichen und die wichtigsten Funktionen ausgearbeitet.\newline
 Folgende Anforderungen wurden dabei erstellt:
 \begin{itemize}
     \item Profile/Posts von Sportlern anzeigen
     \item Entry Point für die Chatfunktionalität
 \end{itemize}
 
-\section*{Erstellung der Flutter Widgets}
-Zunächst hat der Homescreen die zentralen Elemente CustomAppBar und CustomNavigationBar erhalten.
-Im nächsten Schritt wurde das sogenannte Post-Widget erstellt, das im Homescreen-Widget verwendet wird.
+\section{Erstellung der Flutter Widgets}
+Zunächst hat der Home-Screen die zentralen Elemente CustomAppBar und CustomNavigationBar erhalten.
+Im nächsten Schritt wurde das sogenannte Post-Widget erstellt, das im Home-Screen-Widget verwendet wird.
 Grund dafür ist, dass die unterschiedlichen Posts der Sportler vom Grund-Designkonzept gleich aufgebaut sein sollen. 
 Die Posts sollen sich nur durch die inhaltlichen / persönlichen Informationen unterscheiden.\newline
 Aufgebaut ist ein Post mit einem Profilbild links oben, dem Profilnamen, den Bildern des Sportlerposts und einem Chat-Button, mit dem der Manager direkt zum jeweiligen Chat mit dem Sportler springt.
 
-\section*{Daten aus Firebase für den Homescreen}
-Die Informationen (Profilname) und Dateien (Bilder und Profilbild) für die Sportlerposts auf dem Homescreen werden aus Firebase geladen, indem die UserID der jeweiligen Sportler übergeben wird.
+\section{Daten aus Firebase für den Home-Screen}
+Die Informationen (Profilname) und Dateien (Bilder und Profilbild) für die Sportlerposts auf dem Home-Screen werden aus Firebase geladen, indem die UserID der jeweiligen Sportler übergeben wird.
 Aufgrund von Beispieldaten gibt es hier datenschutzrechtlich keine Einschränkungen, für einen möglichen Rollout der Funktionen in der App werden allerdings im Ausblick noch einige Verbesserungen / Möglichkeiten angesprochen.
 

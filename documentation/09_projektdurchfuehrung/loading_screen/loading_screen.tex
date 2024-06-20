@@ -1,29 +1,12 @@
-\chapter{Ladebildschirm}
+\chapter{Loading-Screen}
+Der Loading-Screen ist ein wesentlicher Bestandteil der User Experience unserer STH-App. Der Loading-Screen ist der erste Bildschirm, der beim Starten der STH-App angezeigt wird. Für den Loading-Screen muss noch kein Nutzer eingeloggt sein. Dabei werden alle benötigten Ressourcen vorbereitet werden, die von der STH-App benötigt werden.
 
-Der Ladebildschirm ist ein essenzieller Bestandteil der Benutzererfahrung unserer STH-App (SportTalentHub). Er erscheint, bevor der Nutzer die Hauptfunktionen der App nutzen kann, und dient als Zwischenbildschirm, um dem Nutzer zu signalisieren, dass die App lädt.
-
-\section*{Ziele des Ladebildschirms}
-Der Ladebildschirm hat mehrere wichtige Funktionen. Er zeigt dem Nutzer visuelles Feedback, dass die App aktiv ist und lädt, wodurch eine bessere Benutzererfahrung gewährleistet wird. Der Ladebildschirm wurde so gestaltet, dass er genau vier Sekunden lang angezeigt wird. Dies gibt der App ausreichend Zeit, um die notwendigen Daten und Ressourcen im Hintergrund zu laden. \newline
-Es ist entscheidend, dass nach Ablauf der vier Sekunden die Benutzer zur Startseite (Homepage) der App navigiert werden und nicht zu anderen Seiten wie der Profil- oder Chatseite.
-
-\section*{Gestaltung des Ladebildschirms}
-Für die Gestaltung des Ladebildschirms waren mehrere Schritte notwendig. Das Logo wurde mit Canva erstellt und musste den Charakter und die Zielgruppe der App widerspiegeln. \newline
-Es wurde darauf geachtet, dass das Design für eine SportTalentHub-App geeignet ist. Die Inspiration für das Logo wurde aus verschiedenen Quellen, wie der NFL, gezogen. Die Farben und das Design sollten sportlich und ansprechend sein. \newline
-Nach der Erstellung wurde das Logo transparent gemacht, um es optimal in den Ladebildschirm integrieren zu können.
-
-Bevor das Logo endgültig in die App integriert wurde, wurde es im Rahmen eines wöchentlichen Meetings präsentiert. Das positive Feedback der Teammitglieder bestätigte die Eignung des Logos, sodass es anschließend in den Ladebildschirm eingefügt wurde.
-
-Das Logo wurde im Ladebildschirm implementiert und ein animiertes Symbol hinzugefügt, das die Ladebewegung anzeigt. \newline
-Es wurde darauf geachtet, dass nach dem Ablauf der vier Sekunden der Nutzer zur Startseite navigiert wird. Dies wurde durch entsprechende Programmierung in Flutter sichergestellt.
-
-\section*{Wichtige Funktionen des Ladebildschirms}
-Der Ladebildschirm wurde in Flutter programmiert und enthält folgende wichtige Funktionen:
-- In der `initState`-Methode wird ein Timer gestartet, der nach einer Dauer von drei Sekunden den Nutzer zur Startseite (Homescreen) weiterleitet. Dies wird durch die Methode `Navigator.of(context).pushReplacementNamed('/homescreen')` erreicht.
-- Der Ladebildschirm verwendet ein `Scaffold`-Widget mit einem weißen Hintergrund und einem zentrierten `Column`-Widget, das das Logo und einen `CircularProgressIndicator` anzeigt. Das Logo wird mit einem `Image`-Widget eingebunden, das auf die Bilddatei im Asset-Verzeichnis verweist.
-- Das `CircularProgressIndicator`-Widget zeigt eine Animation an, die den Ladevorgang visuell unterstützt.
-
-\section*{Änderungen am App-Logo}
-Neben der Erstellung und Implementierung des Logos für den Ladebildschirm war es auch notwendig, das App-Logo selbst zu ändern. Das Ändern des App-Logos wurde in der `pubspec.yaml`-Datei wie folgt konfiguriert:
+\section{Gestaltung des Logos, die Entwicklung des Loading-Screens}
+Für die Gestaltung des Logos wurden mehrere Schritte durchgeführt. Das Logo wurde mithilfe von Canva erstellt und soll den Charakter sowie die Zielgruppe der STH-App widerspiegeln.
+Die Inspiration für das Logo wurde aus verschiedenen Quellen wie der NFL gewonnen. Die Farben und das Design sollen sportlich und ansprechend sein.
+Das Logo wurde in den Loading-Screen eingebaut und mit einem animierten Loading-Spinner ergänzt, der den initialen Start der STH-App veranschaulicht. 
+Es wurde besonders darauf geachtet, dass der Nutzer nach genau vier Sekunden automatisch zur Startseite navigiert wird. Diese präzise Funktionalität war entscheidend, da gleichzeitig Ressourcen im Hintergrund geladen werden.
+Das App-Logo wird mithilfe des Flutter-Dependencies flutter\_launcher\_icons implementiert:
 \begin{verbatim}
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -31,5 +14,3 @@ flutter_launcher_icons:
   image_path: "assets/Images/FinalLogoSTHOriginal.png"
   min_sdk_android: 21
 \end{verbatim}
-Hierbei wurde das neue Logo in den entsprechenden Bereich des App-Projekts eingefügt. \newline
-Wir entschieden uns außerdem, das Logo auch auf der Startseite der App anzuzeigen. Hierzu wurde ein Code in die Startseite geschrieben, der diese Funktion realisiert.
