@@ -7,7 +7,7 @@ Beginnend mit dem Profile-Screen, wird eine StatefulWidget-Klasse verwendet, die
 Verschiedene Funktionen werden definiert, um auf Benutzerinteraktionen zu reagieren, beispielsweise das Öffnen von Galerieinhalten, das Laden von Bildern und Videos aus dem lokalen Speicher, das Hochladen von Medieninhalten auf Firebase sowie das Löschen von Bildern und Videos aus der Ansicht.
 Darüber hinaus werden Methoden implementiert, um die Anwendungszustände zu verwalten, Benutzereingaben zu verarbeiten und Multimedia-Inhalte wie Bilder und Videos sicher zwischen dem lokalen Speicher, der in der Regel durch ``shared preferences'' verwaltet wird, und dem Backend in Firebase zu übertragen. 
 Dadurch werden die Benutzerdaten effizient synchronisiert und sicher in der Cloud gespeichert, wodurch Datenschutz und Datensicherheit gewährleistet werden. 
-Bei Bedarf können diese Daten dann nahtlos abgerufen und aktualisiert werden. Dabei spielen bei der Implementierung dieser Features folgende Methoden eine entscheidende Rolle:
+Bei Bedarf können diese Daten dann abgerufen und aktualisiert werden. Dabei spielen bei der Implementierung dieser Features folgende Methoden eine entscheidende Rolle:
 \\``build'' ist die Methode, die das Benutzerinterface basierend auf dem aktuellen Zustand der StatefulWidget-Klasse aufbaut. Sie ist der Ausgangspunkt für den Aufbau der UI-Elemente und ermöglicht die dynamische Erstellung und Aktualisierung des Bildschirms. 
 Die Methode ``initState'' spielt eine wichtige Rolle bei der Initialisierung des Zustands der StatefulWidget-Klasse. Hier werden unter anderem Informationen aus dem lokalen Speicher geladen und andere vorbereitende Maßnahmen getroffen, um das Benutzerinterface entsprechend anzupassen und eine konsistente Benutzererfahrung zu gewährleisten. 
 Diese beiden Methoden bilden das Rückgrat des Profile-Screens und ermöglichen es, mithilfe von weiteren Methoden, die Benutzeroberfläche zu strukturieren und den Zustand der App zu verwalten.
@@ -21,7 +21,7 @@ Im Kontext der Datenschutzsicherheit spielen Methoden wie ``saveImagePathsToLoca
 Diese Methoden ermöglichen es Benutzern, ihre Bilder sowohl lokal im lokalen Speicher über die SharedPreferences als auch in der Cloud über das Backend in Firebase sicher zu verwalten und zu teilen. 
 Durch die Verwendung dieser Methoden wird die Integrität der Benutzerdaten gewahrt und gleichzeitig eine zuverlässige Speicherung und Übertragung von Bildinhalten gewährleistet. 
 Ähnlich wichtig sind Methoden wie ``saveVideoPathsToLocalStorage'', ``saveVideo'', ``loadVideosFromStorage'' und ``uploadVideos'' für die Verwaltung von Videos.
-Sie ermöglichen es dem Benutzer, multimediale Inhalte nahtlos zu verwalten und zu teilen. Dabei werden die Videodaten sowohl lokal im lokalen Speicher gespeichert als auch über das Backend in Firebase hochgeladen, wo sie für weitere Verwendungszwecke verfügbar sind.
+Sie ermöglichen es dem Benutzer, multimediale Inhalte zu verwalten und zu teilen. Dabei werden die Videodaten sowohl lokal im lokalen Speicher gespeichert als auch über das Backend in Firebase hochgeladen, wo sie für weitere Verwendungszwecke verfügbar sind.
 Diese Methoden spielen somit eine essenzielle Rolle bei der Sicherung und Bereitstellung von Videoinhalten für die Benutzer der App.
 Um dem Benutzer die Kontrolle über seine Inhalte zu geben, dienen ``deleteImage'' und ``deleteVideo'' dazu, ausgewählte Bilder und Videos zu löschen. 
 ``generateThumbnail'' ermöglicht es, Vorschaubilder für Videos anzuzeigen, um dem Benutzer eine Vorschau des Inhalts zu bieten.
@@ -38,7 +38,7 @@ Beim Start des Bildschirms werden die aktuellen Profildaten aus den SharedPrefer
 Nutzer können diese Informationen bearbeiten und die Änderungen anschließend speichern. Hier haben Nutzer die Freiheit, ein Profilbild zu wählen, das dann in einem kreisförmigen Avatar angezeigt wird. 
 Das ausgesuchte Bild wird nicht nur lokal auf dem Gerät gespeichert, sondern auch im Backend abgelegt. Bei Bedarf wird es von Firebase abgerufen, um anderen Seiten mit den entsprechenden Daten zu bereichern. Die Benutzeroberfläche des Accountprofilbildschirms besteht aus mehreren Textfeldern für die Bearbeitung von Profildaten sowie einem Abschnitt für das Profilbild. 
 Im Bearbeitungsmodus werden die Textfelder kenntlich und sichtbar zur Bearbeitung hervorgehoben, sodass Nutzer ihre Daten ändern können. Fehlermeldungen erscheinen, falls ungültige Eingaben gemacht wurden, und ein Tooltip mit einem Hover-Effekt informiert die Nutzer über die Art des Fehlers.
-Auch hierbei wurden folgende Methode zur Implementierung benötigt, um unseren konzeptionellen Anforderungen gerecht zu werden: 
+Auch hierbei wurden folgende Methode zur Implementierung benötigt, um unseren konzeptionellen Anforderungen gerecht zu werden.
 \\
 Die Build-Methode erstellt die Benutzeroberfläche des Accountprofil-Screens. Sie umfasst Textfelder für die Bearbeitung von Profildaten sowie einen Bereich für das Profilbild. 
 Die UI wird je nach Bearbeitungsstatus der Daten dynamisch angepasst. Die PickImage-Methode ermöglicht es Benutzern, ein Profilbild auszuwählen und es hochzuladen. Sie wird aktiviert, sobald der Benutzer auf die entsprechende Schaltfläche klickt.
